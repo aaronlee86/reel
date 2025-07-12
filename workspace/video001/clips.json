@@ -4,6 +4,11 @@
     1920
   ],
   "fps": 24,
+  "bgm": {
+    "file": "clean_bgm.wav",
+    "volume": 0.3,
+    "start": 0.8
+  },
   "events": [
     {
       "type": "image",
@@ -37,7 +42,7 @@
           "x": 40,
           "y": 970,
           "bold": false,
-          "italic": false
+          "italic": true
         }
       ]
     },
@@ -56,13 +61,13 @@
           "x": 40,
           "y": 870,
           "bold": false,
-          "italic": false
+          "italic": true
         },
         {
           "text": "你好，世界！",
           "font": "font.ttf",
           "font_size": 80,
-          "font_color": "#000000",
+          "font_color": "#ff0000",
           "x": 40,
           "y": 970,
           "bold": true,

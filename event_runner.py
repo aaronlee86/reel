@@ -2,7 +2,8 @@ import os
 import json
 import argparse
 import numpy as np
-from moviepy import ImageClip, AudioFileClip, VideoFileClip, ColorClip, CompositeVideoClip
+from moviepy import ImageClip, AudioFileClip, VideoFileClip, ColorClip, CompositeVideoClip, CompositeAudioClip
+import moviepy.audio.fx as afx
 from render_utils import render_text_block
 
 def loadAudioFile(base_path, filename):
@@ -15,7 +16,12 @@ def build_clip(event, base_path, size=(1280, 720)):
         return os.path.join(base_path, f)
 
     if event["type"] == "image":
-        clip = ImageClip(relpath(event["file"])).resize(height=size[1]) if hasattr(ImageClip(relpath(event["file"])), 'resize') else ImageClip(relpath(event["file"])).with_start(start)
+        if "file" in event:
+            clip = ImageClip(relpath(event["file"])).resized(height=size[1])
+        else:
+            bgcolor = event.get("bgcolor", [0, 0, 0])
+            clip = ColorClip(size=size, color=tuple(bgcolor))
+        clip = clip.with_start(start)
         if "duration" in event:
             clip = clip.with_duration(event["duration"])
         if "audio" in event:
@@ -65,25 +71,6 @@ def build_clip(event, base_path, size=(1280, 720)):
             clip = clip.subclip(0, duration)
         return clip.with_start(start)
 
-    elif event["type"] == "color":
-        color = tuple(event["color"])
-        duration = event.get("duration")
-        clip = ColorClip(size=size, color=color).with_start(start)
-        if "audio" in event:
-            audio = AudioFileClip(loadAudioFile(base_path, event["audio"]))
-            clip = clip.with_audio(audio).with_duration(audio.duration)
-        else:
-            clip = clip.with_duration(duration)
-        return clip
-
-    elif event["type"] == "audio":
-        audio = AudioFileClip(loadAudioFile(base_path, event["file"]))
-        audio_duration = audio.duration
-        clip_duration = event.get("duration", audio_duration)
-        final_duration = min(audio_duration, clip_duration)
-        bg = ColorClip(size=size, color=(0, 0, 0)).with_duration(final_duration).with_audio(audio).with_start(start)
-        return bg
-
     return None
 
 def generate_video_from_json(folder_path, preview_start=None, preview_duration=None):
@@ -101,6 +88,22 @@ def generate_video_from_json(folder_path, preview_start=None, preview_duration=N
 
     clips = [build_clip(e, full_path, size=size) for e in events if build_clip(e, full_path, size=size) is not None]
     video = CompositeVideoClip(clips, size=size)
+
+    # Add background music if specified
+    bgm_data = data.get("bgm")
+    if isinstance(bgm_data, dict):
+        bgm_file = bgm_data.get("file")
+        bgm_volume = bgm_data.get("volume", 1.0)
+        bgm_start = bgm_data.get("start", 0.0)
+        if bgm_file:
+            bgm_audio = AudioFileClip(loadAudioFile(full_path, bgm_file))
+            bgm_audio = bgm_audio.with_effects([afx.MultiplyVolume(bgm_volume)]).with_start(bgm_start)
+            max_bgm_duration = max(0, video.duration - bgm_start)
+            bgm_audio = bgm_audio.subclipped(0, min(bgm_audio.duration, max_bgm_duration))
+            if video.audio:
+                video = video.with_audio(CompositeAudioClip([video.audio, bgm_audio]))
+            else:
+                video = video.with_audio(bgm_audio)
 
     if preview_start is not None and preview_duration is not None:
         video = video.subclip(preview_start, preview_start + preview_duration)
