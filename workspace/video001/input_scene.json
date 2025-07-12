@@ -1,0 +1,63 @@
+{
+  "screen_size": [1080, 1920],
+  "scenes": [
+    {
+      "type": "image",
+      "file": "cover.png",
+      "duration": 3,
+      "tts_engine": "edge-tts",
+      "voice": "zh-TW-HsiaoChenNeural",
+      "speed": 1.0,
+      "text": "這是封面"
+    },
+    {
+      "type": "text",
+      "mode": "all_with_highlight",
+      "background": "#FFFFFF",
+      "highlight_style": {
+        "font": "font.ttf",
+        "font_color": "#000000",
+        "bold": true,
+        "italic": false
+      },
+      "text": [
+        {
+          "text": "Hello world!",
+          "font": "font.ttf",
+          "font_size": 80,
+          "font_color": "#000000",
+          "horizontal_alignment": "left",
+          "tts_engine": "edge-tts",
+          "voice": "en-US-JennyNeural",
+          "speed": 1.0
+        },
+        {
+          "text": "你好，世界！",
+          "font": "font.ttf",
+          "font_size": 80,
+          "font_color": "#000000",
+          "horizontal_alignment": "left",
+          "tts_engine": "edge-tts",
+          "voice": "zh-TW-HsiaoChenNeural",
+          "speed": 1.0
+        }
+      ]
+    },
+    {
+      "type": "audio",
+      "file": "clean_bgm.wav",
+      "start": 1,
+      "duration": 14,
+      "volume": 0.5
+    },
+    {
+      "type": "color",
+      "color": "#FF00C8",
+      "duration": 14,
+      "tts_engine": "edge-tts",
+      "voice": "zh-TW-HsiaoChenNeural",
+      "text": "背景色展示",
+      "speed": 1.0
+    }
+  ]
+}

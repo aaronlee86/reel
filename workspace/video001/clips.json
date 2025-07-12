@@ -1,0 +1,86 @@
+{
+  "size": [
+    1080,
+    1920
+  ],
+  "fps": 24,
+  "events": [
+    {
+      "type": "image",
+      "start": 0.0,
+      "duration": 1.47,
+      "file": "cover.png",
+      "audio": "cover.mp3"
+    },
+    {
+      "type": "text",
+      "background": "#FFFFFF",
+      "audio": "cover.mp3",
+      "start": 1.47,
+      "duration": 2.08,
+      "sentences": [
+        {
+          "text": "Hello world!",
+          "font": "font.ttf",
+          "font_size": 80,
+          "font_color": "#000000",
+          "x": 40,
+          "y": 870,
+          "bold": true,
+          "italic": false
+        },
+        {
+          "text": "你好，世界！",
+          "font": "font.ttf",
+          "font_size": 80,
+          "font_color": "#000000",
+          "x": 40,
+          "y": 970,
+          "bold": false,
+          "italic": false
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "background": "#FFFFFF",
+      "audio": "cover.mp3",
+      "start": 3.55,
+      "duration": 1.42,
+      "sentences": [
+        {
+          "text": "Hello world!",
+          "font": "font.ttf",
+          "font_size": 80,
+          "font_color": "#000000",
+          "x": 40,
+          "y": 870,
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "你好，世界！",
+          "font": "font.ttf",
+          "font_size": 80,
+          "font_color": "#000000",
+          "x": 40,
+          "y": 970,
+          "bold": true,
+          "italic": false
+        }
+      ]
+    },
+
+    {
+      "type": "color",
+      "start": 18.97,
+      "duration": 1.63,
+      "color": [
+        255,
+        0,
+        200
+      ],
+      "audio": "cover.mp3"
+    }
+  ]
+}

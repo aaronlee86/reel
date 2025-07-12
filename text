@@ -1,0 +1,27 @@
+use a descriptive file to describe clips
+
+here's the types and their properties
+
+image: start, duration, (audio)
+
+text: start, text[],position[],fontsize[], audio/duration, bg_img, bg_color, 
+
+video: start, file
+
+color: color, duration/audio
+
+audio: start, file
+
+
+
+use a descriptive file to describe screens:
+and it can generate clips.json as defined before
+here's the types of their properties:
+
+image: duration, audio, 
+
+text: duration, audio, mode, padding
+
+blank: color or transparent, duration, audio, 
+
+bgm
