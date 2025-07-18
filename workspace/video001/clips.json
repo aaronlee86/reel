@@ -1,91 +1,20 @@
 {
-  "size": [
-    1080,
-    1920
-  ],
+  "size": [1280, 720],
   "fps": 24,
-  "bgm": {
-    "file": "clean_bgm.wav",
-    "volume": 0.3,
-    "start": 0.8
-  },
   "events": [
-    {
-      "type": "image",
-      "start": 0.0,
-      "duration": 1.47,
-      "file": "cover.png",
-      "audio": "cover.mp3"
-    },
-    {
-      "type": "text",
-      "background": "#FFFFFF",
-      "audio": "cover.mp3",
-      "start": 1.47,
-      "duration": 2.08,
-      "sentences": [
-        {
-          "text": "Hello world!",
-          "font": "font.ttf",
-          "font_size": 80,
-          "font_color": "#000000",
-          "x": 40,
-          "y": 870,
-          "bold": true,
-          "italic": false
-        },
-        {
-          "text": "你好，世界！",
-          "font": "font.ttf",
-          "font_size": 80,
-          "font_color": "#000000",
-          "x": 40,
-          "y": 970,
-          "bold": false,
-          "italic": true
-        }
-      ]
-    },
-    {
-      "type": "text",
-      "background": "#FFFFFF",
-      "audio": "cover.mp3",
-      "start": 3.55,
-      "duration": 1.42,
-      "sentences": [
-        {
-          "text": "Hello world!",
-          "font": "font.ttf",
-          "font_size": 80,
-          "font_color": "#000000",
-          "x": 40,
-          "y": 870,
-          "bold": false,
-          "italic": true
-        },
-        {
-          "text": "你好，世界！",
-          "font": "font.ttf",
-          "font_size": 80,
-          "font_color": "#ff0000",
-          "x": 40,
-          "y": 970,
-          "bold": true,
-          "italic": false
-        }
-      ]
-    },
 
     {
-      "type": "color",
-      "start": 18.97,
-      "duration": 1.63,
-      "color": [
-        255,
-        0,
-        200
-      ],
-      "audio": "cover.mp3"
+      "type": "image",
+      "start": 3.0,
+      "duration": 1.0,
+      "audio":"cover.mp3",
+      "bgcolor": "#FF0000"
+    },
+    {
+      "type": "image",
+      "start": 4,
+      "duration": 3.0,
+      "bgcolor": "#00FF00"
     }
   ]
 }

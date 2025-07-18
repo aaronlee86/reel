@@ -1,5 +1,5 @@
-from PIL import Image, ImageDraw, ImageFont
 import os
+from PIL import Image, ImageDraw, ImageFont
 
 def render_text_block(
     text_lines,
@@ -9,10 +9,15 @@ def render_text_block(
     font_colors,
     bold_flags,
     italic_flags,
-    bg_color,
-    size
+    bg_color="#FFFFFF",
+    size=(1280, 720),
+    background_image=None
 ):
-    img = Image.new("RGB", size, bg_color)
+    if background_image:
+        img = background_image.copy()
+    else:
+        img = Image.new("RGB", size, color=bg_color)
+
     draw = ImageDraw.Draw(img)
 
     for i, line in enumerate(text_lines):
@@ -22,7 +27,6 @@ def render_text_block(
         bold = bold_flags[i]
         italic = italic_flags[i]
 
-        # Determine font style (basic handling)
         actual_font_path = font_path
         font_style_tag = ""
         if bold and italic:

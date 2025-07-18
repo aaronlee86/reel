@@ -9,7 +9,11 @@ from render_utils import render_text_block
 def loadAudioFile(base_path, filename):
     return os.path.join(base_path, "audio", filename)
 
-def build_clip(event, base_path, size=(1280, 720)):
+def hex_to_rgb(hex_color):
+    hex_color = hex_color.lstrip('#')
+    return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+
+def build_clip(event, base_path, size):
     start = event["start"]
 
     def relpath(f):
@@ -19,20 +23,33 @@ def build_clip(event, base_path, size=(1280, 720)):
         if "file" in event:
             clip = ImageClip(relpath(event["file"])).resized(height=size[1])
         else:
-            bgcolor = event.get("bgcolor", [0, 0, 0])
+            bgcolor_str = event.get("bgcolor", "#000000")
+            bgcolor = hex_to_rgb(bgcolor_str)
             clip = ColorClip(size=size, color=tuple(bgcolor))
         clip = clip.with_start(start)
         if "duration" in event:
             clip = clip.with_duration(event["duration"])
         if "audio" in event:
-            clip = clip.with_audio(AudioFileClip(loadAudioFile(base_path, event["audio"])))
+            audio = AudioFileClip(loadAudioFile(base_path, event["audio"]))
+            if "duration" in event:
+                audio = audio.subclipped(0, min(audio.duration, event["duration"]))
+            clip = clip.with_audio(audio)
         return clip
 
     elif event["type"] == "text":
         sentences = event["sentences"]
-        background = event.get("background", "#FFFFFF")
+        background = event.get("background")  # path to image
+        bgcolor = event.get("bgcolor", "#000000")  # fallback color
         duration = event.get("duration")
         audio_path = event.get("audio")
+
+        background_image = None
+        if background:
+            background_path = os.path.join(base_path, background)
+            if os.path.exists(background_path):
+                from PIL import Image
+                background_image = Image.open(background_path).convert("RGB").resize(size)
+
         text_lines = [s["text"] for s in sentences]
         positions = [[s["x"], s["y"]] for s in sentences]
         font_sizes = [s["font_size"] for s in sentences]
@@ -49,11 +66,12 @@ def build_clip(event, base_path, size=(1280, 720)):
             font_colors=font_colors,
             bold_flags=bold_flags,
             italic_flags=italic_flags,
-            bg_color=background,
-            size=size
+            bg_color=bgcolor,
+            size=size,
+            background_image=background_image
         )
 
-        clip = ImageClip(np.array(img)).with_start(start)
+        clip = ImageClip(np.array(img)).with_start(event["start"])
         if audio_path:
             audio = AudioFileClip(loadAudioFile(base_path, audio_path))
             audio_duration = audio.duration

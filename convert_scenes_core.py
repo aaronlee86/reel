@@ -21,8 +21,6 @@ def simulate_tts_audio(text: str, audio_dir: str) -> Tuple[str, float]:
     duration = round(1.0 + len(text.split()) * 0.4 + random.uniform(0.0, 0.3), 2)
     return filename, duration
 
-# convert_scenes_to_clips returns a dict with size, fps, and clips
-
 def convert_scenes_to_clips(scene_data: Dict, audio_dir: str = "audio") -> Dict:
     screen = Screen(*scene_data["screen_size"])
     clips = []
@@ -172,9 +170,12 @@ def convert_scenes_to_clips(scene_data: Dict, audio_dir: str = "audio") -> Dict:
                 "type": "image",
                 "start": current_time,
                 "duration": duration,
-                "file": scene["file"],
                 "audio": audio
             }
+            if "file" in scene:
+                clip["file"] = scene["file"]
+            else:
+                clip["background"] = scene.get("bg_color", "black")
             clips.append(clip)
             current_time += clip["duration"]
 
@@ -189,30 +190,9 @@ def convert_scenes_to_clips(scene_data: Dict, audio_dir: str = "audio") -> Dict:
             clips.append(clip)
             current_time += clip["duration"]
 
-        elif scene["type"] == "color":
-            if "tts_engine" in scene and "text" in scene:
-                audio_file, duration = simulate_tts_audio(scene["text"], audio_dir)
-                audio = audio_file
-            else:
-                audio = scene.get("audio")
-                duration = scene.get("duration", 3)
-            color_val = scene["color"]
-            if isinstance(color_val, str) and color_val.startswith("#"):
-                rgb = tuple(int(color_val[i:i+2], 16) for i in (1, 3, 5))
-            else:
-                rgb = color_val
-            clip = {
-                "type": "color",
-                "start": current_time,
-                "duration": duration,
-                "color": rgb,
-                "audio": audio
-            }
-            clips.append(clip)
-            current_time += clip["duration"]
-
     return {
         "size": [screen.width, screen.height],
         "fps": scene_data.get("fps", 24),
+        "bgm": scene_data.get("bgm", None),
         "events": clips
     }
