@@ -26,14 +26,43 @@ def build_clip(event, base_path, size):
             bgcolor_str = event.get("bgcolor", "#000000")
             bgcolor = hex_to_rgb(bgcolor_str)
             clip = ColorClip(size=size, color=tuple(bgcolor))
+
+        # Handle audio
+        audio_path = event.get("audio")
+        audio_clip = None
+        if audio_path:
+            full_audio_path = loadAudioFile(base_path, audio_path)
+            if full_audio_path:
+                audio_clip = AudioFileClip(full_audio_path)
+
+                # Determine clip duration
+                duration = event.get("duration")
+                if duration is None:
+                    # If no duration specified, use audio duration
+                    print(f"duration is missing")
+                    return
+
+                print(f"audio duration={audio_clip.duration}")
+                # If audio is shorter than duration, keep image but stop audio
+                if audio_clip.duration < duration:
+                    # Trim audio to its full length, but keep image for full duration
+                    clip = clip.with_audio(audio_clip).with_duration(duration)
+                else:
+                    # Trim audio to match clip or specified duration
+                    trimmed_audio = audio_clip.subclipped(0, duration)
+                    clip = clip.with_audio(trimmed_audio).with_duration(duration)
+            else:
+                print(f"Could not load audio file: {audio_path}")
+                # Ensure duration is set even without audio
+                if duration:
+                    clip = clip.with_duration(duration)
+        else:
+            # If no audio, use specified or default duration
+            duration = event.get("duration")
+            if duration:
+                clip = clip.with_duration(duration)
+
         clip = clip.with_start(start)
-        if "duration" in event:
-            clip = clip.with_duration(event["duration"])
-        if "audio" in event:
-            audio = AudioFileClip(loadAudioFile(base_path, event["audio"]))
-            if "duration" in event:
-                audio = audio.subclipped(0, min(audio.duration, event["duration"]))
-            clip = clip.with_audio(audio)
         return clip
 
     elif event["type"] == "text":
@@ -71,15 +100,17 @@ def build_clip(event, base_path, size):
             background_image=background_image
         )
 
-        clip = ImageClip(np.array(img)).with_start(event["start"])
+        clip = ImageClip(np.array(img)).with_start(event["start"]).with_duration(duration)
         if audio_path:
-            audio = AudioFileClip(loadAudioFile(base_path, audio_path))
-            audio_duration = audio.duration
-            clip_duration = event.get("duration", audio_duration)
-            final_duration = min(audio_duration, clip_duration)
-            clip = clip.with_audio(audio).with_duration(final_duration)
-        else:
-            clip = clip.with_duration(duration)
+            audio_clip = AudioFileClip(loadAudioFile(base_path, audio_path))
+            audio_duration = audio_clip.duration
+            if audio_duration < duration:
+                final_audio = audio_clip
+            else:
+                # Trim audio to match clip or specified duration
+                final_audio = audio_clip.subclipped(0, duration)
+
+            clip = clip.with_audio(final_audio)
         return clip
 
     elif event["type"] == "video":

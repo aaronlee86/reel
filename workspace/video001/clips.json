@@ -2,12 +2,31 @@
   "size": [1280, 720],
   "fps": 24,
   "events": [
-
+    {
+      "type": "text",
+      "start": 0,
+      "duration": 3,
+      "background": "cover.png",
+      "bgcolor": "#22FFFF",
+      "audio": "cover.mp3",
+      "sentences": [
+        {
+          "text": "Hello, world!",
+          "x": 100,
+          "y": 300,
+          "font": "font.ttf",
+          "font_size": 60,
+          "font_color": "#FFFFFF",
+          "bold": true,
+          "italic": false
+        }
+      ]
+    },
     {
       "type": "image",
-      "start": 3.0,
+      "start": 3,
       "duration": 1.0,
-      "audio":"cover.mp3",
+      "audio": "cover.mp3",
       "bgcolor": "#FF0000"
     },
     {
