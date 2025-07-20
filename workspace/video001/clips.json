@@ -5,7 +5,7 @@
     {
       "type": "text",
       "start": 0,
-      "duration": 3,
+      "duration": 7,
       "background": "cover.png",
       "bgcolor": "#22FFFF",
       "audio": "cover.mp3",
@@ -23,15 +23,21 @@
       ]
     },
     {
+      "type": "video",
+      "file": "ppp.mp4",
+      "start": 7,
+      "duration": 3
+},
+    {
       "type": "image",
-      "start": 3,
+      "start": 10,
       "duration": 1.0,
       "audio": "cover.mp3",
       "bgcolor": "#FF0000"
     },
     {
       "type": "image",
-      "start": 4,
+      "start": 11,
       "duration": 3.0,
       "bgcolor": "#00FF00"
     }

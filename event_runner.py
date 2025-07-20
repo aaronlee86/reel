@@ -2,83 +2,166 @@ import os
 import json
 import argparse
 import numpy as np
-from moviepy import ImageClip, AudioFileClip, VideoFileClip, ColorClip, CompositeVideoClip, CompositeAudioClip
+from typing import Dict, Any, Tuple, Optional, List, Callable
+
+from moviepy import (
+    ImageClip,
+    AudioFileClip,
+    VideoFileClip,
+    ColorClip,
+    CompositeVideoClip,
+    CompositeAudioClip
+)
 import moviepy.audio.fx as afx
 from render_utils import render_text_block
 
-def loadAudioFile(base_path, filename):
-    return os.path.join(base_path, "audio", filename)
+class VideoGenerationError(Exception):
+    """Custom exception for video generation errors."""
+    pass
 
-def hex_to_rgb(hex_color):
-    hex_color = hex_color.lstrip('#')
-    return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+class VideoGenerator:
+    """
+    Comprehensive video generation class that encapsulates
+    all video creation logic.
+    """
+    def __init__(self, base_path: str):
+        """
+        Initialize video generator.
 
-def build_clip(event, base_path, size):
-    start = event["start"]
+        Args:
+            base_path (str): Base directory for project assets
+        """
+        self.base_path = base_path
+        self.clip_builders: Dict[str, Callable] = {
+            "image": self._build_image_clip,
+            "text": self._build_text_clip,
+            "video": self._build_video_clip
+        }
 
-    def relpath(f):
-        return os.path.join(base_path, f)
+    def _resolve_path(self, filename: str) -> str:
+        """
+        Resolve full path for a given filename.
 
-    if event["type"] == "image":
+        Args:
+            filename (str): Relative filename
+
+        Returns:
+            str: Full path to the file
+        """
+        return os.path.join(self.base_path, filename)
+
+    def _load_audio(self, audio_path: Optional[str], duration: float) -> Optional[AudioFileClip]:
+        """
+        Load and process audio clip.
+
+        Args:
+            audio_path (Optional[str]): Path to audio file
+            duration (float): Desired clip duration
+
+        Returns:
+            Optional[AudioFileClip]: Processed audio clip
+        """
+        if not audio_path:
+            return None
+
+        try:
+            # Construct full audio path
+            full_audio_path = os.path.join(self.base_path, "audio", audio_path)
+
+            # Load audio clip
+            audio_clip = AudioFileClip(full_audio_path)
+
+            # Handle audio duration
+            if audio_clip.duration > duration:
+                # Trim audio if longer than clip
+                return audio_clip.subclipped(0, duration)
+
+            # Return full audio if shorter or equal to duration
+            return audio_clip
+
+        except Exception as e:
+            print(f"Audio processing error: {e}")
+            return None
+
+    def _hex_to_rgb(self, hex_color: str) -> Tuple[int, int, int]:
+        """
+        Convert hex color to RGB tuple.
+
+        Args:
+            hex_color (str): Hex color code
+
+        Returns:
+            Tuple[int, int, int]: RGB color values
+        """
+        hex_color = hex_color.lstrip('#')
+        return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+
+    def _build_image_clip(self, event: Dict[str, Any], size: Tuple[int, int]) -> ImageClip:
+        """
+        Create an image or color clip.
+
+        Args:
+            event (Dict[str, Any]): Clip configuration
+            size (Tuple[int, int]): Video frame size
+
+        Returns:
+            ImageClip: Generated clip
+
+        Raises:
+            VideoGenerationError: If required parameters are missing
+        """
+        # Validate required parameters
+        if "duration" not in event:
+            raise VideoGenerationError("Duration is required for image clips")
+
+        # Create base clip
         if "file" in event:
-            clip = ImageClip(relpath(event["file"])).resized(height=size[1])
+            # Image file clip
+            clip = ImageClip(self._resolve_path(event["file"])).resized(height=size[1])
         else:
-            bgcolor_str = event.get("bgcolor", "#000000")
-            bgcolor = hex_to_rgb(bgcolor_str)
+            # Solid color clip
+            bgcolor = self._hex_to_rgb(event.get("bgcolor", "#000000"))
             clip = ColorClip(size=size, color=tuple(bgcolor))
 
-        # Handle audio
-        audio_path = event.get("audio")
-        audio_clip = None
-        if audio_path:
-            full_audio_path = loadAudioFile(base_path, audio_path)
-            if full_audio_path:
-                audio_clip = AudioFileClip(full_audio_path)
+        # Set duration
+        clip = clip.with_duration(event["duration"])
 
-                # Determine clip duration
-                duration = event.get("duration")
-                if duration is None:
-                    # If no duration specified, use audio duration
-                    print(f"duration is missing")
-                    return
+        # Add audio if specified
+        audio_clip = self._load_audio(event.get("audio"), event["duration"])
+        if audio_clip:
+            clip = clip.with_audio(audio_clip)
 
-                print(f"audio duration={audio_clip.duration}")
-                # If audio is shorter than duration, keep image but stop audio
-                if audio_clip.duration < duration:
-                    # Trim audio to its full length, but keep image for full duration
-                    clip = clip.with_audio(audio_clip).with_duration(duration)
-                else:
-                    # Trim audio to match clip or specified duration
-                    trimmed_audio = audio_clip.subclipped(0, duration)
-                    clip = clip.with_audio(trimmed_audio).with_duration(duration)
-            else:
-                print(f"Could not load audio file: {audio_path}")
-                # Ensure duration is set even without audio
-                if duration:
-                    clip = clip.with_duration(duration)
-        else:
-            # If no audio, use specified or default duration
-            duration = event.get("duration")
-            if duration:
-                clip = clip.with_duration(duration)
+        # Set start time
+        return clip.with_start(event["start"])
 
-        clip = clip.with_start(start)
-        return clip
+    def _build_text_clip(self, event: Dict[str, Any], size: Tuple[int, int]) -> ImageClip:
+        """
+        Create a text clip.
 
-    elif event["type"] == "text":
-        sentences = event["sentences"]
-        background = event.get("background")  # path to image
-        bgcolor = event.get("bgcolor", "#000000")  # fallback color
-        duration = event.get("duration")
-        audio_path = event.get("audio")
+        Args:
+            event (Dict[str, Any]): Clip configuration
+            size (Tuple[int, int]): Video frame size
 
+        Returns:
+            ImageClip: Generated text clip
+
+        Raises:
+            VideoGenerationError: If required parameters are missing
+        """
+        # Validate required parameters
+        if "duration" not in event or "sentences" not in event:
+            raise VideoGenerationError("Duration and sentences are required for text clips")
+
+        # Handle background image
         background_image = None
-        if background:
-            background_path = os.path.join(base_path, background)
+        if background := event.get("background"):
+            background_path = self._resolve_path(background)
             if os.path.exists(background_path):
                 from PIL import Image
                 background_image = Image.open(background_path).convert("RGB").resize(size)
 
+        # Extract text rendering parameters
+        sentences = event["sentences"]
         text_lines = [s["text"] for s in sentences]
         positions = [[s["x"], s["y"]] for s in sentences]
         font_sizes = [s["font_size"] for s in sentences]
@@ -87,6 +170,7 @@ def build_clip(event, base_path, size):
         bold_flags = [s.get("bold", False) for s in sentences]
         italic_flags = [s.get("italic", False) for s in sentences]
 
+        # Render text block
         img = render_text_block(
             text_lines=text_lines,
             positions=positions,
@@ -95,79 +179,201 @@ def build_clip(event, base_path, size):
             font_colors=font_colors,
             bold_flags=bold_flags,
             italic_flags=italic_flags,
-            bg_color=bgcolor,
+            bg_color=event.get("bgcolor", "#000000"),
             size=size,
             background_image=background_image
         )
 
-        clip = ImageClip(np.array(img)).with_start(event["start"]).with_duration(duration)
-        if audio_path:
-            audio_clip = AudioFileClip(loadAudioFile(base_path, audio_path))
-            audio_duration = audio_clip.duration
-            if audio_duration < duration:
-                final_audio = audio_clip
-            else:
-                # Trim audio to match clip or specified duration
-                final_audio = audio_clip.subclipped(0, duration)
+        # Create clip
+        clip = ImageClip(np.array(img)).with_start(event["start"]).with_duration(event["duration"])
 
-            clip = clip.with_audio(final_audio)
+        # Add audio if specified
+        audio_clip = self._load_audio(event.get("audio"), event["duration"])
+        if audio_clip:
+            clip = clip.with_audio(audio_clip)
+
         return clip
 
-    elif event["type"] == "video":
-        clip = VideoFileClip(relpath(event["file"]))
-        duration = event.get("duration")
-        if duration:
-            clip = clip.subclip(0, duration)
-        return clip.with_start(start)
+    def _build_video_clip(self, event: Dict[str, Any], size: Tuple[int, int]) -> VideoFileClip:
+        """
+        Create a video clip.
 
-    return None
+        Args:
+            event (Dict[str, Any]): Clip configuration
+            size (Tuple[int, int]): Video frame size
 
-def generate_video_from_json(folder_path, preview_start=None, preview_duration=None):
-    full_path = os.path.join("workspace", folder_path)
-    json_file = "clips.json"
-    with open(os.path.join(full_path, json_file), 'r', encoding='utf-8') as f:
-        data = json.load(f)
+        Returns:
+            VideoFileClip: Generated video clip
 
-    if "size" not in data:
-        raise ValueError("Missing required 'size' field in JSON. Please specify a resolution like [1280, 720].")
+        Raises:
+            VideoGenerationError: If required parameters are missing
+        """
+        # Validate required parameters
+        if "file" not in event:
+            raise VideoGenerationError("File is required for video clips")
 
-    size = tuple(data["size"])
-    fps = data.get("fps", 24)
-    events = data.get("events", data)  # fallback for backward compatibility
+        # Create video clip
+        clip = VideoFileClip(self._resolve_path(event["file"]))
 
-    clips = [build_clip(e, full_path, size=size) for e in events if build_clip(e, full_path, size=size) is not None]
-    video = CompositeVideoClip(clips, size=size)
+        # Trim clip if duration specified
+        if duration := event.get("duration"):
+            clip = clip.subclipped(0, duration)
 
-    # Add background music if specified
-    bgm_data = data.get("bgm")
-    if isinstance(bgm_data, dict):
+        # Set start time
+        return clip.with_start(event["start"])
+
+    def generate_video(
+        self,
+        data: Dict[str, Any],
+        preview_start: Optional[float] = None,
+        preview_duration: Optional[float] = None
+    ) -> str:
+        """
+        Generate video from configuration data.
+
+        Args:
+            data (Dict[str, Any]): Video configuration
+            preview_start (Optional[float]): Start time for preview
+            preview_duration (Optional[float]): Duration of preview
+
+        Returns:
+            str: Path to generated video file
+        """
+        # Validate video size configuration
+        if "size" not in data:
+            raise VideoGenerationError("Missing required 'size' field in JSON")
+
+        # Extract video configuration
+        size = tuple(data["size"])
+        fps = data.get("fps", 24)  # Default to 24 fps if not specified
+        events = data.get("events", data)  # Fallback for backward compatibility
+
+        # Build clips
+        clips = []
+        for event in events:
+            try:
+                # Build clip using appropriate method
+                builder = self.clip_builders.get(event["type"])
+                if not builder:
+                    print(f"Unsupported clip type: {event['type']}")
+                    continue
+
+                clip = builder(event, size)
+                clips.append(clip)
+            except VideoGenerationError as e:
+                print(f"Skipping invalid clip: {e}")
+
+        # Create composite video from clips
+        video = CompositeVideoClip(clips, size=size)
+
+        # Add background music if specified
+        video = self._add_background_music(video, data)
+
+        # Handle video preview if specified
+        if preview_start is not None and preview_duration is not None:
+            video = video.subclipped(preview_start, preview_start + preview_duration)
+
+        # Output final video
+        output_path = os.path.join(self.base_path, "output.mp4")
+        video.write_videofile(output_path, fps=fps, codec="libx264", audio_codec="aac")
+
+        print(f"Video generated successfully: {output_path}")
+        return output_path
+
+    def _add_background_music(
+        self,
+        video: CompositeVideoClip,
+        data: Dict[str, Any]
+    ) -> CompositeVideoClip:
+        """
+        Add background music to video.
+
+        Args:
+            video (CompositeVideoClip): Original video
+            data (Dict[str, Any]): Configuration data
+
+        Returns:
+            CompositeVideoClip: Video with background music
+        """
+        bgm_data = data.get("bgm")
+        if not isinstance(bgm_data, dict):
+            return video
+
         bgm_file = bgm_data.get("file")
-        bgm_volume = bgm_data.get("volume", 1.0)
-        bgm_start = bgm_data.get("start", 0.0)
-        if bgm_file:
-            bgm_audio = AudioFileClip(loadAudioFile(full_path, bgm_file))
+        if not bgm_file:
+            return video
+
+        try:
+            # Load and process background music
+            bgm_audio = AudioFileClip(os.path.join(self.base_path, "audio", bgm_file))
+            bgm_volume = bgm_data.get("volume", 1.0)
+            bgm_start = bgm_data.get("start", 0.0)
+
+            # Apply volume and start time
             bgm_audio = bgm_audio.with_effects([afx.MultiplyVolume(bgm_volume)]).with_start(bgm_start)
+
+            # Ensure background music doesn't exceed video duration
             max_bgm_duration = max(0, video.duration - bgm_start)
             bgm_audio = bgm_audio.subclipped(0, min(bgm_audio.duration, max_bgm_duration))
+
+            # Add background music to video
             if video.audio:
-                video = video.with_audio(CompositeAudioClip([video.audio, bgm_audio]))
-            else:
-                video = video.with_audio(bgm_audio)
+                return video.with_audio(CompositeAudioClip([video.audio, bgm_audio]))
+            return video.with_audio(bgm_audio)
 
-    if preview_start is not None and preview_duration is not None:
-        video = video.subclip(preview_start, preview_start + preview_duration)
+        except Exception as e:
+            print(f"Failed to add background music: {e}")
+            return video
 
-    output_path = os.path.join(full_path, "output.mp4")
-    video.write_videofile(output_path, fps=fps, codec="libx264", audio_codec="aac")
+def generate_video_from_json(
+    folder_path: str,
+    preview_start: Optional[float] = None,
+    preview_duration: Optional[float] = None
+) -> str:
+    """
+    Main function to generate video from JSON configuration.
+
+    Args:
+        folder_path (str): Path to folder containing clips.json
+        preview_start (Optional[float]): Start time for preview
+        preview_duration (Optional[float]): Duration of preview
+
+    Returns:
+        str: Path to generated video file
+    """
+    # Construct full path to project folder
+    full_path = os.path.join("workspace", folder_path)
+    json_file = "clips.json"
+
+    # Load JSON configuration
+    try:
+        with open(os.path.join(full_path, json_file), 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    except (IOError, json.JSONDecodeError) as e:
+        print(f"Error loading JSON: {e}")
+        raise VideoGenerationError(f"Failed to load configuration: {e}")
+
+    # Create video generator and generate video
+    generator = VideoGenerator(full_path)
+    return generator.generate_video(data, preview_start, preview_duration)
 
 def main():
+    """
+    Command-line interface for video generation.
+    Parses arguments and calls video generation function.
+    """
     parser = argparse.ArgumentParser(description="Generate video from event JSON.")
     parser.add_argument("folder", help="Subfolder under workspace containing clips.json and assets")
     parser.add_argument("--preview-start", type=float, help="Start time in seconds for preview clip")
     parser.add_argument("--preview-duration", type=float, help="Duration in seconds for preview clip")
     args = parser.parse_args()
 
-    generate_video_from_json(args.folder, args.preview_start, args.preview_duration)
+    try:
+        # Generate video based on command-line arguments
+        generate_video_from_json(args.folder, args.preview_start, args.preview_duration)
+    except Exception as e:
+        print(f"Video generation failed: {e}")
+        exit(1)
 
 if __name__ == "__main__":
     main()
