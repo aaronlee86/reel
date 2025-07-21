@@ -1,0 +1,16 @@
+{
+  "screen_size": [1080, 1920],
+  "bgm": {
+    "file": "clean_bgm.wav",
+    "volume": 0.3,
+    "start": 0.8
+  },
+  "scenes": [
+   {
+  "type": "image",
+  "file": "cover.png",
+  "duration": 3,
+  "bgcolor": "#000000"
+}
+  ]
+}
