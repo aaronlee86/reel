@@ -20,14 +20,21 @@ class ImageSceneConverter(SceneConverter):
             List[Dict[str, Any]]: Virtual clips for the image scene
 
         Raises:
-            ValueError: If both file and bgcolor are specified
+            ValueError: If configuration is invalid
         """
         # Validate scene configuration
         if 'file' in scene and 'bgcolor' in scene:
             raise ValueError("Cannot specify both 'file' and 'bgcolor' in an image scene")
 
+        # Check audio configuration
+        audio_config = scene.get('audio', {})
+
+        # Validate duration based on audio presence
+        if not audio_config and 'duration' not in scene:
+            raise ValueError("Duration is required for silent scenes")
+
         # Extract basic scene parameters
-        duration = scene.get('duration', self.default_duration)
+        duration = scene.get('duration', None)
         file = scene.get('file')
         bgcolor = scene.get('bgcolor')
 
@@ -39,8 +46,11 @@ class ImageSceneConverter(SceneConverter):
         # Prepare base vclip
         vclip: Dict[str, Any] = {
             "type": "image",
-            "duration": duration,
         }
+
+        # Add duration if specified
+        if duration is not None:
+            vclip['duration'] = duration
 
         # Add file if specified
         if file:
@@ -51,7 +61,6 @@ class ImageSceneConverter(SceneConverter):
             vclip['bgcolor'] = bgcolor
 
         # Handle audio
-        audio_config = scene.get('audio', {})
         if audio_config:
             # Validate audio configuration
             if 'file' in audio_config and 'tts' in audio_config:
