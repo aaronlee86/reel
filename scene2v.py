@@ -81,7 +81,7 @@ def main():
 
     # Convert the project
     try:
-        output_json = convert_video_project(input_json)
+        output_json = convert_video_project(input_json, project_name=args.project)
     except ValueError as e:
         # Detailed error handling for conversion failures
         print(f"Conversion Error: {e}")

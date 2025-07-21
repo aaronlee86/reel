@@ -2,10 +2,13 @@ import os
 from typing import Dict, Any, List, Optional, Union
 
 from .base import SceneConverter
-from ..file_resolver import FileResolver
 
 class ImageSceneConverter(SceneConverter):
-    def convert(self, scene: Dict[str, Any], project_name: str = 'default') -> List[Dict[str, Any]]:
+    def convert(
+        self,
+        scene: Dict[str, Any],
+        project_name: str = 'default'
+    ) -> List[Dict[str, Any]]:
         """
         Convert an image scene to virtual clips
 
@@ -24,7 +27,7 @@ class ImageSceneConverter(SceneConverter):
             raise ValueError("Cannot specify both 'file' and 'bgcolor' in an image scene")
 
         # Extract basic scene parameters
-        duration = scene.get('duration', 3.0)
+        duration = scene.get('duration', self.default_duration)
         file = scene.get('file')
         bgcolor = scene.get('bgcolor')
 
@@ -39,17 +42,9 @@ class ImageSceneConverter(SceneConverter):
             "duration": duration,
         }
 
-        # Resolve image file path
+        # Add file if specified
         if file:
-            resolved_file = FileResolver.resolve_file_path(
-                file,
-                project_name,
-                file_types=['png', 'jpg', 'jpeg', 'gif', 'bmp']
-            )
-            if resolved_file:
-                vclip['file'] = resolved_file
-            else:
-                raise ValueError(f"Image file not found: {file}")
+            vclip['file'] = file
 
         # Add background color if no file
         if bgcolor:
@@ -69,14 +64,7 @@ class ImageSceneConverter(SceneConverter):
 
             # Handle file-based audio
             if 'file' in audio_config:
-                # Resolve audio file path
-                resolved_audio = FileResolver.resolve_file_path(
-                    audio_config['file'],
-                    project_name,
-                    file_types=['mp3', 'wav', 'ogg', 'm4a']
-                )
-                if resolved_audio:
-                    vclip['audio']['file'] = resolved_audio
+                vclip['audio']['file'] = audio_config['file']
                 vclip['audio']['offset'] = audio_config.get('offset', 0)
 
             # Handle TTS
