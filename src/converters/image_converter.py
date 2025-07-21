@@ -66,15 +66,16 @@ class ImageSceneConverter(SceneConverter):
             if 'file' in audio_config and 'tts' in audio_config:
                 raise ValueError("Cannot specify both 'file' and 'tts' in audio configuration")
 
+            # Check for speed in file-based audio
+            if 'file' in audio_config and 'speed' in audio_config:
+                raise ValueError("Speed is not allowed for file-based audio")
+
             # Add audio details to vclip
-            vclip['audio'] = {
-                'speed': audio_config.get('speed', 1.0)
-            }
+            vclip['audio'] = {}
 
             # Handle file-based audio
             if 'file' in audio_config:
                 vclip['audio']['file'] = audio_config['file']
-                vclip['audio']['offset'] = audio_config.get('offset', 0)
 
             # Handle TTS
             if 'tts' in audio_config:
@@ -82,7 +83,8 @@ class ImageSceneConverter(SceneConverter):
                 vclip['audio']['tts'] = {
                     'text': tts_config['text'],
                     'tts_engine': tts_config.get('tts_engine', 'edge-tts'),
-                    'voice': tts_config['voice']
+                    'voice': tts_config['voice'],
+                    'speed': tts_config.get('speed', 1.0)
                 }
 
         # Handle offset clips
