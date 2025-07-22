@@ -26,6 +26,10 @@ class ImageSceneConverter(SceneConverter):
         if 'file' in scene and 'bgcolor' in scene:
             raise ValueError("Cannot specify both 'file' and 'bgcolor' in an image scene")
 
+        # Check for offset in main section
+        if 'offset' in scene:
+            raise ValueError("Offset must be specified in the audio section, not in the main scene")
+
         # Check audio configuration
         audio_config = scene.get('audio', {})
 
@@ -104,6 +108,13 @@ class ImageSceneConverter(SceneConverter):
             if 'bgcolor' in vclip:
                 offset_clip['bgcolor'] = vclip['bgcolor']
 
-            return [offset_clip, vclip]
+            # Adjust the main clip's duration if specified
+            if duration is not None:
+                adjusted_vclip = vclip.copy()
+                adjusted_vclip['duration'] = duration - offset
+                return [offset_clip, adjusted_vclip]
+
+            # If no duration specified, return just the offset clip
+            return [offset_clip]
 
         return [vclip]
