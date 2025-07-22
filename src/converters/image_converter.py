@@ -1,6 +1,5 @@
 import os
 from typing import Dict, Any, List, Optional, Union
-
 from .base import SceneConverter
 
 class ImageSceneConverter(SceneConverter):
@@ -11,14 +10,11 @@ class ImageSceneConverter(SceneConverter):
     ) -> List[Dict[str, Any]]:
         """
         Convert an image scene to virtual clips
-
         Args:
             scene (Dict[str, Any]): Image scene details
             project_name (str): Name of the current project
-
         Returns:
             List[Dict[str, Any]]: Virtual clips for the image scene
-
         Raises:
             ValueError: If configuration is invalid
         """
@@ -32,6 +28,20 @@ class ImageSceneConverter(SceneConverter):
 
         # Check audio configuration
         audio_config = scene.get('audio', {})
+
+        # Validate audio configuration
+        if audio_config:
+            # Require either file or tts
+            if 'file' not in audio_config and 'tts' not in audio_config:
+                raise ValueError("Audio configuration must have either 'file' or 'tts'")
+
+            # Prevent simultaneous file and tts
+            if 'file' in audio_config and 'tts' in audio_config:
+                raise ValueError("Cannot specify both 'file' and 'tts' in audio configuration")
+
+            # Check for speed outside of TTS
+            if 'speed' in audio_config:
+                raise ValueError("Speed must be specified inside the TTS configuration")
 
         # Validate duration based on audio presence
         if not audio_config and 'duration' not in scene:
@@ -66,14 +76,6 @@ class ImageSceneConverter(SceneConverter):
 
         # Handle audio
         if audio_config:
-            # Validate audio configuration
-            if 'file' in audio_config and 'tts' in audio_config:
-                raise ValueError("Cannot specify both 'file' and 'tts' in audio configuration")
-
-            # Check for speed outside of TTS
-            if 'speed' in audio_config:
-                raise ValueError("Speed must be specified inside the TTS configuration")
-
             # Add audio details to vclip
             vclip['audio'] = {}
 
