@@ -70,9 +70,9 @@ class ImageSceneConverter(SceneConverter):
             if 'file' in audio_config and 'tts' in audio_config:
                 raise ValueError("Cannot specify both 'file' and 'tts' in audio configuration")
 
-            # Check for speed in file-based audio
-            if 'file' in audio_config and 'speed' in audio_config:
-                raise ValueError("Speed is not allowed for file-based audio")
+            # Check for speed outside of TTS
+            if 'speed' in audio_config:
+                raise ValueError("Speed must be specified inside the TTS configuration")
 
             # Add audio details to vclip
             vclip['audio'] = {}
@@ -108,13 +108,13 @@ class ImageSceneConverter(SceneConverter):
             if 'bgcolor' in vclip:
                 offset_clip['bgcolor'] = vclip['bgcolor']
 
-            # Adjust the main clip's duration if specified
-            if duration is not None:
-                adjusted_vclip = vclip.copy()
-                adjusted_vclip['duration'] = duration - offset
-                return [offset_clip, adjusted_vclip]
+            # Prepare the second vclip with audio
+            audio_vclip = vclip.copy()
 
-            # If no duration specified, return just the offset clip
-            return [offset_clip]
+            # Adjust duration if specified
+            if duration is not None:
+                audio_vclip['duration'] = duration - offset
+
+            return [offset_clip, audio_vclip]
 
         return [vclip]
