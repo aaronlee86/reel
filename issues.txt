@@ -1,3 +1,0 @@
-if silent, duration must be provided
-if not, duration is optional
-speed should be removed from audio file
