@@ -1,0 +1,67 @@
+{
+    "screen_size": [1920, 1080],
+    "fps": 24,
+    "bgm": {
+        "file": "background_music.mp3",
+        "volume": 0.5,
+        "start": 1.0
+    },
+    "scenes": [
+        {
+            "type": "image",
+            "file": "intro_background.png",
+            "duration": 3,
+            "audio": {
+                "file": "intro_voiceover.mp3"
+            }
+        },
+        {
+            "type": "image",
+            "bgcolor": "#FF0000",
+            "duration": 2,
+            "audio": {
+                "tts": {
+                    "text": "Welcome to our presentation",
+                    "tts_engine": "edge-tts",
+                    "voice": "en-US-JennyNeural",
+                    "speed": 0.9
+                }
+            }
+        },
+        {
+            "type": "image",
+            "file": "transition_scene.jpg",
+            "duration": 4,
+            "audio": {
+                "offset": 1.0,
+                "tts": {
+                    "text": "Let's dive deeper into our topic",
+                    "tts_engine": "gtts",
+                    "voice": "en-US-AriaNeural",
+                    "speed": 1.1
+                }
+            }
+        },
+        {
+            "type": "image",
+            "bgcolor": "#00FF00",
+            "duration": 5,
+            "audio": {
+                "file": "background_explanation.wav"
+            }
+        },
+        {
+            "type": "image",
+            "file": "final_scene.png",
+            "audio": {
+                "tts": {
+                    "text": "Thank you for your attention",
+                    "tts_engine": "edge-tts",
+                    "voice": "en-US-JennyNeural",
+                    "speed": 0.8
+                },
+                "offset": 0.5
+            }
+        }
+    ]
+}
