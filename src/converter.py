@@ -13,11 +13,23 @@ def convert_video_project(input_json: Dict[str, Any], project_name: str = 'defau
         Dict[str, Any]: Converted video project JSON
 
     Raises:
-        ValueError: If any scene fails to convert
+        ValueError: If screen size or fps is not specified or if any scene fails to convert
     """
-    # Extract project-level parameters
-    screen_size = input_json.get("screen_size", [1920, 1080])
-    fps = input_json.get("fps", 24)
+    # Validate screen size
+    if 'screen_size' not in input_json:
+        raise ValueError("Screen size must be specified in the top-level JSON")
+
+    screen_size = input_json['screen_size']
+
+    # Validate screen size format
+    if not isinstance(screen_size, list) or len(screen_size) != 2:
+        raise ValueError("Screen size must be a list of two integers [width, height]")
+
+    # Validate fps
+    if 'fps' not in input_json:
+        raise ValueError("FPS must be specified in the top-level JSON")
+
+    fps = input_json['fps']
 
     # Create the base output structure
     output = {
@@ -39,7 +51,7 @@ def convert_video_project(input_json: Dict[str, Any], project_name: str = 'defau
                 screen_size=screen_size,
                 fps=fps
             )
-            scene_vclips = converter.convert(scene, project_name=project_name)
+            scene_vclips = converter.convert(scene)
 
             # Extend the vclips list
             output["vclips"].extend(scene_vclips)

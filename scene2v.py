@@ -48,9 +48,20 @@ def ensure_workspace_directory(project_name):
 
     Returns:
         str: Path to the project workspace directory
+
+    Raises:
+        ValueError: If the workspace directory does not exist
     """
     workspace_dir = os.path.join('workspace', project_name)
-    os.makedirs(workspace_dir, exist_ok=True)
+
+    # Check if the directory exists
+    if not os.path.exists(workspace_dir):
+        raise ValueError(f"Workspace directory does not exist: {workspace_dir}")
+
+    # Check if it's actually a directory
+    if not os.path.isdir(workspace_dir):
+        raise ValueError(f"Workspace path is not a directory: {workspace_dir}")
+
     return workspace_dir
 
 def main():

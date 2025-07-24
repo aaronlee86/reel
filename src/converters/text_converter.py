@@ -6,9 +6,7 @@ class TextSceneConverter(SceneConverter):
     def _calculate_text_positions(
         self,
         text_entries: List[Dict[str, Any]],
-        screen_width: int = 1920,
-        screen_height: int = 1080,
-        valign: str = 'center',
+        valign: str,
         padding: int = 40,
         line_spacing: int = 20
     ) -> List[Dict[str, Any]]:
@@ -17,8 +15,6 @@ class TextSceneConverter(SceneConverter):
 
         Args:
             text_entries (List[Dict[str, Any]]): List of text entries
-            screen_width (int): Width of the screen
-            screen_height (int): Height of the screen
             valign (str): Vertical alignment
             padding (int): Vertical padding
             line_spacing (int): Space between lines
@@ -29,6 +25,9 @@ class TextSceneConverter(SceneConverter):
         # Calculate total text height
         total_height = sum(entry['font']['size'] for entry in text_entries)
         total_height += line_spacing * (len(text_entries) - 1)
+
+        # Get screen size from input
+        screen_width, screen_height = self.screen_size
 
         # Determine starting y based on vertical alignment
         if valign == 'top':
@@ -79,14 +78,12 @@ class TextSceneConverter(SceneConverter):
     def convert(
         self,
         scene: Dict[str, Any],
-        project_name: str = 'default'
     ) -> List[Dict[str, Any]]:
         """
         Convert a text scene to virtual clips
 
         Args:
             scene (Dict[str, Any]): Text scene details
-            project_name (str): Name of the current project
 
         Returns:
             List[Dict[str, Any]]: Virtual clips for the text scene
@@ -101,10 +98,6 @@ class TextSceneConverter(SceneConverter):
         # Validate background configuration
         if 'background' in scene and 'bgcolor' in scene:
             raise ValueError("Cannot specify both 'background' and 'bgcolor'")
-
-        # Get screen size from input
-        screen_size = scene.get('screen_size', [1920, 1080])
-        screen_width, screen_height = screen_size
 
         # Validate text configuration
         text_entries = scene.get('text', [])
@@ -137,8 +130,6 @@ class TextSceneConverter(SceneConverter):
         # Calculate text positions
         positioned_entries = self._calculate_text_positions(
             text_entries,
-            screen_width=screen_width,
-            screen_height=screen_height,
             valign=valign,
             padding=padding,
             line_spacing=line_spacing

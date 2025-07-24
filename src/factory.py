@@ -40,7 +40,7 @@ class SceneConverterFactory:
         converter_class = cls._converters[scene_type]
 
         # Instantiate the converter, passing only valid arguments
-        valid_init_params = ['screen_size', 'fps', 'default_duration']
+        valid_init_params = ['screen_size', 'fps']
         filtered_kwargs = {
             k: v for k, v in kwargs.items()
             if k in valid_init_params
