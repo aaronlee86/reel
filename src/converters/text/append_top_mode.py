@@ -1,0 +1,183 @@
+from typing import Dict, Any, List
+from .base import TextSceneStrategy
+
+class AppendTopModeStrategy(TextSceneStrategy):
+    def _calculate_x_position(
+        self,
+        text: str,
+        font_size: int,
+        screen_width: int,
+        halign: str,
+        padding: int
+    ) -> int:
+        """
+        Calculate x position based on horizontal alignment
+
+        Args:
+            text (str): Text to position
+            font_size (int): Font size
+            screen_width (int): Screen width
+            halign (str): Horizontal alignment
+            padding (int): Padding from screen edges
+
+        Returns:
+            int: Calculated x position
+        """
+        # Placeholder width calculation
+        estimated_text_width = len(text) * (font_size * 0.5)
+
+        # Calculate x position
+        if halign == 'left':
+            return padding
+        elif halign == 'right':
+            return screen_width - estimated_text_width - padding
+        else:  # center
+            return (screen_width - estimated_text_width) // 2
+
+    def calculate_text_positions(
+        self,
+        text_entries: List[Dict[str, Any]],
+        screen_size: List[int],
+        valign: str = 'top',
+        padding: int = 40,
+        line_spacing: int = 20,
+        halign: str = 'center'
+    ) -> List[List[Dict[str, Any]]]:
+        """
+        Calculate text positions for 'append_top' mode
+
+        Args:
+            text_entries (List[Dict[str, Any]]): List of text entries
+            screen_size (List[int]): Screen dimensions [width, height]
+            valign (str): Vertical alignment
+            padding (int): Vertical padding
+            line_spacing (int): Space between lines
+            halign (str): Horizontal alignment
+
+        Returns:
+            List[List[Dict[str, Any]]]: List of positioned entries for each vclip
+        """
+        screen_width, screen_height = screen_size
+
+        # Will store positioning for each vclip
+        all_positioned_entries = []
+
+        # Validate and set horizontal alignment
+        if halign not in ['left', 'center', 'right']:
+            halign = 'center'
+
+        # Generate positioning for each progressive set of sentences
+        for num_sentences in range(1, len(text_entries) + 1):
+            # Create positioned entries for this vclip
+            positioned_entries = []
+
+            for idx in range(num_sentences):
+                entry = text_entries[idx]
+                font_size = entry['font']['size']
+
+                # Calculate x position using scene-level halign
+                x = self._calculate_x_position(
+                    entry['text'],
+                    font_size,
+                    screen_width,
+                    halign,
+                    padding
+                )
+
+                # Calculate y position
+                # Start from top padding, stack downward
+                current_y = padding + idx * (font_size + line_spacing)
+
+                positioned_entry = {
+                    **entry,
+                    "x": int(x),
+                    "y": int(current_y),
+                    "font_size": entry['font']['size'],
+                    "font_color": entry['font']['color'],
+                    "font": entry['font']['file'],
+                    "bold": False,
+                    "italic": False
+                }
+
+                positioned_entries.append(positioned_entry)
+
+            # Store positioned entries for this vclip
+            all_positioned_entries.append(positioned_entries)
+
+        return all_positioned_entries
+
+    def convert(
+        self,
+        scene: Dict[str, Any],
+        positioned_entries_list: List[List[Dict[str, Any]]]
+    ) -> List[Dict[str, Any]]:
+        """
+        Convert text scene using 'append_top' mode strategy
+
+        Args:
+            scene (Dict[str, Any]): Scene configuration
+            positioned_entries_list (List[List[Dict[str, Any]]]): List of positioned entries for each vclip
+
+        Returns:
+            List[Dict[str, Any]]: Generated virtual clips
+        """
+        # Find entries with TTS or duration
+        text_entries = scene.get('text', [])
+        tts_entries = [entry for entry in text_entries if 'tts' in entry]
+        duration_entries = [entry for entry in text_entries if 'duration' in entry]
+
+        # Prepare output vclips
+        output_vclips = []
+
+        # Generate vclips for TTS entries
+        for i, tts_entry in enumerate(tts_entries):
+            vclip = {
+                "type": "text"
+            }
+
+            # Add background or bgcolor
+            if 'background' in scene:
+                vclip['background'] = scene['background']
+            elif 'bgcolor' in scene:
+                vclip['bgcolor'] = scene['bgcolor']
+            else:
+                vclip['bgcolor'] = '#000000'  # Default background
+
+            # Set TTS configuration
+            vclip['tts'] = {
+                "text": tts_entry['text'],
+                "tts_engine": tts_entry['tts']['tts_engine'],
+                "voice": tts_entry['tts']['voice'],
+                "speed": tts_entry['tts'].get('speed', 1.0)
+            }
+
+            # Add positioned sentences for this vclip
+            vclip['sentences'] = positioned_entries_list[i]
+
+            output_vclips.append(vclip)
+
+        # Generate vclips for duration-based entries
+        for i, duration_entry in enumerate(duration_entries):
+            vclip = {
+                "type": "text",
+                "duration": duration_entry['duration']
+            }
+
+            # Add background or bgcolor
+            if 'background' in scene:
+                vclip['background'] = scene['background']
+            elif 'bgcolor' in scene:
+                vclip['bgcolor'] = scene['bgcolor']
+            else:
+                vclip['bgcolor'] = '#000000'  # Default background
+
+            # Add positioned sentences for this vclip
+            vclip['sentences'] = positioned_entries_list[len(tts_entries) + i]
+
+            output_vclips.append(vclip)
+
+        # If no TTS or duration entries, raise an error
+        if not output_vclips:
+            raise ValueError("At least one text entry must have TTS or duration")
+
+        return output_vclips

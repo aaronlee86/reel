@@ -3,6 +3,7 @@ from .base import TextSceneStrategy
 from .all_mode import AllModeStrategy
 from .all_with_highlight_mode import AllWithHighlightModeStrategy
 from .append_center_mode import AppendCenterModeStrategy
+from .append_top_mode import AppendTopModeStrategy
 
 class TextSceneStrategyFactory:
     """
@@ -11,7 +12,8 @@ class TextSceneStrategyFactory:
     _strategies: Dict[str, TextSceneStrategy] = {
         'all': AllModeStrategy(),
         'all_with_highlight': AllWithHighlightModeStrategy(),
-        'append_center': AppendCenterModeStrategy()
+        'append_center': AppendCenterModeStrategy(),
+        'append_top': AppendTopModeStrategy()
     }
 
     @classmethod
