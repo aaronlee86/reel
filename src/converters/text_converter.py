@@ -1,80 +1,9 @@
 import os
-from typing import Dict, Any, List, Optional, Union
+from typing import Dict, Any, List
 from .base import SceneConverter
+from .text.strategy_factory import TextSceneStrategyFactory
 
 class TextSceneConverter(SceneConverter):
-    def _calculate_text_positions(
-        self,
-        text_entries: List[Dict[str, Any]],
-        valign: str,
-        padding: int = 40,
-        line_spacing: int = 20
-    ) -> List[Dict[str, Any]]:
-        """
-        Calculate x and y positions for text entries
-
-        Args:
-            text_entries (List[Dict[str, Any]]): List of text entries
-            valign (str): Vertical alignment
-            padding (int): Vertical padding
-            line_spacing (int): Space between lines
-
-        Returns:
-            List[Dict[str, Any]]: Text entries with x, y positions
-        """
-        # Calculate total text height
-        total_height = sum(entry['font']['size'] for entry in text_entries)
-        total_height += line_spacing * (len(text_entries) - 1)
-
-        # Get screen size from input
-        screen_width, screen_height = self.screen_size
-
-        # Determine starting y based on vertical alignment
-        if valign == 'top':
-            start_y = padding
-        elif valign == 'bottom':
-            start_y = screen_height - total_height - padding
-        else:  # center
-            start_y = (screen_height - total_height) // 2
-
-        # Prepare positioned entries
-        positioned_entries = []
-        current_y = start_y
-
-        for entry in text_entries:
-            # Calculate x based on horizontal alignment
-            halign = entry.get('halign', 'center')
-            font_size = entry['font']['size']
-
-            # Placeholder width calculation (very simplistic)
-            # In real implementation, you'd use a font metrics library
-            estimated_text_width = len(entry['text']) * (font_size * 0.5)
-
-            if halign == 'left':
-                x = padding
-            elif halign == 'right':
-                x = screen_width - estimated_text_width - padding
-            else:  # center
-                x = (screen_width - estimated_text_width) // 2
-
-            positioned_entry = {
-                **entry,
-                "x": int(x),
-                "y": int(current_y),
-                "font_size": entry['font']['size'],
-                "font_color": entry['font']['color'],
-                "font": entry['font']['file'],
-                "bold": False,
-                "italic": False
-            }
-
-            positioned_entries.append(positioned_entry)
-
-            # Move to next line
-            current_y += font_size + line_spacing
-
-        return positioned_entries
-
     def convert(
         self,
         scene: Dict[str, Any],
@@ -92,8 +21,7 @@ class TextSceneConverter(SceneConverter):
             ValueError: If configuration is invalid
         """
         # Validate mode
-        if scene.get('mode') != 'all':
-            raise ValueError("This converter only supports 'all' mode")
+        mode = scene.get('mode')
 
         # Validate background configuration
         if 'background' in scene and 'bgcolor' in scene:
@@ -127,70 +55,17 @@ class TextSceneConverter(SceneConverter):
             if 'color' not in font:
                 raise ValueError("Font color is required")
 
-        # Calculate text positions
-        positioned_entries = self._calculate_text_positions(
+        # Get the appropriate strategy
+        strategy = TextSceneStrategyFactory.get_strategy(mode)
+
+        # Calculate text positions using the strategy's method
+        positioned_entries = strategy.calculate_text_positions(
             text_entries,
+            self.screen_size,
             valign=valign,
             padding=padding,
             line_spacing=line_spacing
         )
 
-        # Find TTS and duration-based entries
-        tts_entries = [entry for entry in text_entries if 'tts' in entry]
-        duration_entries = [entry for entry in text_entries if 'duration' in entry]
-
-        # Prepare output vclips
-        output_vclips = []
-
-        # Generate vclips for TTS entries
-        for tts_entry in tts_entries:
-            vclip = {
-                "type": "text"
-            }
-
-            # Add background or bgcolor
-            if 'background' in scene:
-                vclip['background'] = scene['background']
-            elif 'bgcolor' in scene:
-                vclip['bgcolor'] = scene['bgcolor']
-            else:
-                vclip['bgcolor'] = '#000000'  # Default background
-
-            # Set TTS configuration
-            vclip['tts'] = {
-                "text": tts_entry['text'],
-                "tts_engine": tts_entry['tts']['tts_engine'],
-                "voice": tts_entry['tts']['voice'],
-                "speed": tts_entry['tts'].get('speed', 1.0)
-            }
-
-            # Add positioned sentences
-            vclip['sentences'] = positioned_entries
-
-            output_vclips.append(vclip)
-
-        # Generate vclips for duration-based entries
-        for duration_entry in duration_entries:
-            vclip = {
-                "type": "text",
-                "duration": duration_entry['duration']
-            }
-
-            # Add background or bgcolor
-            if 'background' in scene:
-                vclip['background'] = scene['background']
-            elif 'bgcolor' in scene:
-                vclip['bgcolor'] = scene['bgcolor']
-            else:
-                vclip['bgcolor'] = '#000000'  # Default background
-
-            # Add positioned sentences
-            vclip['sentences'] = positioned_entries
-
-            output_vclips.append(vclip)
-
-        # If no TTS or duration entries, raise an error
-        if not output_vclips:
-            raise ValueError("At least one text entry must have TTS or duration")
-
-        return output_vclips
+        # Convert using the strategy
+        return strategy.convert(scene, positioned_entries)
