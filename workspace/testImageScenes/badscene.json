@@ -1,0 +1,48 @@
+{
+    "screen_size": [1920, 1080],
+    "fps": 24,
+    "bgm": {
+        "file": "background_music.mp3",
+        "volume": 0.5,
+        "start": 1.0
+    },
+    "scenes": [
+    {
+        "type": "image",
+        "file": "scene1.png",
+        "bgcolor": "#FF0000"
+    },
+    {
+        "type": "image",
+        "file": "scene2.png",
+        "audio": {
+            "offset": 1.0
+        }
+    },
+    {
+        "type": "image",
+        "bgcolor": "#00FF00",
+        "audio": {
+            "speed": 1.2
+        }
+    },
+    {
+        "type": "image",
+        "file": "scene3.png",
+        "audio": {
+            "file": "audio1.mp3",
+            "tts": {
+                "text": "Hello"
+            }
+        }
+    },
+    {
+        "type": "image",
+        "file": "scene4.png",
+        "audio": {
+            "file": "audio2.mp3",
+            "speed": 1.0
+        }
+    }
+]
+}

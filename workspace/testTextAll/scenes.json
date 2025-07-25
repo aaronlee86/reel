@@ -1,0 +1,103 @@
+{
+    "screen_size": [920, 108],
+    "fps": 24,
+    "bgm": {
+        "file": "background_music.mp3",
+        "volume": 0.5,
+        "start": 1.0
+    },
+"scenes":[
+{
+  "type": "text",
+  "mode": "all",
+  "valign": "center",
+  "background": "intro_bg.png",
+  "padding": 40,
+  "line_spacing": 20,
+  "text": [
+    {
+      "text": "Welcome to the Presentation",
+      "font": {
+        "file": "arial_bold.ttf",
+        "size": 60,
+        "color": "#2C3E50"
+      },
+      "halign": "center",
+      "tts": {
+        "tts_engine": "edge-tts",
+        "voice": "en-US-JennyNeural",
+        "speed": 1.0
+      }
+    }
+  ]
+},
+{
+  "type": "text",
+  "mode": "all",
+  "valign": "center",
+  "bgcolor": "#F0F0F0",
+  "padding": 40,
+  "line_spacing": 20,
+  "text": [
+    {
+      "text": "Machine Learning Basics",
+      "font": {
+        "file": "roboto_bold.ttf",
+        "size": 72,
+        "color": "#2980B9"
+      },
+      "halign": "center",
+      "tts": {
+        "tts_engine": "edge-tts",
+        "voice": "en-US-AriaNeural",
+        "speed": 0.9
+      }
+    },
+    {
+      "text": "Neural Networks",
+      "font": {
+        "file": "roboto_regular.ttf",
+        "size": 54,
+        "color": "#27AE60"
+      },
+      "halign": "center",
+      "tts": {
+        "tts_engine": "gtts",
+        "voice": "en-US",
+        "speed": 0.8
+      }
+    },
+    {
+      "text": "Data Preprocessing",
+      "font": {
+        "file": "roboto_regular.ttf",
+        "size": 48,
+        "color": "#8E44AD"
+      },
+      "halign": "center",
+      "duration": 2.5
+    },
+    {
+      "text": "Feature Engineering",
+      "font": {
+        "file": "roboto_regular.ttf",
+        "size": 48,
+        "color": "#E67E22"
+      },
+      "halign": "center",
+      "duration": 3.0
+    },
+    {
+      "text": "Model Evaluation",
+      "font": {
+        "file": "roboto_regular.ttf",
+        "size": 48,
+        "color": "#C0392B"
+      },
+      "halign": "center",
+      "duration": 2.0
+    }
+  ]
+}
+]
+}

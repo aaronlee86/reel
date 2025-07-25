@@ -1,0 +1,29 @@
+{
+  "size": [
+    20,
+    1080
+  ],
+  "fps": 40,
+  "bgm": {
+    "file": "backgrounsic.mp3",
+    "volume": 0.5,
+    "start": 1.0
+  },
+  "vclips": [
+    {
+      "type": "video",
+      "file": "intro_clip.mp4"
+    },
+    {
+      "type": "video",
+      "file": "main_scene.mp4",
+      "start_time": 5
+    },
+    {
+      "type": "video",
+      "file": "detailed_explanation.mp4",
+      "start_time": 10,
+      "duration": 15
+    }
+  ]
+}
