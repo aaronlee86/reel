@@ -52,7 +52,7 @@ class AppendTopModeStrategy(TextSceneStrategy):
             valign (str): Vertical alignment
             padding (int): Vertical padding
             line_spacing (int): Space between lines
-            halign (str): Horizontal alignment
+            halign (str): Horizontal alignment (default from method call)
 
         Returns:
             List[List[Dict[str, Any]]]: List of positioned entries for each vclip
@@ -125,6 +125,11 @@ class AppendTopModeStrategy(TextSceneStrategy):
         text_entries = scene.get('text', [])
         tts_entries = [entry for entry in text_entries if 'tts' in entry]
         duration_entries = [entry for entry in text_entries if 'duration' in entry]
+
+        # Determine horizontal alignment from scene
+        halign = scene.get('halign', 'center')
+        if halign not in ['left', 'center', 'right']:
+            halign = 'center'
 
         # Prepare output vclips
         output_vclips = []
