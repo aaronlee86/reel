@@ -1,6 +1,4 @@
-halign can be scene-level, or sentence-level
+sentences in vclips should not have "tts" and "halign" anymore, they should already be computed
 
+engine should be able to decide whether force generate (default false to save money)
 
-should check halign and valign's value if not valid error it out
-center, left, right
-center, top, bottom
