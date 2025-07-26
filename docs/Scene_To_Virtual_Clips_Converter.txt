@@ -1,0 +1,67 @@
+# Scene to Virtual Clips Converter
+
+### Image Scene Requirements
+
+1. Must have either `file` or `bgcolor`
+2. Cannot have both `file` and `bgcolor`
+3. Audio must have either `file` or `tts`
+4. Cannot have both `file` and `tts` in audio
+5. `speed` must be specified inside the TTS configuration
+
+### Valid Image Scene Examples
+
+#### With File and Audio File
+```json
+{
+    "type": "image",
+    "file": "scene.png",
+    "duration": 4,
+    "audio": {
+        "file": "audio.mp3"
+    }
+}
+```
+
+#### With Background Color and TTS
+```json
+{
+    "type": "image",
+    "bgcolor": "#FF0000",
+    "duration": 3,
+    "audio": {
+        "tts": {
+            "text": "Hello world",
+            "voice": "en-US-JennyNeural",
+            "speed": 1.0
+        }
+    }
+}
+```
+
+#### With Offset
+```json
+{
+    "type": "image",
+    "file": "scene.png",
+    "duration": 4,
+    "audio": {
+        "tts": {
+            "text": "Hello world",
+            "voice": "en-US-JennyNeural",
+            "speed": 1.0
+        },
+        "offset": 1.0
+    }
+}
+```
+
+### Invalid Scene Examples
+
+1. Both `file` and `bgcolor`
+2. No audio type specified
+3. Both `file` and `tts` in audio
+4. `speed` outside TTS configuration
+
+## Troubleshooting
+- Ensure your JSON follows the specified schema
+- Check for missing or incorrect attributes

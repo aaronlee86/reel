@@ -1,0 +1,135 @@
+{
+  "size": [
+    920,
+    1080
+  ],
+  "fps": 60,
+  "bgm": {},
+  "vclips": [
+    {
+      "type": "text",
+      "background": "background.png",
+      "tts": {
+        "text": "First sentence",
+        "tts_engine": "edge-tts",
+        "voice": "en-US-JennyNeural",
+        "speed": 1.0
+      },
+      "sentences": [
+        {
+          "text": "First sentence",
+          "font": "font1.ttf",
+          "halign": "left",
+          "tts": {
+            "text": "First sentence",
+            "tts_engine": "edge-tts",
+            "voice": "en-US-JennyNeural",
+            "speed": 1.0
+          },
+          "x": 40,
+          "y": 40,
+          "font_size": 60,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "background": "background.png",
+      "tts": {
+        "text": "Second sentence",
+        "tts_engine": "gtts",
+        "voice": "en-US",
+        "speed": 0.9
+      },
+      "sentences": [
+        {
+          "text": "First sentence",
+          "font": "font1.ttf",
+          "halign": "left",
+          "tts": {
+            "text": "First sentence",
+            "tts_engine": "edge-tts",
+            "voice": "en-US-JennyNeural",
+            "speed": 1.0
+          },
+          "x": 40,
+          "y": 40,
+          "font_size": 60,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "Second sentence",
+          "font": "font2.ttf",
+          "tts": {
+            "text": "Second sentence",
+            "tts_engine": "gtts",
+            "voice": "en-US",
+            "speed": 0.9
+          },
+          "x": 40,
+          "y": 110,
+          "font_size": 50,
+          "font_color": "#0000FF",
+          "bold": false,
+          "italic": false
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "duration": 3.0,
+      "background": "background.png",
+      "sentences": [
+        {
+          "text": "First sentence",
+          "font": "font1.ttf",
+          "halign": "left",
+          "tts": {
+            "text": "First sentence",
+            "tts_engine": "edge-tts",
+            "voice": "en-US-JennyNeural",
+            "speed": 1.0
+          },
+          "x": 40,
+          "y": 40,
+          "font_size": 60,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "Second sentence",
+          "font": "font2.ttf",
+          "tts": {
+            "text": "Second sentence",
+            "tts_engine": "gtts",
+            "voice": "en-US",
+            "speed": 0.9
+          },
+          "x": 40,
+          "y": 110,
+          "font_size": 50,
+          "font_color": "#0000FF",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "Third sentence",
+          "font": "font3.ttf",
+          "duration": 3.0,
+          "x": 40,
+          "y": 170,
+          "font_size": 45,
+          "font_color": "#00FF00",
+          "bold": false,
+          "italic": false
+        }
+      ]
+    }
+  ]
+}
