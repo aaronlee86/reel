@@ -23,15 +23,22 @@ class AppendTopModeStrategy(TextSceneStrategy):
         Returns:
             int: Calculated x position
         """
+        # Validate horizontal alignment
+        if halign not in ['left', 'center', 'right']:
+            raise ValueError(f"Invalid halign value: {halign}. Must be 'left', 'center', or 'right'.")
+
         # Placeholder width calculation
         estimated_text_width = len(text) * (font_size * 0.5)
 
         # Calculate x position
         if halign == 'left':
+            print("left")
             return padding
         elif halign == 'right':
+            print("right")
             return screen_width - estimated_text_width - padding
         else:  # center
+            print("center")
             return (screen_width - estimated_text_width) // 2
 
     def calculate_text_positions(
@@ -40,8 +47,7 @@ class AppendTopModeStrategy(TextSceneStrategy):
         screen_size: List[int],
         valign: str = 'top',
         padding: int = 40,
-        line_spacing: int = 20,
-        halign: str = 'center'
+        line_spacing: int = 20
     ) -> List[List[Dict[str, Any]]]:
         """
         Calculate text positions for 'append_top' mode
@@ -52,7 +58,6 @@ class AppendTopModeStrategy(TextSceneStrategy):
             valign (str): Vertical alignment
             padding (int): Vertical padding
             line_spacing (int): Space between lines
-            halign (str): Horizontal alignment (default from method call)
 
         Returns:
             List[List[Dict[str, Any]]]: List of positioned entries for each vclip
@@ -62,10 +67,6 @@ class AppendTopModeStrategy(TextSceneStrategy):
         # Will store positioning for each vclip
         all_positioned_entries = []
 
-        # Validate and set horizontal alignment
-        if halign not in ['left', 'center', 'right']:
-            halign = 'center'
-
         # Generate positioning for each progressive set of sentences
         for num_sentences in range(1, len(text_entries) + 1):
             # Create positioned entries for this vclip
@@ -74,6 +75,7 @@ class AppendTopModeStrategy(TextSceneStrategy):
             for idx in range(num_sentences):
                 entry = text_entries[idx]
                 font_size = entry['font']['size']
+                halign = entry.get('halign','center')
 
                 # Calculate x position using scene-level halign
                 x = self._calculate_x_position(
@@ -121,15 +123,11 @@ class AppendTopModeStrategy(TextSceneStrategy):
         Returns:
             List[Dict[str, Any]]: Generated virtual clips
         """
+
         # Find entries with TTS or duration
         text_entries = scene.get('text', [])
         tts_entries = [entry for entry in text_entries if 'tts' in entry]
         duration_entries = [entry for entry in text_entries if 'duration' in entry]
-
-        # Determine horizontal alignment from scene
-        halign = scene.get('halign', 'center')
-        if halign not in ['left', 'center', 'right']:
-            halign = 'center'
 
         # Prepare output vclips
         output_vclips = []
