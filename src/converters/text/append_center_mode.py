@@ -7,6 +7,7 @@ class AppendCenterModeStrategy(TextSceneStrategy):
         text_entries: List[Dict[str, Any]],
         screen_size: List[int],
         valign: str = 'center',
+        halign: str = 'error',
         padding: int = 40,
         line_spacing: int = 20
     ) -> List[List[Dict[str, Any]]]:
@@ -17,6 +18,7 @@ class AppendCenterModeStrategy(TextSceneStrategy):
             text_entries (List[Dict[str, Any]]): List of text entries
             screen_size (List[int]): Screen dimensions [width, height]
             valign (str): Vertical alignment
+            halign (str): Horizontal alignment
             padding (int): Vertical padding
             line_spacing (int): Space between lines
 
@@ -32,7 +34,7 @@ class AppendCenterModeStrategy(TextSceneStrategy):
         x_positions = []
         for entry in text_entries:
             font_size = entry['font']['size']
-            halign = entry.get('halign','center')
+            halign = entry.get('halign', halign)
 
             # Calculate x based on horizontal alignment
             x = self._calculate_x_position(

@@ -1,6 +1,6 @@
 {
   "size": [
-    420,
+    920,
     1080
   ],
   "fps": 44,
@@ -19,13 +19,14 @@
         {
           "text": "First sentence",
           "font": "font1.ttf",
+          "halign": "right",
           "tts": {
             "text": "First sentence",
             "tts_engine": "edge-tts",
             "voice": "en-US-JennyNeural",
             "speed": 1.0
           },
-          "x": 0,
+          "x": 460,
           "y": 442,
           "font_size": 60,
           "font_color": "#FF1234",
@@ -41,7 +42,7 @@
             "voice": "en-US",
             "speed": 0.9
           },
-          "x": 22,
+          "x": 505,
           "y": 522,
           "font_size": 50,
           "font_color": "#0000FF",
@@ -52,7 +53,7 @@
           "text": "Third sentence",
           "font": "font3.ttf",
           "duration": 3.0,
-          "x": 52,
+          "x": 565,
           "y": 592,
           "font_size": 45,
           "font_color": "#00FF00",
@@ -74,13 +75,14 @@
         {
           "text": "First sentence",
           "font": "font1.ttf",
+          "halign": "right",
           "tts": {
             "text": "First sentence",
             "tts_engine": "edge-tts",
             "voice": "en-US-JennyNeural",
             "speed": 1.0
           },
-          "x": 0,
+          "x": 460,
           "y": 442,
           "font_size": 60,
           "font_color": "#000000",
@@ -96,7 +98,7 @@
             "voice": "en-US",
             "speed": 0.9
           },
-          "x": 22,
+          "x": 505,
           "y": 522,
           "font_size": 50,
           "font_color": "#FF1234",
@@ -107,7 +109,7 @@
           "text": "Third sentence",
           "font": "font3.ttf",
           "duration": 3.0,
-          "x": 52,
+          "x": 565,
           "y": 592,
           "font_size": 45,
           "font_color": "#00FF00",
@@ -124,13 +126,14 @@
         {
           "text": "First sentence",
           "font": "font1.ttf",
+          "halign": "right",
           "tts": {
             "text": "First sentence",
             "tts_engine": "edge-tts",
             "voice": "en-US-JennyNeural",
             "speed": 1.0
           },
-          "x": 0,
+          "x": 460,
           "y": 442,
           "font_size": 60,
           "font_color": "#000000",
@@ -146,7 +149,7 @@
             "voice": "en-US",
             "speed": 0.9
           },
-          "x": 22,
+          "x": 505,
           "y": 522,
           "font_size": 50,
           "font_color": "#0000FF",
@@ -157,7 +160,7 @@
           "text": "Third sentence",
           "font": "font3.ttf",
           "duration": 3.0,
-          "x": 52,
+          "x": 565,
           "y": 592,
           "font_size": 45,
           "font_color": "#FF1234",

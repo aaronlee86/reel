@@ -34,8 +34,17 @@ class TextSceneConverter(SceneConverter):
 
         # Extract scene-level configurations
         valign = scene.get('valign', 'center')
+        halign = scene.get('halign','center')
         padding = scene.get('padding', 40)
         line_spacing = scene.get('line_spacing', 20)
+
+        # Validate horizontal alignment
+        if halign not in ['left', 'center', 'right']:
+           raise ValueError(f"Invalid halign value: {halign}. Must be 'left', 'center', or 'right'.")
+
+        # Validate vertical alignment
+        if valign not in ['top', 'center', 'bottom']:
+           raise ValueError(f"Invalid valign value: {valign}. Must be 'top', 'center', or 'bottom'.")
 
         # Validate text configuration
         for entry in text_entries:
@@ -63,6 +72,7 @@ class TextSceneConverter(SceneConverter):
             text_entries,
             self.screen_size,
             valign=valign,
+            halign=halign,
             padding=padding,
             line_spacing=line_spacing
         )

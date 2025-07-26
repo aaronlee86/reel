@@ -7,6 +7,7 @@ class AppendTopModeStrategy(TextSceneStrategy):
         text_entries: List[Dict[str, Any]],
         screen_size: List[int],
         valign: str = 'top',
+        halign: str = 'error',
         padding: int = 40,
         line_spacing: int = 20
     ) -> List[List[Dict[str, Any]]]:
@@ -17,6 +18,7 @@ class AppendTopModeStrategy(TextSceneStrategy):
             text_entries (List[Dict[str, Any]]): List of text entries
             screen_size (List[int]): Screen dimensions [width, height]
             valign (str): Vertical alignment
+            halign (str): Horizontal alignment
             padding (int): Vertical padding
             line_spacing (int): Space between lines
 
@@ -36,7 +38,7 @@ class AppendTopModeStrategy(TextSceneStrategy):
             for idx in range(num_sentences):
                 entry = text_entries[idx]
                 font_size = entry['font']['size']
-                halign = entry.get('halign','center')
+                halign = entry.get('halign', halign)
 
                 # Calculate x based on horizontal alignment
                 x = self._calculate_x_position(

@@ -24,7 +24,7 @@
             "voice": "en-US-JennyNeural",
             "speed": 1.0
           },
-          "x": 250,
+          "x": 40,
           "y": 510,
           "font_size": 60,
           "font_color": "#000000",
@@ -51,7 +51,7 @@
             "voice": "en-US-JennyNeural",
             "speed": 1.0
           },
-          "x": 250,
+          "x": 40,
           "y": 470,
           "font_size": 60,
           "font_color": "#000000",
@@ -66,7 +66,7 @@
             "voice": "en-US",
             "speed": 0.9
           },
-          "x": 272,
+          "x": 40,
           "y": 550,
           "font_size": 50,
           "font_color": "#0000FF",
@@ -88,7 +88,7 @@
             "voice": "en-US-JennyNeural",
             "speed": 1.0
           },
-          "x": 250,
+          "x": 40,
           "y": 430,
           "font_size": 60,
           "font_color": "#000000",
@@ -103,7 +103,7 @@
             "voice": "en-US",
             "speed": 0.9
           },
-          "x": 272,
+          "x": 40,
           "y": 515,
           "font_size": 50,
           "font_color": "#0000FF",
@@ -114,7 +114,7 @@
           "text": "Third sentence",
           "font": "font3.ttf",
           "duration": 3.0,
-          "x": 302,
+          "x": 40,
           "y": 582,
           "font_size": 45,
           "font_color": "#00FF00",

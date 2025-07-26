@@ -10,7 +10,8 @@ class TextSceneStrategy(ABC):
         self,
         text_entries: List[Dict[str, Any]],
         screen_size: List[int],
-        valign: str = 'center',
+        valign: str,
+        halign: str,
         padding: int = 40,
         line_spacing: int = 20
     ) -> List[Dict[str, Any]]:

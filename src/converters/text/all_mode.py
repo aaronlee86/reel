@@ -3,23 +3,25 @@ from .base import TextSceneStrategy
 
 class AllModeStrategy(TextSceneStrategy):
     def calculate_text_positions(
-        self, 
-        text_entries: List[Dict[str, Any]], 
+        self,
+        text_entries: List[Dict[str, Any]],
         screen_size: List[int],
         valign: str = 'center',
+        halign: str = 'error',
         padding: int = 40,
         line_spacing: int = 20
     ) -> List[Dict[str, Any]]:
         """
         Calculate default text positions for 'all' mode
-        
+
         Args:
             text_entries (List[Dict[str, Any]]): List of text entries
             screen_size (List[int]): Screen dimensions [width, height]
-            valign (str): Vertical alignment
+            vaolign (str): Vertical alignment
+            halign (str): Horizontal alignment
             padding (int): Vertical padding
             line_spacing (int): Space between lines
-        
+
         Returns:
             List[Dict[str, Any]]: Text entries with calculated positions
         """
@@ -44,19 +46,17 @@ class AllModeStrategy(TextSceneStrategy):
 
         for entry in text_entries:
             # Calculate x based on horizontal alignment
-            halign = entry.get('halign', 'center')
+            halign = entry.get('halign', halign)
             font_size = entry['font']['size']
 
-            # Placeholder width calculation (very simplistic)
-            # In real implementation, you'd use a font metrics library
-            estimated_text_width = len(entry['text']) * (font_size * 0.5)
-
-            if halign == 'left':
-                x = padding
-            elif halign == 'right':
-                x = screen_width - estimated_text_width - padding
-            else:  # center
-                x = (screen_width - estimated_text_width) // 2
+            # Calculate x based on horizontal alignment
+            x = self._calculate_x_position(
+                entry['text'],
+                font_size,
+                screen_width,
+                halign,
+                padding
+            )
 
             positioned_entry = {
                 **entry,
@@ -77,17 +77,17 @@ class AllModeStrategy(TextSceneStrategy):
         return positioned_entries
 
     def convert(
-        self, 
-        scene: Dict[str, Any], 
+        self,
+        scene: Dict[str, Any],
         positioned_entries: List[Dict[str, Any]]
     ) -> List[Dict[str, Any]]:
         """
         Convert text scene using 'all' mode strategy
-        
+
         Args:
             scene (Dict[str, Any]): Scene configuration
             positioned_entries (List[Dict[str, Any]]): Positioned text entries
-        
+
         Returns:
             List[Dict[str, Any]]: Generated virtual clips
         """

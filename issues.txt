@@ -1,5 +1,5 @@
-halign is not working
-should make it work for all scenes
+halign can be scene-level, or sentence-level
+
 
 should check halign and valign's value if not valid error it out
 center, left, right
