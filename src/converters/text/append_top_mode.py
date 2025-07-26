@@ -2,45 +2,6 @@ from typing import Dict, Any, List
 from .base import TextSceneStrategy
 
 class AppendTopModeStrategy(TextSceneStrategy):
-    def _calculate_x_position(
-        self,
-        text: str,
-        font_size: int,
-        screen_width: int,
-        halign: str,
-        padding: int
-    ) -> int:
-        """
-        Calculate x position based on horizontal alignment
-
-        Args:
-            text (str): Text to position
-            font_size (int): Font size
-            screen_width (int): Screen width
-            halign (str): Horizontal alignment
-            padding (int): Padding from screen edges
-
-        Returns:
-            int: Calculated x position
-        """
-        # Validate horizontal alignment
-        if halign not in ['left', 'center', 'right']:
-            raise ValueError(f"Invalid halign value: {halign}. Must be 'left', 'center', or 'right'.")
-
-        # Placeholder width calculation
-        estimated_text_width = len(text) * (font_size * 0.5)
-
-        # Calculate x position
-        if halign == 'left':
-            print("left")
-            return padding
-        elif halign == 'right':
-            print("right")
-            return screen_width - estimated_text_width - padding
-        else:  # center
-            print("center")
-            return (screen_width - estimated_text_width) // 2
-
     def calculate_text_positions(
         self,
         text_entries: List[Dict[str, Any]],
@@ -77,7 +38,7 @@ class AppendTopModeStrategy(TextSceneStrategy):
                 font_size = entry['font']['size']
                 halign = entry.get('halign','center')
 
-                # Calculate x position using scene-level halign
+                # Calculate x based on horizontal alignment
                 x = self._calculate_x_position(
                     entry['text'],
                     font_size,

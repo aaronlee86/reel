@@ -1,1 +1,6 @@
-should add halign
+halign is not working
+should make it work for all scenes
+
+should check halign and valign's value if not valid error it out
+center, left, right
+center, top, bottom

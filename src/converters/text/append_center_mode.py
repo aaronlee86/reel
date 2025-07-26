@@ -31,20 +31,17 @@ class AppendCenterModeStrategy(TextSceneStrategy):
         # Precompute x positions for each entry
         x_positions = []
         for entry in text_entries:
-            # Calculate x based on horizontal alignment
-            halign = entry.get('halign', 'center')
             font_size = entry['font']['size']
+            halign = entry.get('halign','center')
 
-            # Placeholder width calculation
-            estimated_text_width = len(entry['text']) * (font_size * 0.5)
-
-            # Calculate x position
-            if halign == 'left':
-                x = padding
-            elif halign == 'right':
-                x = screen_width - estimated_text_width - padding
-            else:  # center
-                x = (screen_width - estimated_text_width) // 2
+            # Calculate x based on horizontal alignment
+            x = self._calculate_x_position(
+                entry['text'],
+                font_size,
+                screen_width,
+                halign,
+                padding
+            )
 
             x_positions.append(x)
 
