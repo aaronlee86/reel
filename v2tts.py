@@ -41,6 +41,14 @@ def parse_arguments():
         help="Output virtual clips JSON filename (default: ttsclips.json)"
     )
 
+    # Optional audio output directory argument
+    parser.add_argument(
+        '--audio_output',
+        type=str,
+        default='tts_audio_lib',
+        help="Output directory for generated audio files (default: tts_audio_lib)"
+    )
+
     return parser.parse_args()
 
 def ensure_workspace_directory(project_name: str) -> str:
@@ -70,7 +78,8 @@ def ensure_workspace_directory(project_name: str) -> str:
 
 def convert_tts_project(
     input_json: Dict[str, Any],
-    project_name: str
+    project_name: str,
+    audio_output: str
 ) -> Dict[str, Any]:
     """
     Convert the input project JSON by processing TTS.
@@ -78,12 +87,13 @@ def convert_tts_project(
     Args:
         input_json (Dict[str, Any]): Input project configuration
         project_name (str): Name of the project
+        audio_output (str): Output directory for audio files
 
     Returns:
         Dict[str, Any]: Processed project configuration with TTS
     """
-    # Create output directory for audio files
-    output_dir = os.path.join('workspace', project_name, 'generated_audio')
+    # Create output directory for audio files globally under current directory
+    output_dir = os.path.join(audio_output)
     os.makedirs(output_dir, exist_ok=True)
 
     # Process each video clip with its specific TTS engine
@@ -136,7 +146,8 @@ def main():
         try:
             output_json = convert_tts_project(
                 input_json,
-                project_name=args.project
+                project_name=args.project,
+                audio_output=args.audio_output
             )
         except ValueError as e:
             # Detailed error handling for conversion failures
@@ -153,6 +164,7 @@ def main():
             print("Conversion successful:")
             print(f"Input:  {input_path}")
             print(f"Output: {output_path}")
+            print(f"Audio:  {os.path.abspath(args.audio_output)}")
         except Exception as e:
             print(f"Error writing output file: {e}")
 
