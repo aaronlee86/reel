@@ -1,6 +1,30 @@
-halign can be scene-level, or sentence-level
+
+All output are under tts_audio_lib, make it create soft link from tts_audio_lib
+
+OR can add a parameter dry run just to print out the audio file name
+and we can write a script to delete them 
+
+next, to make a script to compute start and duration (the real clips.json)
+    prompt: I have a json which contains a array called "vclips" and other attrs. For others, just pass everything through. The main thing to do is to parse the array "vclips" and compute each vclip's start time and duration and output in the resulting Json file. Each vclip's start time = the previous vclip's start time + the previous vclip's duration. The first vclip start from 0.0 sec. That is, the 2nd vclip's start time should be equal to the first vclip's duration; the 3rd vclip's start time = 1st vclip's duration + 2nd vclip's duration, and so on.
+    Here is how we compute duration for each vclip. There are three types of vclips: video, image, and text. The type is specified in the vclips's "type" attr. In vclip's json, there might be "duration" attr as well. The duration calculation method:
+    1. if "duration" is existed in the vclip's json, then directly use it
+    2. if not, it then depends on the type:
+        a. if type==video, there should be "file" attr, it is a video file path. Compute the length of that video file
+        b. it type==text or image, there should be "audio" attr, it is a audio file path. Compute the length of that audio file
+   The output should be a json. All the structure and attr should remain. only two things need to be changed:
+    1. the "vclips" attr should be changed to "events"
+    2. for each "vclip", should add "start" and "duration" attrs
 
 
-should check halign and valign's value if not valid error it out
-center, left, right
-center, top, bottom
+?? -> scenes
+scenes -> vclip
+    image   image
+    text    text
+    video   video
+vclip -> tts_clip
+    image   image
+    text    text
+    video   video
+tts_clip -> clips
+    
+clips -> video
