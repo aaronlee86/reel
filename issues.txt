@@ -1,4 +1,3 @@
-
 All output are under tts_audio_lib, make it create soft link from tts_audio_lib
 
 OR can add a parameter dry run just to print out the audio file name
