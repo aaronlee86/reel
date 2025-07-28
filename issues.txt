@@ -7,3 +7,17 @@ OR can add a parameter dry run just to print out the audio file name
 and we can write a script to delete them 
 
 next, to make a script to compute start and duration (the real clips.json)
+
+
+?? -> scenes
+scenes -> vclip
+    image   image
+    text    text
+    video   video
+vclip -> tts_clip
+    image   image
+    text    text
+    video   video
+tts_clip -> clips
+    
+clips -> video
