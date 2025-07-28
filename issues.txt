@@ -1,4 +1,9 @@
 sentences in vclips should not have "tts" and "halign" anymore, they should already be computed
 
-engine should be able to decide whether force generate (default false to save money)
 
+All output are under tts_audio_lib, make it create soft link from tts_audio_lib
+
+OR can add a parameter dry run just to print out the audio file name
+and we can write a script to delete them 
+
+next, to make a script to compute start and duration (the real clips.json)

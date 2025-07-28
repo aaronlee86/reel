@@ -1,6 +1,7 @@
 from .base import TTSEngine
 from .engine_factory import register_tts_engine
 from typing import Dict, Any
+import os
 
 # Debug TTS Engine (fallback)
 @register_tts_engine('dummy')
@@ -28,20 +29,26 @@ class DummyTTSEngine(TTSEngine):
 
         Args:
             text (str): Text to convert to speech
-            output_path (Optional[str], optional): Path to save audio file
+            output_path (str): Path to save audio file
             **kwargs: Additional arguments
 
         Returns:
             str: Path to the generated (dummy) audio file
         """
+        if os.path.exists(output_path):
+            print(f"[{self.__class__.__name__}] Audio already exists at: {output_path}. Skipping generation.")
+            return output_path
+
         # Create a dummy audio file or just return a path
-        if output_path:
+        try:
             # Create an empty file for debugging
             with open(output_path, 'w') as f:
                 f.write(f"DEBUG TTS: {text}")
-            return output_path
+            print(f"[{self.__class__.__name__}] Generated dummy audio at: {output_path}")
+        except Exception as e:
+            raise RuntimeError(f"{self.__class__.__name__} generation failed: {e}")
 
-        return f"debug_audio_{hash(text)}.wav"
+        return output_path
 
     def list_available_voices(self) -> Dict[str, Any]:
         pass

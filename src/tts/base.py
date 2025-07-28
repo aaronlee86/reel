@@ -14,8 +14,7 @@ class TTSEngine(ABC):
     def generate_audio(
         self,
         text: str,
-        voice: str,
-        speed: Optional[float] = 1.0,
+        output_path: str,
         **kwargs: Any
     ) -> str:
         """
@@ -23,9 +22,7 @@ class TTSEngine(ABC):
 
         Args:
             text (str): The text to be converted to speech.
-            voice (str): Specific voice identifier.
-            speed (Optional[float], optional): Speech rate multiplier.
-                1.0 represents normal speed. Defaults to 1.0.
+            output_path (str): Path to save audio file
             **kwargs: Additional engine-specific parameters.
 
         Returns:
