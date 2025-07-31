@@ -15,6 +15,12 @@ next, to make a script to compute start and duration (the real clips.json)
     2. for each "vclip", should add "start" and "duration" attrs
 
 
+
+
+====================
+
+
+#### TODO later: we should get a clear spec for each of the following function in case we forget and give better prompt to AI
 ?? -> scenes
 scenes -> vclip
     image   image

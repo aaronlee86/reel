@@ -20,7 +20,7 @@
       "type": "image",
       "duration": 2,
       "bgcolor": "#FF0000",
-      "audio": "dummy.mp3"
+      "audio": "cover.mp3"
     },
     {
       "type": "image",
@@ -31,7 +31,7 @@
       "type": "image",
       "duration": 3.0,
       "file": "transition_scene.jpg",
-      "audio": "dummy.mp3"
+      "audio": "cover.mp3"
     },
     {
       "type": "image",
@@ -47,7 +47,7 @@
     {
       "type": "image",
       "file": "final_scene.png",
-      "audio": "dummy.mp3"
+      "audio": "cover.mp3"
     },
     {
       "type": "text",
@@ -69,7 +69,7 @@
           "italic": false
         }
       ],
-      "audio": "dummy.mp3"
+      "audio": "cover.mp3"
     },
     {
       "type": "text",
@@ -106,7 +106,7 @@
           "italic": false
         }
       ],
-      "audio": "dummy.mp3"
+      "audio": "cover.mp3"
     },
     {
       "type": "text",

@@ -54,12 +54,19 @@ class JSONTransformer:
             raise ValueError("'vclips' must be a list")
 
     @classmethod
-    def transform_json(cls, input_json: Dict[str, Any]) -> Dict[str, Any]:
+    def transform_json(
+        cls,
+        input_json: Dict[str, Any],
+        audio_folder: str,
+        video_folder: str
+    ) -> Dict[str, Any]:
         """
         Transform input JSON by calculating start times and durations.
 
         Args:
             input_json (Dict[str, Any]): Input JSON to transform
+            audio_folder (str): Folder containing audio files
+            video_folder (str): Folder containing video files
 
         Returns:
             Dict[str, Any]: Transformed JSON with events
@@ -87,22 +94,30 @@ class JSONTransformer:
             else:
                 # Determine duration based on type
                 if event['type'] == 'video':
-                    # Assuming 'file' exists for video
-                    duration = AudioDurationExtractor.get_audio_duration(event['file'])
+                    # Use video_folder to locate video file
+                    video_path = os.path.join(video_folder, event['file'])
+                    duration = AudioDurationExtractor.get_audio_duration(video_path)
                 elif event['type'] in ['image', 'text']:
-                    # For image/text, use audio duration
+                    # Use audio_folder to locate audio file
                     if 'audio' not in event:
                         raise ValueError(f"No audio specified for {event['type']} clip")
-                    duration = AudioDurationExtractor.get_audio_duration(event['audio'])
+
+                    audio_path = os.path.join(audio_folder, event['audio'])
+                    duration = AudioDurationExtractor.get_audio_duration(audio_path)
                 else:
                     raise ValueError(f"Unsupported clip type: {event['type']}")
 
-            # Add start and duration to the event
-            event['start'] = current_start_time
-            event['duration'] = duration
+            # Create a new event dictionary with 'start' first, then 'duration'
+            transformed_event = {
+                'start': current_start_time,
+                'duration': duration
+            }
+
+            # Add all original event properties
+            transformed_event.update(event)
 
             # Add to events and update start time
-            output_json['events'].append(event)
+            output_json['events'].append(transformed_event)
             current_start_time += duration
 
         # Remove original vclips
@@ -112,13 +127,21 @@ class JSONTransformer:
 
 class TtsClipProcessor:
     @staticmethod
-    def process_json_file(input_file: str, output_file: str, verbose: bool = False) -> None:
+    def process_json_file(
+        input_file: str,
+        output_file: str,
+        audio_folder: str,
+        video_folder: str,
+        verbose: bool = False
+    ) -> None:
         """
         Process JSON file by transforming vclips to events.
 
         Args:
             input_file (str): Path to input JSON file
             output_file (str): Path to output JSON file
+            audio_folder (str): Folder containing audio files
+            video_folder (str): Folder containing video files
             verbose (bool): Enable verbose logging
         """
         # Configure logging
@@ -137,7 +160,11 @@ class TtsClipProcessor:
                 input_json = json.load(f)
 
             # Transform JSON
-            output_json = JSONTransformer.transform_json(input_json)
+            output_json = JSONTransformer.transform_json(
+                input_json,
+                audio_folder=audio_folder,
+                video_folder=video_folder
+            )
 
             # Write output JSON
             with open(output_file, 'w') as f:
