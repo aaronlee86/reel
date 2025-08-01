@@ -117,7 +117,13 @@ class VideoGenerator:
         # Create base clip
         if "file" in event:
             # Image file clip
-            clip = ImageClip(self._resolve_path(event["file"])).resized(height=size[1])
+            image_path = self._resolve_path(event["file"])
+
+            # If file doesn't exist in main directory, try assets folder
+            if not os.path.exists(image_path):
+                image_path = os.path.join("assets", event["file"])
+
+            clip = ImageClip(image_path).resized(height=size[1])
         else:
             # Solid color clip
             bgcolor = self._hex_to_rgb(event.get("bgcolor", "#000000"))
