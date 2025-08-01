@@ -158,6 +158,11 @@ class VideoGenerator:
         background_image = None
         if background := event.get("background"):
             background_path = self._resolve_path(background)
+
+            # If file doesn't exist in main directory, try assets folder
+            if not os.path.exists(background_path):
+                background_path = os.path.join("assets", background)
+
             if os.path.exists(background_path):
                 from PIL import Image
                 background_image = Image.open(background_path).convert("RGB").resize(size)
