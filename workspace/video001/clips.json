@@ -5,30 +5,28 @@
   ],
   "fps": 24,
   "bgm": {
-    "file": "bgm.mp3",
-    "volume": 0.5,
-    "start": 1.0
+    "file": "clean_bgm.wav",
+    "volume": 0.8,
+    "start": 3.0
   },
   "events": [
     {
       "start": 0.0,
       "duration": 3,
       "type": "image",
-      "file": "background.png",
-      "audio": "cover.mp3"
+      "file": "background.png"
     },
     {
       "start": 3.0,
       "duration": 2,
       "type": "image",
-      "bgcolor": "#FF0000",
-      "audio": "cover.mp3"
+      "bgcolor": "#000000"
     },
     {
       "start": 5.0,
       "duration": 1.0,
       "type": "image",
-      "file": "cover.jpg"
+      "file": "cover.png"
     },
     {
       "start": 6.0,
@@ -42,7 +40,7 @@
       "duration": 5,
       "type": "image",
       "bgcolor": "#00FF00",
-      "audio": "cover.wav"
+      "audio": "cover.mp3"
     },
     {
       "start": 14.0,
@@ -74,7 +72,7 @@
           "italic": false
         }
       ],
-      "audio": "clean_bgm.mp3"
+      "audio": "clean_bgm.wav"
     },
     {
       "start": 213.06897959183675,

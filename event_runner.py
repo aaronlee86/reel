@@ -64,24 +64,20 @@ class VideoGenerator:
         if not audio_path:
             return None
 
-        try:
-            # Construct full audio path
-            full_audio_path = os.path.join(self.base_path, "audio", audio_path)
+        # Construct full audio path
+        full_audio_path = os.path.join(self.base_path, "audio", audio_path)
 
-            # Load audio clip
-            audio_clip = AudioFileClip(full_audio_path)
+        # Load audio clip
+        audio_clip = AudioFileClip(full_audio_path)
 
-            # Handle audio duration
-            if audio_clip.duration > duration:
-                # Trim audio if longer than clip
-                return audio_clip.subclipped(0, duration)
+        # Handle audio duration
+        if audio_clip.duration > duration:
+            # Trim audio if longer than clip
+            return audio_clip.subclipped(0, duration)
 
-            # Return full audio if shorter or equal to duration
-            return audio_clip
+        # Return full audio if shorter or equal to duration
+        return audio_clip
 
-        except Exception as e:
-            print(f"Audio processing error: {e}")
-            return None
 
     def _hex_to_rgb(self, hex_color: str) -> Tuple[int, int, int]:
         """
@@ -256,18 +252,30 @@ class VideoGenerator:
 
         # Build clips
         clips = []
-        for event in events:
+        anyError = False
+        for i, event in enumerate(events):
             try:
                 # Build clip using appropriate method
                 builder = self.clip_builders.get(event["type"])
                 if not builder:
-                    print(f"Unsupported clip type: {event['type']}")
+                    print(f"Unsupported clip type: {event['type']} for clip #{i}")
+                    anyError = True
                     continue
 
                 clip = builder(event, size)
                 clips.append(clip)
             except VideoGenerationError as e:
-                print(f"Skipping invalid clip: {e}")
+                anyError = True
+                print(f"Skipping invalid clip #{i} ({event.get('type', 'unknown')}): {e}")
+                print(f"Clip details: {event}")
+            except Exception as e:
+                anyError = True
+                print(f"Error processing clip #{i} ({event.get('type', 'unknown')}): {e}")
+                print(f"Clip details: {event}")
+                print(f"Skipping clip and continuing...")
+
+        if anyError:
+            raise VideoGenerationError("Stop because of error")
 
         # Create composite video from clips
         video = CompositeVideoClip(clips, size=size)
@@ -279,6 +287,7 @@ class VideoGenerator:
         if preview_start is not None and preview_duration is not None:
             video = video.subclipped(preview_start, preview_start + preview_duration)
 
+        print("##############debug##################")
         # Output final video
         output_path = os.path.join(self.base_path, "output.mp4")
         video.write_videofile(output_path, fps=fps, codec="libx264", audio_codec="aac")
@@ -307,7 +316,7 @@ class VideoGenerator:
 
         bgm_file = bgm_data.get("file")
         if not bgm_file:
-            return video
+            raise VideoGenerationError("file attribute is missing in bgm")
 
         try:
             # Load and process background music
@@ -328,8 +337,7 @@ class VideoGenerator:
             return video.with_audio(bgm_audio)
 
         except Exception as e:
-            print(f"Failed to add background music: {e}")
-            return video
+            raise VideoGenerationError(f"Failed to add background music: {e}")
 
 def generate_video_from_json(
     folder_path: str,
