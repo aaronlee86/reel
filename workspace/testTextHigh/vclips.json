@@ -19,13 +19,6 @@
         {
           "text": "First sentence",
           "font": "font1.ttf",
-          "halign": "right",
-          "tts": {
-            "text": "First sentence",
-            "tts_engine": "edge-tts",
-            "voice": "en-US-JennyNeural",
-            "speed": 1.0
-          },
           "x": 460,
           "y": 442,
           "font_size": 60,
@@ -36,12 +29,6 @@
         {
           "text": "Second sentence",
           "font": "font2.ttf",
-          "tts": {
-            "text": "Second sentence",
-            "tts_engine": "gtts",
-            "voice": "en-US",
-            "speed": 0.9
-          },
           "x": 505,
           "y": 522,
           "font_size": 50,
@@ -75,13 +62,6 @@
         {
           "text": "First sentence",
           "font": "font1.ttf",
-          "halign": "right",
-          "tts": {
-            "text": "First sentence",
-            "tts_engine": "edge-tts",
-            "voice": "en-US-JennyNeural",
-            "speed": 1.0
-          },
           "x": 460,
           "y": 442,
           "font_size": 60,
@@ -92,12 +72,6 @@
         {
           "text": "Second sentence",
           "font": "font2.ttf",
-          "tts": {
-            "text": "Second sentence",
-            "tts_engine": "gtts",
-            "voice": "en-US",
-            "speed": 0.9
-          },
           "x": 505,
           "y": 522,
           "font_size": 50,
@@ -126,13 +100,6 @@
         {
           "text": "First sentence",
           "font": "font1.ttf",
-          "halign": "right",
-          "tts": {
-            "text": "First sentence",
-            "tts_engine": "edge-tts",
-            "voice": "en-US-JennyNeural",
-            "speed": 1.0
-          },
           "x": 460,
           "y": 442,
           "font_size": 60,
@@ -143,12 +110,6 @@
         {
           "text": "Second sentence",
           "font": "font2.ttf",
-          "tts": {
-            "text": "Second sentence",
-            "tts_engine": "gtts",
-            "voice": "en-US",
-            "speed": 0.9
-          },
           "x": 505,
           "y": 522,
           "font_size": 50,

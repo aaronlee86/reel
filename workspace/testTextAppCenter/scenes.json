@@ -12,6 +12,7 @@
             "text": [
                 {
                     "text": "First sentence",
+                    "halign": "right",
                     "font": {
                         "file": "font1.ttf",
                         "size": 60,

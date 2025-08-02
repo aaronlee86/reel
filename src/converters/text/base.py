@@ -83,3 +83,23 @@ class TextSceneStrategy(ABC):
             List[Dict[str, Any]]: Generated virtual clips
         """
         pass
+
+    def clean_attributes(self, sentence):
+        """
+        Remove 'tts' and 'halign' from sentences in virtual clips
+
+        Args:
+            positioned_sentences (List[Dict]): List of virtual clips to clean
+
+        Returns:
+            List[Dict]: Cleaned virtual clips
+        """
+        try:
+            # Create a copy of the sentence, excluding 'tts' and 'halign'
+            cleaned_sentence = {
+                k: v for k, v in sentence.items()
+                if k not in ['tts', 'halign']
+            }
+            return cleaned_sentence
+        except Exception as e:
+            raise Exception(f"clean_attributes error {e}")

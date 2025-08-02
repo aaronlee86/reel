@@ -68,7 +68,7 @@ class TextSceneConverter(SceneConverter):
         strategy = TextSceneStrategyFactory.get_strategy(mode)
 
         # Calculate text positions using the strategy's method
-        positioned_entries = strategy.calculate_text_positions(
+        positioned_sentences = strategy.calculate_text_positions(
             text_entries,
             self.screen_size,
             valign=valign,
@@ -78,4 +78,4 @@ class TextSceneConverter(SceneConverter):
         )
 
         # Convert using the strategy
-        return strategy.convert(scene, positioned_entries)
+        return strategy.convert(scene, positioned_sentences)

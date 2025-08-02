@@ -69,6 +69,9 @@ class AllModeStrategy(TextSceneStrategy):
                 "italic": False
             }
 
+            # Clean sentences by removing 'tts' and 'halign'
+            positioned_entry = self.clean_attributes(positioned_entry)
+
             positioned_entries.append(positioned_entry)
 
             # Move to next line

@@ -56,7 +56,7 @@ def convert_video_project(input_json: Dict[str, Any], project_name: str = 'defau
             # Extend the vclips list
             output["vclips"].extend(scene_vclips)
 
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError, Exception) as e:
             # Raise a more informative error that includes the scene index
             raise ValueError(f"Error processing scene {scene_index}: {str(e)}") from e
 

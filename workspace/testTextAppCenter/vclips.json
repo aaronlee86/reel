@@ -19,12 +19,7 @@
         {
           "text": "First sentence",
           "font": "font1.ttf",
-          "tts": {
-            "tts_engine": "edge-tts",
-            "voice": "en-US-JennyNeural",
-            "speed": 1.0
-          },
-          "x": 40,
+          "x": 460,
           "y": 510,
           "font_size": 60,
           "font_color": "#000000",
@@ -46,12 +41,7 @@
         {
           "text": "First sentence",
           "font": "font1.ttf",
-          "tts": {
-            "tts_engine": "edge-tts",
-            "voice": "en-US-JennyNeural",
-            "speed": 1.0
-          },
-          "x": 40,
+          "x": 460,
           "y": 470,
           "font_size": 60,
           "font_color": "#000000",
@@ -61,12 +51,7 @@
         {
           "text": "Second sentence",
           "font": "font2.ttf",
-          "tts": {
-            "tts_engine": "gtts",
-            "voice": "en-US",
-            "speed": 0.9
-          },
-          "x": 40,
+          "x": 505,
           "y": 550,
           "font_size": 50,
           "font_color": "#0000FF",
@@ -83,12 +68,7 @@
         {
           "text": "First sentence",
           "font": "font1.ttf",
-          "tts": {
-            "tts_engine": "edge-tts",
-            "voice": "en-US-JennyNeural",
-            "speed": 1.0
-          },
-          "x": 40,
+          "x": 460,
           "y": 430,
           "font_size": 60,
           "font_color": "#000000",
@@ -98,12 +78,7 @@
         {
           "text": "Second sentence",
           "font": "font2.ttf",
-          "tts": {
-            "tts_engine": "gtts",
-            "voice": "en-US",
-            "speed": 0.9
-          },
-          "x": 40,
+          "x": 505,
           "y": 515,
           "font_size": 50,
           "font_color": "#0000FF",
@@ -114,7 +89,7 @@
           "text": "Third sentence",
           "font": "font3.ttf",
           "duration": 3.0,
-          "x": 40,
+          "x": 565,
           "y": 582,
           "font_size": 45,
           "font_color": "#00FF00",

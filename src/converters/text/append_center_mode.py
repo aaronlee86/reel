@@ -73,6 +73,9 @@ class AppendCenterModeStrategy(TextSceneStrategy):
                     "italic": False
                 }
 
+                # Clean sentences by removing 'tts' and 'halign'
+                positioned_entry = self.clean_attributes(positioned_entry)
+
                 positioned_entries.append(positioned_entry)
 
             # Store positioned entries for this vclip

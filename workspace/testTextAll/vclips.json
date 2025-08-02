@@ -23,12 +23,6 @@
         {
           "text": "Welcome to the Presentation",
           "font": "arial_bold.ttf",
-          "halign": "center",
-          "tts": {
-            "tts_engine": "edge-tts",
-            "voice": "en-US-JennyNeural",
-            "speed": 1.0
-          },
           "x": 55,
           "y": 24,
           "font_size": 60,
@@ -51,12 +45,6 @@
         {
           "text": "Machine Learning Basics",
           "font": "roboto_bold.ttf",
-          "halign": "center",
-          "tts": {
-            "tts_engine": "edge-tts",
-            "voice": "en-US-AriaNeural",
-            "speed": 0.9
-          },
           "x": 46,
           "y": -121,
           "font_size": 72,
@@ -67,12 +55,6 @@
         {
           "text": "Neural Networks",
           "font": "roboto_regular.ttf",
-          "halign": "center",
-          "tts": {
-            "tts_engine": "gtts",
-            "voice": "en-US",
-            "speed": 0.8
-          },
           "x": 257,
           "y": -29,
           "font_size": 54,
@@ -83,7 +65,6 @@
         {
           "text": "Data Preprocessing",
           "font": "roboto_regular.ttf",
-          "halign": "center",
           "duration": 2.5,
           "x": 244,
           "y": 45,
@@ -95,7 +76,6 @@
         {
           "text": "Feature Engineering",
           "font": "roboto_regular.ttf",
-          "halign": "center",
           "duration": 3.0,
           "x": 232,
           "y": 113,
@@ -107,7 +87,6 @@
         {
           "text": "Model Evaluation",
           "font": "roboto_regular.ttf",
-          "halign": "center",
           "duration": 2.0,
           "x": 268,
           "y": 181,
@@ -131,12 +110,6 @@
         {
           "text": "Machine Learning Basics",
           "font": "roboto_bold.ttf",
-          "halign": "center",
-          "tts": {
-            "tts_engine": "edge-tts",
-            "voice": "en-US-AriaNeural",
-            "speed": 0.9
-          },
           "x": 46,
           "y": -121,
           "font_size": 72,
@@ -147,12 +120,6 @@
         {
           "text": "Neural Networks",
           "font": "roboto_regular.ttf",
-          "halign": "center",
-          "tts": {
-            "tts_engine": "gtts",
-            "voice": "en-US",
-            "speed": 0.8
-          },
           "x": 257,
           "y": -29,
           "font_size": 54,
@@ -163,7 +130,6 @@
         {
           "text": "Data Preprocessing",
           "font": "roboto_regular.ttf",
-          "halign": "center",
           "duration": 2.5,
           "x": 244,
           "y": 45,
@@ -175,7 +141,6 @@
         {
           "text": "Feature Engineering",
           "font": "roboto_regular.ttf",
-          "halign": "center",
           "duration": 3.0,
           "x": 232,
           "y": 113,
@@ -187,7 +152,6 @@
         {
           "text": "Model Evaluation",
           "font": "roboto_regular.ttf",
-          "halign": "center",
           "duration": 2.0,
           "x": 268,
           "y": 181,
@@ -206,12 +170,6 @@
         {
           "text": "Machine Learning Basics",
           "font": "roboto_bold.ttf",
-          "halign": "center",
-          "tts": {
-            "tts_engine": "edge-tts",
-            "voice": "en-US-AriaNeural",
-            "speed": 0.9
-          },
           "x": 46,
           "y": -121,
           "font_size": 72,
@@ -222,12 +180,6 @@
         {
           "text": "Neural Networks",
           "font": "roboto_regular.ttf",
-          "halign": "center",
-          "tts": {
-            "tts_engine": "gtts",
-            "voice": "en-US",
-            "speed": 0.8
-          },
           "x": 257,
           "y": -29,
           "font_size": 54,
@@ -238,7 +190,6 @@
         {
           "text": "Data Preprocessing",
           "font": "roboto_regular.ttf",
-          "halign": "center",
           "duration": 2.5,
           "x": 244,
           "y": 45,
@@ -250,7 +201,6 @@
         {
           "text": "Feature Engineering",
           "font": "roboto_regular.ttf",
-          "halign": "center",
           "duration": 3.0,
           "x": 232,
           "y": 113,
@@ -262,7 +212,6 @@
         {
           "text": "Model Evaluation",
           "font": "roboto_regular.ttf",
-          "halign": "center",
           "duration": 2.0,
           "x": 268,
           "y": 181,
@@ -281,12 +230,6 @@
         {
           "text": "Machine Learning Basics",
           "font": "roboto_bold.ttf",
-          "halign": "center",
-          "tts": {
-            "tts_engine": "edge-tts",
-            "voice": "en-US-AriaNeural",
-            "speed": 0.9
-          },
           "x": 46,
           "y": -121,
           "font_size": 72,
@@ -297,12 +240,6 @@
         {
           "text": "Neural Networks",
           "font": "roboto_regular.ttf",
-          "halign": "center",
-          "tts": {
-            "tts_engine": "gtts",
-            "voice": "en-US",
-            "speed": 0.8
-          },
           "x": 257,
           "y": -29,
           "font_size": 54,
@@ -313,7 +250,6 @@
         {
           "text": "Data Preprocessing",
           "font": "roboto_regular.ttf",
-          "halign": "center",
           "duration": 2.5,
           "x": 244,
           "y": 45,
@@ -325,7 +261,6 @@
         {
           "text": "Feature Engineering",
           "font": "roboto_regular.ttf",
-          "halign": "center",
           "duration": 3.0,
           "x": 232,
           "y": 113,
@@ -337,7 +272,6 @@
         {
           "text": "Model Evaluation",
           "font": "roboto_regular.ttf",
-          "halign": "center",
           "duration": 2.0,
           "x": 268,
           "y": 181,
@@ -356,12 +290,6 @@
         {
           "text": "Machine Learning Basics",
           "font": "roboto_bold.ttf",
-          "halign": "center",
-          "tts": {
-            "tts_engine": "edge-tts",
-            "voice": "en-US-AriaNeural",
-            "speed": 0.9
-          },
           "x": 46,
           "y": -121,
           "font_size": 72,
@@ -372,12 +300,6 @@
         {
           "text": "Neural Networks",
           "font": "roboto_regular.ttf",
-          "halign": "center",
-          "tts": {
-            "tts_engine": "gtts",
-            "voice": "en-US",
-            "speed": 0.8
-          },
           "x": 257,
           "y": -29,
           "font_size": 54,
@@ -388,7 +310,6 @@
         {
           "text": "Data Preprocessing",
           "font": "roboto_regular.ttf",
-          "halign": "center",
           "duration": 2.5,
           "x": 244,
           "y": 45,
@@ -400,7 +321,6 @@
         {
           "text": "Feature Engineering",
           "font": "roboto_regular.ttf",
-          "halign": "center",
           "duration": 3.0,
           "x": 232,
           "y": 113,
@@ -412,7 +332,6 @@
         {
           "text": "Model Evaluation",
           "font": "roboto_regular.ttf",
-          "halign": "center",
           "duration": 2.0,
           "x": 268,
           "y": 181,
