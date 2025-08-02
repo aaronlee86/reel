@@ -284,6 +284,11 @@ class VideoGenerator:
         if anyError:
             raise VideoGenerationError("Stop because of error")
 
+        for i in range(1, len(clips)):
+            if clips[i].start < clips[i-1].end:
+                print(f"Warning: Clip {i} overlaps with previous clip.")
+
+
         # Create composite video from clips
         video = CompositeVideoClip(clips, size=size)
 
