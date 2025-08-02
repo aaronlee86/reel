@@ -192,12 +192,14 @@ class VideoGenerator:
         )
 
         # Create clip
-        clip = ImageClip(np.array(img)).with_start(event["start"]).with_duration(event["duration"])
+        clip = ImageClip(np.array(img))
 
         # Add audio if specified
         audio_clip = self._load_audio(event.get("audio"), event["duration"])
         if audio_clip:
             clip = clip.with_audio(audio_clip)
+
+        clip = clip.with_start(event["start"]).with_duration(event["duration"])
 
         return clip
 

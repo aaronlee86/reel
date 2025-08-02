@@ -14,11 +14,6 @@ next, to make a script to compute start and duration (the real clips.json)
     1. the "vclips" attr should be changed to "events"
     2. for each "vclip", should add "start" and "duration" attrs
 
-=======================
-Now:
-fix event_runner.py
-
-
 ====================
 
 
