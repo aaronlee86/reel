@@ -105,9 +105,7 @@ def convert_tts_project(
             processed_clips.append(processed_clip)
 
         except ValueError as e:
-            print(f"Error processing clip {clip_index}: {e}")
-            # Optionally, you can choose to re-raise or skip the clip
-            raise
+            raise ValueError(f"Error processing clip {clip_index}: {e}")
 
     # Create a copy of the input JSON with processed clips
     processed_json = input_json.copy()

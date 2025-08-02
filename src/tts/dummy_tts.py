@@ -9,15 +9,6 @@ class DummyTTSEngine(TTSEngine):
     """
     Placeholder/Debug TTS Engine for testing and fallback scenarios.
     """
-    def __init__(self, **kwargs):
-        """
-        Initialize the debug TTS engine.
-
-        Args:
-            **kwargs: Arbitrary keyword arguments
-        """
-        self.config = kwargs
-
     def generate_audio(
         self,
         text: str,

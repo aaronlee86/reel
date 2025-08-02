@@ -3,6 +3,7 @@ from typing import Dict, Any
 
 from src.tts.base import TTSEngine
 from src.tts.dummy_tts import DummyTTSEngine
+from src.tts.gcloud_tts import GoogleCloudTTSEngine
 from src.tts.engine_factory import TTSEngineFactory
 
 def process_vclip(
@@ -116,21 +117,9 @@ def _process_text_clip(
 
         return new_clip
     except ValueError as e:
-        print(f"TTS Configuration Error: {e}")
-
-        # Create new dictionary without TTS
-        new_clip = {k: v for k, v in clip.items() if k != 'tts'}
-        new_clip['audio'] = None
-
-        return new_clip
+        raise ValueError(f"TTS Configuration Error: {e}")
     except Exception as e:
-        print(f"Error generating audio for text clip: {e}")
-
-        # Create new dictionary without TTS
-        new_clip = {k: v for k, v in clip.items() if k != 'tts'}
-        new_clip['audio'] = None
-
-        return new_clip
+        raise ValueError(f"Error generating audio for text clip: {e}")
 
 def _process_image_clip(
     clip: Dict[str, Any],
@@ -185,11 +174,9 @@ def _process_image_clip(
                 # Add audio attribute with generated filename
                 new_clip['audio'] = os.path.basename(generated_path)
             except ValueError as e:
-                print(f"TTS Configuration Error: {e}")
-                new_clip['audio'] = None
+                raise ValueError(f"TTS Configuration Error: {e}")
             except Exception as e:
-                print(f"Error generating audio for image clip: {e}")
-                new_clip['audio'] = None
+                raise Exception(f"Error generating audio for image clip: {e}")
 
         # If 'file' is inside audio configuration
         elif 'file' in audio_config:

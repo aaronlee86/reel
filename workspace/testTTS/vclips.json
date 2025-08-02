@@ -25,8 +25,8 @@
       "audio": {
         "tts": {
           "text": "Welcome to our presentation",
-          "tts_engine": "edge-tts",
-          "voice": "en-US-JennyNeural",
+          "tts_engine": "gcloud",
+          "voice": "ko-KR-Chirp3-HD-Rasalgethi",
           "speed": 0.9
         }
       }

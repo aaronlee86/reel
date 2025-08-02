@@ -49,9 +49,14 @@ class TTSEngineFactory:
 
         # Retrieve the engine class
         engine_class = cls._engines[engine_name]
+        engine = engine_class()
+
+        # Validate the configuration for this engine
+        if not engine.validate_configuration(tts_config):
+            raise ValueError(f"Invalid configuration for TTS engine '{engine_name}'")
 
         # Create and return an instance of the engine
-        return engine_class(**tts_config)
+        return engine_class()
 
     @classmethod
     def list_engines(cls) -> list:
