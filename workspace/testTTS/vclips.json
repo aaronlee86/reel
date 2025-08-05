@@ -43,9 +43,9 @@
       "audio": {
         "tts": {
           "text": "Let's dive deeper into our topic",
-          "tts_engine": "gtts",
-          "voice": "en-US-AriaNeural",
-          "speed": 1.1
+          "tts_engine": "eleven",
+          "voice": "jsCqWAovK2LkecY7zXl4",
+          "speed": 0.7
         }
       }
     },

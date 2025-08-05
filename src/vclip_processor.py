@@ -4,6 +4,7 @@ from typing import Dict, Any
 from src.tts.base import TTSEngine
 from src.tts.dummy_tts import DummyTTSEngine
 from src.tts.gcloud_tts import GoogleCloudTTSEngine
+from src.tts.elevenlabs import ElevenLabsTTSEngine
 from src.tts.engine_factory import TTSEngineFactory
 
 def process_vclip(
