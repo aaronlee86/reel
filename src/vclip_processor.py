@@ -184,3 +184,66 @@ def _process_image_clip(
             new_clip['audio'] = audio_config['file']
 
     return new_clip
+
+def _find_tts_attr(data):
+    """
+    Find any attribute called 'tts' in a dictionary and return its value.
+    Works with nested dictionary structures.
+
+    Args:
+        data (dict): Dictionary to search
+
+    Returns:
+        dict or None: The value of the 'tts' attribute if found, None otherwise
+    """
+    # Check if 'tts' key exists at current level
+    if 'tts' in data:
+        return data['tts']
+
+    # Recursively search in nested dictionaries
+    for value in data.values():
+        if isinstance(value, dict):
+            result = _find_tts_attr(value)
+            if result is not None:
+                return result
+        elif isinstance(value, list):
+            # Handle lists that might contain dictionaries
+            for item in value:
+                if isinstance(item, dict):
+                    result = _find_tts_attr(item)
+                    if result is not None:
+                        return result
+
+    return None
+
+
+def dryrun_filename(
+        clip: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Generate TTS filename for a clip configuration.
+
+    Args:
+        clip: Dictionary containing clip configuration
+
+    Returns:
+        Updated TTS configuration with filename, or None if no TTS config found
+    """
+    tts_config = _find_tts_attr(clip)
+    if tts_config is None:
+        return None
+
+    # Validate TTS configuration
+    _validate_tts_config(tts_config)
+
+    # Create TTS engine
+    tts_engine = TTSEngineFactory.create_engine(tts_config)
+
+    # Generate audio file path
+    audio_filename = tts_engine.gen_filename(
+        **{k: v for k, v in tts_config.items()}
+    )
+
+    # Add filename to config and return
+    tts_config['filename'] = audio_filename
+    return tts_config

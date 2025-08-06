@@ -17,23 +17,11 @@ next, to make a script to compute start and duration (the real clips.json)
 ====================
 Now:
 
-make  it all work
+adding --dry-run to v2tts.py
+I'm patching from claude' change to my v2tts manually
+what I've done:
+see git diff
 
-1. clips -> video 
-    a. nice-to-have
-        Fade-in/fade-out effects
-        Transition effects between clips (slide, crossfade).
-    b. spec and how to use
-
-2. tts_clip -> clips (function is working)
-    a. spec and how to use
-
-3. vclip -> tts_clip
-    a. spec and how to use
-    b. tts engine implement
-
-4. scene -> vclip
-    a. 
 
 #### TODO later: we should get a clear spec for each of the following function in case we forget and give better prompt to AI
 ?? -> scenes

@@ -56,11 +56,6 @@
         {
           "text": "First sentence",
           "font": "font1.ttf",
-          "tts": {
-            "tts_engine": "edge-tts",
-            "voice": "en-US-JennyNeural",
-            "speed": 1.0
-          },
           "x": 40,
           "y": 510,
           "font_size": 60,
@@ -78,11 +73,6 @@
         {
           "text": "First sentence",
           "font": "font1.ttf",
-          "tts": {
-            "tts_engine": "edge-tts",
-            "voice": "en-US-JennyNeural",
-            "speed": 1.0
-          },
           "x": 40,
           "y": 470,
           "font_size": 60,
@@ -93,11 +83,6 @@
         {
           "text": "Second sentence",
           "font": "font2.ttf",
-          "tts": {
-            "tts_engine": "gtts",
-            "voice": "en-US",
-            "speed": 0.9
-          },
           "x": 40,
           "y": 550,
           "font_size": 50,
@@ -116,11 +101,6 @@
         {
           "text": "First sentence",
           "font": "font1.ttf",
-          "tts": {
-            "tts_engine": "edge-tts",
-            "voice": "en-US-JennyNeural",
-            "speed": 1.0
-          },
           "x": 40,
           "y": 430,
           "font_size": 60,
@@ -131,11 +111,6 @@
         {
           "text": "Second sentence",
           "font": "font2.ttf",
-          "tts": {
-            "tts_engine": "gtts",
-            "voice": "en-US",
-            "speed": 0.9
-          },
           "x": 40,
           "y": 515,
           "font_size": 50,

@@ -5,7 +5,7 @@ from typing import Dict, Any
 
 from src.tts.base import TTSEngine
 from src.tts.engine_factory import TTSEngineFactory
-from src.vclip_processor import process_vclip
+from src.vclip_processor import process_vclip, dryrun_filename
 
 def parse_arguments():
     """
@@ -49,6 +49,13 @@ def parse_arguments():
         help="Output directory for generated audio files (default: tts_audio_lib)"
     )
 
+    # Optional dry-run flag
+    parser.add_argument(
+        '--dry-run',
+        action='store_true',
+        help="Print text and audio file names without generating audio files"
+    )
+
     return parser.parse_args()
 
 def ensure_workspace_directory(project_name: str) -> str:
@@ -79,7 +86,8 @@ def ensure_workspace_directory(project_name: str) -> str:
 def convert_tts_project(
     input_json: Dict[str, Any],
     project_name: str,
-    audio_output: str
+    audio_output: str,
+    dry_run: bool = False
 ) -> Dict[str, Any]:
     """
     Convert the input project JSON by processing TTS.
@@ -88,6 +96,7 @@ def convert_tts_project(
         input_json (Dict[str, Any]): Input project configuration
         project_name (str): Name of the project
         audio_output (str): Output directory for audio files
+        dry_run (bool): If True, only print text and filenames without generating audio
 
     Returns:
         Dict[str, Any]: Processed project configuration with TTS
@@ -100,16 +109,26 @@ def convert_tts_project(
     processed_clips = []
     for clip_index, clip in enumerate(input_json.get('vclips', [])):
         try:
-            # Process the clip
-            processed_clip = process_vclip(clip, output_dir)
-            processed_clips.append(processed_clip)
+            if not dry_run:
+                # Process the clip
+                processed_clip = process_vclip(clip, output_dir)
+                processed_clips.append(processed_clip)
+            else:
+                # In dry-run mode, just extract and print the text and filename
+                tts_filename = dryrun_filename(clip)
+                if tts_filename:
+                    processed_clips.append(tts_filename)
 
         except ValueError as e:
             raise ValueError(f"Error processing clip {clip_index}: {e}")
 
-    # Create a copy of the input JSON with processed clips
-    processed_json = input_json.copy()
-    processed_json['vclips'] = processed_clips
+    if not dry_run:
+        # Create a copy of the input JSON with processed clips
+        processed_json = input_json.copy()
+        processed_json['vclips'] = processed_clips
+    else:
+        # dry-run mode
+        processed_json = processed_clips
 
     return processed_json
 
@@ -145,7 +164,8 @@ def main():
             output_json = convert_tts_project(
                 input_json,
                 project_name=args.project,
-                audio_output=args.audio_output
+                audio_output=args.audio_output,
+                dry_run=args.dry_run
             )
         except ValueError as e:
             # Detailed error handling for conversion failures
@@ -157,9 +177,15 @@ def main():
 
         # Write output JSON
         try:
-            with open(output_path, 'w') as f:
-                json.dump(output_json, f, indent=2)
-            print("Conversion successful:")
+            if args.dry_run:
+                with open(output_path, 'w') as f:
+                    json.dump(output_json, f, indent=2)
+                print("Dry run completed:")
+            else:
+                with open(output_path, 'w') as f:
+                    json.dump(output_json, f, indent=2)
+                print("Conversion successful:")
+
             print(f"Input:  {input_path}")
             print(f"Output: {output_path}")
             print(f"Audio:  {os.path.abspath(args.audio_output)}")
