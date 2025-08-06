@@ -85,7 +85,6 @@ def ensure_workspace_directory(project_name: str) -> str:
 
 def convert_tts_project(
     input_json: Dict[str, Any],
-    project_name: str,
     audio_output: str,
     dry_run: bool = False
 ) -> Dict[str, Any]:
@@ -94,7 +93,6 @@ def convert_tts_project(
 
     Args:
         input_json (Dict[str, Any]): Input project configuration
-        project_name (str): Name of the project
         audio_output (str): Output directory for audio files
         dry_run (bool): If True, only print text and filenames without generating audio
 
@@ -163,7 +161,6 @@ def main():
         try:
             output_json = convert_tts_project(
                 input_json,
-                project_name=args.project,
                 audio_output=args.audio_output,
                 dry_run=args.dry_run
             )
