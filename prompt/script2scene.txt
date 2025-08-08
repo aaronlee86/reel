@@ -19,7 +19,7 @@ Required Columns:
     * all_with_highlight: Show all text with highlighting
     * video: Video scene
     * image: Image scene
-* background: 
+* background:
     * For text/image scenes: Background image or color
     * For video scenes: the video filename
 Optional Columns:
@@ -85,6 +85,8 @@ json
   ]
 }
 Note: No duration field for text scenes
+NOte: don't output halign if empty
+
 2. Image Scene
 
 json
@@ -132,6 +134,7 @@ Output
 * Single scenes.json file
 * Default location: workspace/${project_name}/
 * Configurable via CLI arguments
+* Output json should include screen_size, fps, bgm from input config. If fps is not specified, default to 30.
 
 CLI Usage
 bash

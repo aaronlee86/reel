@@ -199,9 +199,11 @@ class Script2Scene:
             text_entry = {
                 'text': row['text'],
                 'font': self.build_font_config(row, reset_to_defaults=(row == first_row)),
-                'halign': row.get('alignment', 'center'),
                 'tts': self.build_tts_config(row, reset_to_defaults=(row == first_row))
             }
+            # Only add halign if it's not empty
+            if row.get('alignment', '').strip():
+                text_entry['halign'] = row.get('alignment')
             scene['text'].append(text_entry)
 
         return scene
@@ -313,17 +315,19 @@ class Script2Scene:
             self.scenes.append(scene)
 
     def save_scenes(self) -> None:
-        """Save scenes to JSON file"""
+        """Save scenes to JSON file with default fps handling"""
+        # Add global config if available
         output_data = {
-            'scenes': self.scenes
+            'screen_size': self.config.get('screen_size')  # Always include screen_size
         }
 
-        # Add global config if available
-        if 'fps' in self.config:
-            output_data['fps'] = self.config['fps']
+        # Always set fps, defaulting to 30 if not specified in config
+        output_data['fps'] = self.config.get('fps', 30)
 
         if 'bgm' in self.config:
             output_data['bgm'] = self.config['bgm']
+
+        output_data['scenes'] = self.scenes
 
         # Create output directory if needed
         output_dir = os.path.dirname(self.output_file)

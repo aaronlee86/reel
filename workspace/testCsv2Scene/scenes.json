@@ -1,0 +1,252 @@
+{
+  "screen_size": [
+    1920,
+    1080
+  ],
+  "fps": 24,
+  "bgm": {
+    "file": "background_music.mp3",
+    "volume": 0.3,
+    "start": 0
+  },
+  "scenes": [
+    {
+      "type": "text",
+      "mode": "append_center",
+      "text": [
+        {
+          "text": "Welcome to our <h>amazing</h> presentation",
+          "font": {
+            "file": "arial.ttf",
+            "size": 48,
+            "color": "#FFFFFF"
+          },
+          "tts": {
+            "tts_engine": "edge-tts",
+            "voice": "en-US-AriaNeural",
+            "speed": 0.9
+          },
+          "halign": "center"
+        },
+        {
+          "text": "This will appear in the center",
+          "font": {
+            "file": "default_font.ttf",
+            "size": 48,
+            "color": "#FFFFFF"
+          },
+          "tts": {
+            "tts_engine": "edge-tts",
+            "voice": "zh-TW-HsiaoChenNeural",
+            "speed": 1.0
+          }
+        },
+        {
+          "text": "Let's continue with more text",
+          "font": {
+            "file": "default_font.ttf",
+            "size": 48,
+            "color": "#FFFFFF"
+          },
+          "tts": {
+            "tts_engine": "edge-tts",
+            "voice": "zh-TW-HsiaoChenNeural",
+            "speed": 1.0
+          }
+        }
+      ],
+      "background": "bg_intro.jpg"
+    },
+    {
+      "type": "text",
+      "mode": "append_top",
+      "text": [
+        {
+          "text": "Now we move to top alignment",
+          "font": {
+            "file": "roboto.ttf",
+            "size": 48,
+            "color": "#FFFFFF"
+          },
+          "tts": {
+            "tts_engine": "edge-tts",
+            "voice": "en-US-JennyNeural",
+            "speed": 1.1
+          },
+          "halign": "left"
+        },
+        {
+          "text": "This text appears at the top",
+          "font": {
+            "file": "default_font.ttf",
+            "size": 48,
+            "color": "#FFFFFF"
+          },
+          "tts": {
+            "tts_engine": "edge-tts",
+            "voice": "zh-TW-HsiaoChenNeural",
+            "speed": 1.0
+          }
+        },
+        {
+          "text": "And this one too",
+          "font": {
+            "file": "default_font.ttf",
+            "size": 48,
+            "color": "#FFFFFF"
+          },
+          "tts": {
+            "tts_engine": "edge-tts",
+            "voice": "zh-TW-HsiaoChenNeural",
+            "speed": 1.0
+          }
+        }
+      ],
+      "background": "bg_slides.jpg"
+    },
+    {
+      "type": "text",
+      "mode": "all",
+      "text": [
+        {
+          "text": "Here's all text at once",
+          "font": {
+            "file": "times.ttf",
+            "size": 48,
+            "color": "#FFFFFF"
+          },
+          "tts": {
+            "tts_engine": "edge-tts",
+            "voice": "zh-TW-HsiaoChenNeural",
+            "speed": 1.0
+          },
+          "halign": "center"
+        },
+        {
+          "text": "Everything shows together",
+          "font": {
+            "file": "default_font.ttf",
+            "size": 48,
+            "color": "#FFFFFF"
+          },
+          "tts": {
+            "tts_engine": "edge-tts",
+            "voice": "zh-TW-HsiaoChenNeural",
+            "speed": 1.0
+          }
+        },
+        {
+          "text": "With no delays",
+          "font": {
+            "file": "default_font.ttf",
+            "size": 48,
+            "color": "#FFFFFF"
+          },
+          "tts": {
+            "tts_engine": "edge-tts",
+            "voice": "zh-TW-HsiaoChenNeural",
+            "speed": 1.0
+          }
+        }
+      ],
+      "bgcolor": "#FF5733"
+    },
+    {
+      "type": "text",
+      "mode": "all_with_highlight",
+      "text": [
+        {
+          "text": "Highlighting example",
+          "font": {
+            "file": "default_font.ttf",
+            "size": 48,
+            "color": "#FFFFFF"
+          },
+          "tts": {
+            "tts_engine": "edge-tts",
+            "voice": "zh-TW-HsiaoChenNeural",
+            "speed": 1.0
+          }
+        },
+        {
+          "text": "This has <h>special</h> highlighting",
+          "font": {
+            "file": "default_font.ttf",
+            "size": 48,
+            "color": "#FFFFFF"
+          },
+          "tts": {
+            "tts_engine": "edge-tts",
+            "voice": "zh-TW-HsiaoChenNeural",
+            "speed": 1.0
+          }
+        },
+        {
+          "text": "Multiple <h>highlighted</h> words here",
+          "font": {
+            "file": "default_font.ttf",
+            "size": 48,
+            "color": "#FFFFFF"
+          },
+          "tts": {
+            "tts_engine": "edge-tts",
+            "voice": "zh-TW-HsiaoChenNeural",
+            "speed": 1.0
+          }
+        }
+      ],
+      "background": "gradient_bg.png"
+    },
+    {
+      "type": "image",
+      "file": "nature_pic.jpg",
+      "duration": 0.8,
+      "audio": {
+        "tts": {
+          "text": "Beautiful sunset over the mountains",
+          "tts_engine": "edge-tts",
+          "voice": "edge-tts",
+          "speed": 1.0
+        }
+      }
+    },
+    {
+      "type": "video",
+      "file": "company_intro.mp4"
+    },
+    {
+      "type": "image",
+      "bgcolor": "#2E86AB",
+      "duration": 3.5,
+      "audio": {
+        "tts": {
+          "text": "Thank you slide with solid color",
+          "tts_engine": "edge-tts",
+          "voice": "zh-TW-HsiaoChenNeural",
+          "speed": 1.0
+        }
+      }
+    },
+    {
+      "type": "text",
+      "mode": "append_center",
+      "text": [
+        {
+          "text": "Final thoughts and contact info",
+          "font": {
+            "file": "calibri.ttf",
+            "size": 48,
+            "color": "#FFFFFF"
+          },
+          "tts": {
+            "tts_engine": "edge-tts",
+            "voice": "en-US-AriaNeural",
+            "speed": 1.0
+          },
+          "halign": "center"
+        }
+      ],
+      "background": "contact_bg.jpg"
+    }
+  ]
+}
