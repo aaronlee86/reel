@@ -1,4 +1,6 @@
-I want a well structured python project with good use of software design pattern for maintenance ability. now please understand the requirement, and make sure we are on the same page. don't implement now  Script2Scene Requirements Specification
+I want a python project. now please understand the requirement, and make sure we are on the same page. don't implement now
+
+Script2Scene Requirements Specification
 
 Overview
 Python script that converts a CSV file and config file into a structured scenes.json file for video/presentation generation.
