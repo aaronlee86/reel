@@ -195,7 +195,12 @@
           }
         }
       ],
-      "background": "gradient_bg.png"
+      "background": "gradient_bg.png",
+      "highlight_style": {
+        "font_color": "#123456",
+        "bold": true,
+        "italic": false
+      }
     },
     {
       "type": "image",

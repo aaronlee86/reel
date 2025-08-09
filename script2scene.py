@@ -82,6 +82,29 @@ class Script2Scene:
         if 'color' not in self.config['font']:
             raise Script2SceneError("Config font missing required field: color")
 
+    def validate_highlight_mode(self, first_row: Dict[str, str]) -> None:
+        """
+        Validate that rows for 'all_with_highlight' mode have required highlight fields
+
+        Args:
+            rows (List[Dict[str, str]]): Rows to validate
+
+        Raises:
+            Script2SceneError: If required highlight fields are missing
+        """
+
+        # Check if any of the highlight fields are missing
+        highlight_fields = ['highlight_color', 'highlight_bold', 'highlight_italic']
+        missing_fields = [
+            field for field in highlight_fields
+            if not first_row.get(field, '').strip()
+        ]
+
+        if missing_fields:
+            raise Script2SceneError(
+                f"For 'all_with_highlight' mode, these highlight fields are required: {', '.join(missing_fields)}"
+            )
+
     def load_csv(self) -> List[Dict[str, str]]:
         """Load and validate CSV file"""
         try:
@@ -194,6 +217,19 @@ class Script2Scene:
         if bg_type and bg_value:
             scene[bg_type] = bg_value
 
+        # Add highlight_style for all_with_highlight mode
+        if mode == 'all_with_highlight':
+            self.validate_highlight_mode(first_row)
+
+            highlight_style = {}
+            highlight_style['font_color'] = first_row['highlight_color']
+            # Convert string to boolean
+            highlight_style['bold'] = first_row['highlight_bold'].lower() in ('true', '1', 'yes')
+            # Convert string to boolean
+            highlight_style['italic'] = first_row['highlight_italic'].lower() in ('true', '1', 'yes')
+
+            scene['highlight_style'] = highlight_style
+
         # Add text entries
         for row in rows:
             text_entry = {
@@ -247,15 +283,12 @@ class Script2Scene:
 
         scene = {
             'type': 'video',
-            'file': first_row.get('background', '')
+            'file': first_row.get('background', '')  # Using background field as specified
         }
 
         # Add duration if available
         if first_row.get('duration'):
-            try:
-                scene['duration'] = float(first_row['duration'])
-            except ValueError:
-                scene['duration'] = 15  # Default duration
+            scene['duration'] = float(first_row['duration'])
 
         return scene
 
