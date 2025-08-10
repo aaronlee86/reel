@@ -65,8 +65,8 @@ json
 Scene Splitting Rules
 1. A new scene starts when the mode value changes
 2. Consecutive rows with the same mode are grouped into one scene
-3. The first row of a new mode defines scene-level properties (background, etc.)
-4. When mode changes, font/TTS settings reset to config defaults
+3. The first row of a new mode defines scene-level properties (background, font, tts, etc.)
+5. When mode changes, font/TTS settings reset to config defaults if not specified in the first row of the new mode
 
 Output Scene Types
 1. Text Scene
@@ -110,7 +110,7 @@ json
   "duration": 5.0, // optional from csv
   "audio": {
     "tts": {
-      "text": "Welcome to our presentation",  // This comes from the 'background' column in CSV
+      "text": "Welcome to our presentation",  // This comes from the 'text' column in CSV
       "tts_engine": "edge-tts",
       "voice": "en-US-JennyNeural",
       "speed": 0.9

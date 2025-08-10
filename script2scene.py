@@ -82,6 +82,14 @@ class Script2Scene:
         if 'color' not in self.config['font']:
             raise Script2SceneError("Config font missing required field: color")
 
+        # Validate required TTS section
+        if 'tts' not in self.config:
+            raise Script2SceneError("Config missing required field: tts")
+        if 'tts_engine' not in self.config['tts']:
+            raise Script2SceneError("Config tts missing required field: tts_engine")
+        if 'voice' not in self.config['tts']:
+            raise Script2SceneError("Config tts missing required field: voice")
+
     def validate_highlight_mode(self, first_row: Dict[str, str]) -> None:
         """
         Validate that rows for 'all_with_highlight' mode have required highlight fields
@@ -144,61 +152,76 @@ class Script2Scene:
         else:
             return 'background', background
 
-    def get_default_tts_settings(self) -> Dict[str, Any]:
-        """Get default TTS settings"""
-        return {
-            'tts_engine': 'edge-tts',
-            'voice': 'zh-TW-HsiaoChenNeural',
-            'speed': 1.0
-        }
+    def build_font_config(self, row: Dict[str, str], inherit_from: Dict[str, Any] = None) -> Dict[str, Any]:
+        """
+        Build font configuration from row data.
 
-    def build_font_config(self, row: Dict[str, str], reset_to_defaults: bool = False) -> Dict[str, Any]:
-        """Build font configuration from row data"""
-        if reset_to_defaults:
+        Args:
+            row: CSV row data
+            inherit_from: Base config to inherit from (can be config defaults or scene config)
+
+        Returns:
+            Font configuration dictionary
+        """
+        if inherit_from:
+            # Start with inherited config (either config defaults or scene config)
+            font_config = {
+                'file': inherit_from.get('ttf', inherit_from.get('file', self.config['font']['ttf'])),
+                'size': inherit_from.get('size', self.config['font']['size']),
+                'color': inherit_from.get('color', self.config['font']['color'])
+            }
+        else:
+            # Fallback to config defaults if no inheritance specified
             font_config = {
                 'file': self.config['font']['ttf'],
                 'size': self.config['font']['size'],
                 'color': self.config['font']['color']
             }
-        else:
-            font_config = {}
 
-        # Override with row-specific values
-        if row.get('ttf'):
+        # Override with row-specific values if specified
+        if row.get('ttf', '').strip():
             font_config['file'] = row['ttf']
-        elif 'file' not in font_config:
-            font_config['file'] = self.config['font']['ttf']
-
-        font_config['size'] = self.config['font']['size']
-        font_config['color'] = self.config['font']['color']
 
         return font_config
 
-    def build_tts_config(self, row: Dict[str, str], reset_to_defaults: bool = False) -> Dict[str, Any]:
-        """Build TTS configuration from row data"""
-        if reset_to_defaults:
-            tts_config = self.get_default_tts_settings()
+    def build_tts_config(self, row: Dict[str, str], inherit_from: Dict[str, Any] = None) -> Dict[str, Any]:
+        """
+        Build TTS configuration from row data.
+
+        Args:
+            row: CSV row data
+            inherit_from: Base config to inherit from (can be config defaults or scene config)
+
+        Returns:
+            TTS configuration dictionary
+        """
+        if inherit_from:
+            # Start with inherited config (either config defaults or scene config)
+            tts_config = {
+                'tts_engine': inherit_from.get('tts_engine', self.config['tts']['tts_engine']),
+                'voice': inherit_from.get('voice', self.config['tts']['voice']),
+                'speed': inherit_from.get('speed', 1.0)
+            }
         else:
-            tts_config = {}
+            # Fallback to config defaults if no inheritance specified
+            tts_config = {
+                'tts_engine': self.config['tts']['tts_engine'],
+                'voice': self.config['tts']['voice'],
+                'speed': 1.0
+            }
 
-        # Override with row-specific values
-        if row.get('tts'):
+        # Override with row-specific values if specified
+        if row.get('tts', '').strip():
             tts_config['tts_engine'] = row['tts']
-        elif 'tts_engine' not in tts_config:
-            tts_config['tts_engine'] = 'edge-tts'
 
-        if row.get('voice'):
+        if row.get('voice', '').strip():
             tts_config['voice'] = row['voice']
-        elif 'voice' not in tts_config:
-            tts_config['voice'] = 'zh-TW-HsiaoChenNeural'
 
-        if row.get('speed'):
+        if row.get('speed', '').strip():
             try:
                 tts_config['speed'] = float(row['speed'])
             except ValueError:
-                tts_config['speed'] = 1.0
-        elif 'speed' not in tts_config:
-            tts_config['speed'] = 1.0
+                pass  # Keep inherited/default value
 
         return tts_config
 
@@ -230,16 +253,32 @@ class Script2Scene:
 
             scene['highlight_style'] = highlight_style
 
+
+        # Build scene-level font/TTS config from first row (using config defaults as base)
+        scene_font_config = self.build_font_config(first_row)
+        scene_tts_config = self.build_tts_config(first_row)
+
         # Add text entries
-        for row in rows:
-            text_entry = {
-                'text': row['text'],
-                'font': self.build_font_config(row, reset_to_defaults=(row == first_row)),
-                'tts': self.build_tts_config(row, reset_to_defaults=(row == first_row))
-            }
+        for i, row in enumerate(rows):
+            if i == 0:
+                # First row uses the scene-level config
+                text_entry = {
+                    'text': row['text'],
+                    'font': scene_font_config,
+                    'tts': scene_tts_config
+                }
+            else:
+                # Subsequent rows inherit from scene config but can override individual fields
+                text_entry = {
+                    'text': row['text'],
+                    'font': self.build_font_config(row, inherit_from=scene_font_config),
+                    'tts': self.build_tts_config(row, inherit_from=scene_tts_config)
+                }
+
             # Only add halign if it's not empty
             if row.get('alignment', '').strip():
                 text_entry['halign'] = row.get('alignment')
+
             scene['text'].append(text_entry)
 
         return scene
@@ -267,7 +306,7 @@ class Script2Scene:
 
         # Add TTS audio if text is provided
         if first_row.get('text', '').strip():
-            tts_config = self.build_tts_config(first_row, reset_to_defaults=True)
+            tts_config = self.build_tts_config(first_row)
             scene['audio'] = {
                 'tts': {
                     'text': first_row['text'],

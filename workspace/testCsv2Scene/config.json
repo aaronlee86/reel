@@ -10,5 +10,9 @@
     "file": "clean_bgm.wav",
     "volume": 0.5,
     "start": 0
+  },
+  "tts": {
+    "tts_engine": "eleven",
+    "voice": "jsCqWAovK2LkecY7zXl4"
   }
 }
