@@ -44,6 +44,10 @@ json
     "ttf": "default_font.ttf",
     "size": 48,
     "color": "#FFFFFF"
+  },
+  "tts": {
+    "tts_engine": "default_engine",
+    "voice": "default_voice"
   }
 }
 
@@ -106,7 +110,7 @@ json
   "duration": 5.0, // optional from csv
   "audio": {
     "tts": {
-      "text": "Welcome to our presentation",  // This comes from the 'text' column in CSV
+      "text": "Welcome to our presentation",  // This comes from the 'background' column in CSV
       "tts_engine": "edge-tts",
       "voice": "en-US-JennyNeural",
       "speed": 0.9
@@ -122,7 +126,7 @@ Note:
 json
 {
   "type": "video",
-  "file": "detailed_explanation.mp4",  // This comes from the 'text' column in CSV
+  "file": "detailed_explanation.mp4",  // This comes from the 'background' column in CSV
   "duration": 15
 }
 Note:

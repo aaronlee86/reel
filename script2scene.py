@@ -249,7 +249,7 @@ class Script2Scene:
         first_row = rows[0]
 
         # Parse background (becomes file)
-        bg_type, bg_value = self.parse_background(first_row.get('background', ''))
+        bg_type, bg_value = self.parse_background(first_row.get('background'))
 
         scene = {'type': 'image'}
 
@@ -283,7 +283,7 @@ class Script2Scene:
 
         scene = {
             'type': 'video',
-            'file': first_row.get('background', '')  # Using background field as specified
+            'file': first_row.get('background')  # Using background field as specified
         }
 
         # Add duration if available
