@@ -88,7 +88,7 @@ class ImageSceneConverter(SceneConverter):
                 tts_config = audio_config['tts']
                 vclip['audio']['tts'] = {
                     'text': tts_config['text'],
-                    'tts_engine': tts_config.get['tts_engine'],
+                    'tts_engine': tts_config['tts_engine'],
                     'voice': tts_config['voice'],
                     'speed': tts_config.get('speed', 1.0)
                 }
