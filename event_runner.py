@@ -67,6 +67,11 @@ class VideoGenerator:
         # Construct full audio path
         full_audio_path = os.path.join(self.base_path, "audio", audio_path)
 
+        if not os.path.exists(full_audio_path):
+            full_audio_path = os.path.join("tts_audio_lib", audio_path)
+            if not os.path.exists(full_audio_path):
+                raise VideoGenerationError(f"audio file not exist: {full_audio_path}")
+
         # Load audio clip
         audio_clip = AudioFileClip(full_audio_path)
 
@@ -258,30 +263,21 @@ class VideoGenerator:
 
         # Build clips
         clips = []
-        anyError = False
         for i, event in enumerate(events):
             try:
+                print(f"Processing clip #{i} ({event.get('type', 'unknown')})")
                 # Build clip using appropriate method
                 builder = self.clip_builders.get(event["type"])
                 if not builder:
                     print(f"Unsupported clip type: {event['type']} for clip #{i}")
-                    anyError = True
                     continue
 
                 clip = builder(event, size)
                 clips.append(clip)
-            except VideoGenerationError as e:
-                anyError = True
-                print(f"Skipping invalid clip #{i} ({event.get('type', 'unknown')}): {e}")
-                print(f"Clip details: {event}")
             except Exception as e:
-                anyError = True
-                print(f"Error processing clip #{i} ({event.get('type', 'unknown')}): {e}")
+                print(f"Error processing clip #{i} : {e}")
                 print(f"Clip details: {event}")
-                print(f"Skipping clip and continuing...")
-
-        if anyError:
-            raise VideoGenerationError("Stop because of error")
+                raise # Rethrows the original exception
 
         for i in range(1, len(clips)):
             if clips[i].start < clips[i-1].end:
@@ -297,7 +293,6 @@ class VideoGenerator:
         if preview_start is not None and preview_duration is not None:
             video = video.subclipped(preview_start, preview_start + preview_duration)
 
-        print("##############debug##################")
         # Output final video
         output_path = os.path.join(self.base_path, "output.mp4")
         video.write_videofile(output_path, fps=fps, codec="libx264", audio_codec="aac")
