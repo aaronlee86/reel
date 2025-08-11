@@ -78,7 +78,6 @@ class VideoGenerator:
         # Return full audio if shorter or equal to duration
         return audio_clip
 
-
     def _hex_to_rgb(self, hex_color: str) -> Tuple[int, int, int]:
         """
         Convert hex color to RGB tuple.
@@ -288,7 +287,6 @@ class VideoGenerator:
             if clips[i].start < clips[i-1].end:
                 print(f"Warning: Clip {i} overlaps with previous clip.")
 
-
         # Create composite video from clips
         video = CompositeVideoClip(clips, size=size)
 
@@ -383,18 +381,39 @@ def generate_video_from_json(
     generator = VideoGenerator(full_path)
     return generator.generate_video(data, preview_start, preview_duration)
 
+def parse_arguments():
+    """
+    Parse command-line arguments.
+
+    Returns:
+        argparse.Namespace: Parsed arguments
+    """
+    parser = argparse.ArgumentParser(description="Generate video from event JSON.")
+    parser.add_argument(
+        "folder",
+        help="Subfolder under workspace containing clips.json and assets"
+    )
+    parser.add_argument(
+        "--preview-start",
+        type=float,
+        help="Start time in seconds for preview clip"
+    )
+    parser.add_argument(
+        "--preview-duration",
+        type=float,
+        help="Duration in seconds for preview clip"
+    )
+    return parser.parse_args()
+
 def main():
     """
     Command-line interface for video generation.
     Parses arguments and calls video generation function.
     """
-    parser = argparse.ArgumentParser(description="Generate video from event JSON.")
-    parser.add_argument("folder", help="Subfolder under workspace containing clips.json and assets")
-    parser.add_argument("--preview-start", type=float, help="Start time in seconds for preview clip")
-    parser.add_argument("--preview-duration", type=float, help="Duration in seconds for preview clip")
-    args = parser.parse_args()
-
     try:
+        # Parse arguments
+        args = parse_arguments()
+
         # Generate video based on command-line arguments
         generate_video_from_json(args.folder, args.preview_start, args.preview_duration)
     except Exception as e:
