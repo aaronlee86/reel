@@ -57,6 +57,7 @@ class JSONTransformer:
     def transform_json(
         cls,
         input_json: Dict[str, Any],
+        workspace_dir: str,
         audio_folder: str,
         video_folder: str
     ) -> Dict[str, Any]:
@@ -65,6 +66,7 @@ class JSONTransformer:
 
         Args:
             input_json (Dict[str, Any]): Input JSON to transform
+            workspace_dir (str): Workspace dir
             audio_folder (str): Folder containing audio files
             video_folder (str): Folder containing video files
 
@@ -95,14 +97,20 @@ class JSONTransformer:
                 # Determine duration based on type
                 if event['type'] == 'video':
                     # Use video_folder to locate video file
-                    video_path = os.path.join(video_folder, event['file'])
+                    video_path = os.path.join(workspace_dir, video_folder, event['file'])
+                    if not os.path.exists(video_path):
+                        video_path = os.path.join(video_folder, event['file'])
+
                     duration = AudioDurationExtractor.get_audio_duration(video_path)
                 elif event['type'] in ['image', 'text']:
                     # Use audio_folder to locate audio file
                     if 'audio' not in event:
                         raise ValueError(f"No audio specified for {event['type']} clip")
 
-                    audio_path = os.path.join(audio_folder, event['audio'])
+                    audio_path = os.path.join(workspace_dir, audio_folder, event['audio'])
+                    if not os.path.exists(audio_path):
+                        audio_path = os.path.join(audio_folder, event['audio'])
+
                     duration = AudioDurationExtractor.get_audio_duration(audio_path)
                 else:
                     raise ValueError(f"Unsupported clip type: {event['type']}")
@@ -130,6 +138,7 @@ class TtsClipProcessor:
     def process_json_file(
         input_file: str,
         output_file: str,
+        workspace_dir: str,
         audio_folder: str,
         video_folder: str,
         verbose: bool = False
@@ -162,6 +171,7 @@ class TtsClipProcessor:
             # Transform JSON
             output_json = JSONTransformer.transform_json(
                 input_json,
+                workspace_dir,
                 audio_folder=audio_folder,
                 video_folder=video_folder
             )

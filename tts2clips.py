@@ -35,7 +35,7 @@ def parse_arguments():
     parser.add_argument(
         '--audio-folder',
         type=str,
-        default='audio',
+        default='tts_audio_lib',
         help="Folder containing audio files (default: audio)"
     )
     # Optional video folder argument
@@ -61,16 +61,13 @@ def main():
     input_path = os.path.join(workspace_dir, args.input)
     output_path = os.path.join(workspace_dir, args.output)
 
-    # Construct full audio and video folder paths
-    audio_folder = os.path.join(workspace_dir, args.audio_folder)
-    video_folder = os.path.join(workspace_dir, args.video_folder)
-
     # Process the JSON file
     TtsClipProcessor.process_json_file(
         input_path,
         output_path,
-        audio_folder=audio_folder,
-        video_folder=video_folder
+        workspace_dir,
+        audio_folder=args.audio_folder,
+        video_folder=args.video_folder
     )
 
 if __name__ == '__main__':
