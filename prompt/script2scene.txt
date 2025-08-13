@@ -32,7 +32,7 @@ Optional Columns:
 * tts: TTS engine (default: "edge-tts")
 * voice: Voice name (default: "zh-TW-HsiaoChenNeural")
 * speed: Speech speed (default: 1.0)
-* duration: Required for image scenes only
+* duration: image/video scenes only
 
 2. Config File (config.json)
 Required Fields:

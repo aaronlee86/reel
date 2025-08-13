@@ -11,195 +11,28 @@
   },
   "scenes": [
     {
-      "type": "text",
-      "mode": "append_center",
-      "text": [
-        {
-          "text": "Welcome to our <h>amazing</h> presentation",
-          "font": {
-            "file": "font.ttf",
-            "size": 48,
-            "color": "#FFFFFF"
-          },
-          "tts": {
-            "tts_engine": "eleven",
-            "voice": "jsCqWAovK2LkecY7zXl4",
-            "speed": 0.9
-          },
-          "halign": "center"
-        },
-        {
-          "text": "This will appear in the center",
-          "font": {
-            "file": "font.ttf",
-            "size": 48,
-            "color": "#FFFFFF"
-          },
-          "tts": {
-            "tts_engine": "eleven",
-            "voice": "jsCqWAovK2LkecY7zXl4",
-            "speed": 0.9
-          }
-        },
-        {
-          "text": "Let's continue with more text",
-          "font": {
-            "file": "font.ttf",
-            "size": 48,
-            "color": "#FFFFFF"
-          },
-          "tts": {
-            "tts_engine": "eleven",
-            "voice": "jsCqWAovK2LkecY7zXl4",
-            "speed": 0.9
-          }
+      "type": "image",
+      "bgcolor": "#644444",
+      "audio": {
+        "tts": {
+          "text": "Thank you slide with solid color",
+          "tts_engine": "eleven",
+          "voice": "jsCqWAovK2LkecY7zXl4",
+          "speed": 1.0
         }
-      ],
-      "background": "cover.png"
+      }
     },
     {
-      "type": "text",
-      "mode": "append_top",
-      "text": [
-        {
-          "text": "Now we move to top alignment",
-          "font": {
-            "file": "font.ttf",
-            "size": 48,
-            "color": "#FFFFFF"
-          },
-          "tts": {
-            "tts_engine": "eleven",
-            "voice": "jsCqWAovK2LkecY7zXl4",
-            "speed": 1.1
-          },
-          "halign": "left"
-        },
-        {
-          "text": "This text appears at the top",
-          "font": {
-            "file": "font.ttf",
-            "size": 48,
-            "color": "#FFFFFF"
-          },
-          "tts": {
-            "tts_engine": "eleven",
-            "voice": "jsCqWAovK2LkecY7zXl4",
-            "speed": 1.1
-          }
-        },
-        {
-          "text": "And this one too",
-          "font": {
-            "file": "font.ttf",
-            "size": 48,
-            "color": "#FFFFFF"
-          },
-          "tts": {
-            "tts_engine": "eleven",
-            "voice": "jsCqWAovK2LkecY7zXl4",
-            "speed": 1.1
-          }
+      "type": "image",
+      "bgcolor": "#344444",
+      "duration": 5.5,
+      "audio": {
+        "tts": {
+          "text": "Thank you slide with solid color",
+          "tts_engine": "eleven",
+          "voice": "jsCqWAovK2LkecY7zXl4",
+          "speed": 1.0
         }
-      ],
-      "background": "background.png"
-    },
-    {
-      "type": "text",
-      "mode": "all",
-      "text": [
-        {
-          "text": "Here's all text at once",
-          "font": {
-            "file": "font.ttf",
-            "size": 48,
-            "color": "#FFFFFF"
-          },
-          "tts": {
-            "tts_engine": "gcloud",
-            "voice": "en-US-Standard-D",
-            "speed": 1.0
-          },
-          "halign": "center"
-        },
-        {
-          "text": "Everything shows together",
-          "font": {
-            "file": "font.ttf",
-            "size": 48,
-            "color": "#FFFFFF"
-          },
-          "tts": {
-            "tts_engine": "gcloud",
-            "voice": "en-US-Standard-D",
-            "speed": 1.0
-          }
-        },
-        {
-          "text": "With no delays",
-          "font": {
-            "file": "font.ttf",
-            "size": 48,
-            "color": "#FFFFFF"
-          },
-          "tts": {
-            "tts_engine": "gcloud",
-            "voice": "en-US-Standard-D",
-            "speed": 1.0
-          }
-        }
-      ],
-      "bgcolor": "#FF5733"
-    },
-    {
-      "type": "text",
-      "mode": "all_with_highlight",
-      "text": [
-        {
-          "text": "Highlighting example",
-          "font": {
-            "file": "font.ttf",
-            "size": 48,
-            "color": "#FFFFFF"
-          },
-          "tts": {
-            "tts_engine": "eleven",
-            "voice": "jsCqWAovK2LkecY7zXl4",
-            "speed": 1.0
-          }
-        },
-        {
-          "text": "This has <h>special</h> highlighting",
-          "font": {
-            "file": "font.ttf",
-            "size": 48,
-            "color": "#FFFFFF"
-          },
-          "tts": {
-            "tts_engine": "eleven",
-            "voice": "jsCqWAovK2LkecY7zXl4",
-            "speed": 1.0
-          }
-        },
-        {
-          "text": "Multiple <h>highlighted</h> words here",
-          "font": {
-            "file": "font.ttf",
-            "size": 48,
-            "color": "#FFFFFF"
-          },
-          "tts": {
-            "tts_engine": "eleven",
-            "voice": "jsCqWAovK2LkecY7zXl4",
-            "speed": 1.0
-          }
-        }
-      ],
-      "background": "background.png",
-      "highlight_style": {
-        "font_color": "#123456",
-        "bold": true,
-        "italic": false
       }
     },
     {
@@ -213,27 +46,6 @@
           "speed": 1.0
         }
       }
-    },
-    {
-      "type": "text",
-      "mode": "append_center",
-      "text": [
-        {
-          "text": "Final thoughts and contact info",
-          "font": {
-            "file": "font.ttf",
-            "size": 48,
-            "color": "#FFFFFF"
-          },
-          "tts": {
-            "tts_engine": "gcloud",
-            "voice": "en-US-Standard-G",
-            "speed": 1.0
-          },
-          "halign": "center"
-        }
-      ],
-      "background": "background.png"
     }
   ]
 }
