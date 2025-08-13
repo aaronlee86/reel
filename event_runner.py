@@ -123,7 +123,7 @@ class VideoGenerator:
             if not os.path.exists(image_path):
                 image_path = os.path.join("assets", event["file"])
 
-            clip = ImageClip(image_path).resized(height=size[1])
+            clip = ImageClip(image_path).resized(size)
         else:
             # Solid color clip
             bgcolor = self._hex_to_rgb(event.get("bgcolor", "#000000"))
