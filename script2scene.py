@@ -352,8 +352,15 @@ class Script2Scene:
                 mode = current_mode
                 row['mode'] = mode
 
-            # Start new group if mode changed
-            if mode != current_mode:
+            # For image and video scenes, always create a new group
+            # This ensures each video/image scene starts a new group
+            if mode in {'image', 'video'}:
+                if current_group:
+                    groups.append((current_mode, current_group))
+                current_mode = mode
+                current_group = [row]
+            # For text modes, group consecutive rows
+            elif mode != current_mode:
                 if current_group:
                     groups.append((current_mode, current_group))
                 current_mode = mode

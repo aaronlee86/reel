@@ -1,0 +1,7 @@
+text,mode,background,ttf,alignment,tts,voice,speed,duration,highlight_color,highlight_bold,highlight_italic
+Welcome to our <h>amazing</h> presentation,append_center,cover.png,,center,eleven,jsCqWAovK2LkecY7zXl4,0.9,,,,
+This will appear in the center,,,,,,,,,,,
+Now we move to top alignment,append_top,background.png,,left,eleven,jsCqWAovK2LkecY7zXl4,1.1,,,,
+This text appears at the top,,,,,,,,,,,
+Beautiful sunset over the mountains,image,background.png,,,,,,,,,
+Thank you slide with solid color,image,#2E86AB,,,,,,3.5,,,
