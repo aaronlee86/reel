@@ -4,35 +4,35 @@ import logging
 from typing import Dict, Any, List
 from mutagen import File
 
-class AudioDurationExtractor:
+class MediaDurationExtractor:
     @staticmethod
-    def get_audio_duration(audio_file_path: str) -> float:
+    def get_media_duration(media_file_path: str) -> float:
         """
-        Extract audio duration from a file.
+        Extract media duration from a file.
 
         Args:
-            audio_file_path (str): Path to the audio file
+            media_file_path (str): Path to the media file
 
         Returns:
-            float: Duration of the audio in seconds
+            float: Duration of the media in seconds
 
         Raises:
-            FileNotFoundError: If audio file does not exist
-            ValueError: If audio metadata cannot be read
+            FileNotFoundError: If media file does not exist
+            ValueError: If media metadata cannot be read
             RuntimeError: For other processing errors
         """
         # Check file existence
-        if not os.path.exists(audio_file_path):
-            raise FileNotFoundError(f"Audio file not found: {audio_file_path}")
+        if not os.path.exists(media_file_path):
+            raise FileNotFoundError(f"Media file not found: {media_file_path}")
 
         try:
-            audio = File(audio_file_path)
-            if audio is not None:
-                return audio.info.length
+            media = File(media_file_path)
+            if media is not None:
+                return media.info.length
             else:
-                raise ValueError(f"Could not read audio file metadata: {audio_file_path}")
+                raise ValueError(f"Could not read media file metadata: {media_file_path}")
         except Exception as e:
-            raise RuntimeError(f"Error processing audio file {audio_file_path}: {e}")
+            raise RuntimeError(f"Error processing media file {media_file_path}: {e}")
 
 class JSONTransformer:
     @staticmethod
@@ -101,7 +101,7 @@ class JSONTransformer:
                     if not os.path.exists(video_path):
                         video_path = os.path.join(video_folder, event['file'])
 
-                    duration = AudioDurationExtractor.get_audio_duration(video_path)
+                    duration = MediaDurationExtractor.get_media_duration(video_path)
                 elif event['type'] in ['image', 'text']:
                     # Use audio_folder to locate audio file
                     if 'audio' not in event:
@@ -111,7 +111,7 @@ class JSONTransformer:
                     if not os.path.exists(audio_path):
                         audio_path = os.path.join(audio_folder, event['audio'])
 
-                    duration = AudioDurationExtractor.get_audio_duration(audio_path)
+                    duration = MediaDurationExtractor.get_media_duration(audio_path)
                 else:
                     raise ValueError(f"Unsupported clip type: {event['type']}")
 

@@ -61,14 +61,17 @@ def main():
     input_path = os.path.join(workspace_dir, args.input)
     output_path = os.path.join(workspace_dir, args.output)
 
-    # Process the JSON file
-    TtsClipProcessor.process_json_file(
-        input_path,
-        output_path,
-        workspace_dir,
-        audio_folder=args.audio_folder,
-        video_folder=args.video_folder
-    )
+    try:
+        # Process the JSON file
+        TtsClipProcessor.process_json_file(
+            input_path,
+            output_path,
+            workspace_dir,
+            audio_folder=args.audio_folder,
+            video_folder=args.video_folder
+        )
+    except Exception as e:
+        print(f"Stopped due to error: {e}")
 
 if __name__ == '__main__':
     main()
