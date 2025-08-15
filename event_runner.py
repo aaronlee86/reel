@@ -225,8 +225,15 @@ class VideoGenerator:
         if "file" not in event:
             raise VideoGenerationError("File is required for video clips")
 
+        video_file = event["file"]
+        # Construct full video path
+        full_video_path = os.path.join(self.base_path, "video", video_file)
+
+        if not os.path.exists(full_video_path):
+            raise VideoGenerationError(f"video file not exist: {full_video_path}")
+
         # Create video clip
-        clip = VideoFileClip(self._resolve_path(event["file"]))
+        clip = VideoFileClip(full_video_path)
 
         # Trim clip if duration specified
         if duration := event.get("duration"):
