@@ -12,10 +12,7 @@
   "scenes": [
     {
       "type": "text",
-      "mode": "all",
-      "valign":"top",
-      "line_spacing": 80,
-      "padding": 100,
+      "mode": "append_center",
       "text": [
         {
           "text": "Here's all text at once",
@@ -58,7 +55,7 @@
           }
         }
       ],
-      "bgcolor": "#222222"
+      "bgcolor": "#AABB00"
     }
   ]
 }

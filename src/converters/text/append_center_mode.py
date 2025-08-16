@@ -60,8 +60,8 @@ class AppendCenterModeStrategy(TextSceneStrategy):
                 # Calculate y position
                 # The latest sentence centers vertically
                 # Previous sentences shift up
-                current_y = (screen_height - (num_sentences - 1) * (font_size + line_spacing) - font_size) // 2 + \
-                            (idx * (font_size + line_spacing))
+                latest_sentence_y = screen_height // 2
+                current_y = latest_sentence_y - ((num_sentences - 1 - idx) * (font_size + line_spacing))
 
                 positioned_entry = {
                     **entry,

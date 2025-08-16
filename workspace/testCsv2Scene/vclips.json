@@ -12,7 +12,7 @@
   "vclips": [
     {
       "type": "text",
-      "bgcolor": "#222222",
+      "bgcolor": "#AABB00",
       "tts": {
         "text": "Here's all text at once",
         "tts_engine": "gcloud",
@@ -24,27 +24,7 @@
           "text": "Here's all text at once",
           "font": "assets/fonts/font.ttf",
           "x": 206,
-          "y": 100,
-          "font_size": 72,
-          "font_color": "#00BB22",
-          "bold": false,
-          "italic": false
-        },
-        {
-          "text": "Everything shows together",
-          "font": "assets/fonts/font.ttf",
-          "x": 122,
-          "y": 252,
-          "font_size": 72,
-          "font_color": "#00BB22",
-          "bold": false,
-          "italic": false
-        },
-        {
-          "text": "With no delays",
-          "font": "assets/fonts/font.ttf",
-          "x": 309,
-          "y": 404,
+          "y": 960,
           "font_size": 72,
           "font_color": "#00BB22",
           "bold": false,
@@ -54,7 +34,7 @@
     },
     {
       "type": "text",
-      "bgcolor": "#222222",
+      "bgcolor": "#AABB00",
       "tts": {
         "text": "Everything shows together",
         "tts_engine": "gcloud",
@@ -66,7 +46,7 @@
           "text": "Here's all text at once",
           "font": "assets/fonts/font.ttf",
           "x": 206,
-          "y": 100,
+          "y": 868,
           "font_size": 72,
           "font_color": "#00BB22",
           "bold": false,
@@ -76,17 +56,7 @@
           "text": "Everything shows together",
           "font": "assets/fonts/font.ttf",
           "x": 122,
-          "y": 252,
-          "font_size": 72,
-          "font_color": "#00BB22",
-          "bold": false,
-          "italic": false
-        },
-        {
-          "text": "With no delays",
-          "font": "assets/fonts/font.ttf",
-          "x": 309,
-          "y": 404,
+          "y": 960,
           "font_size": 72,
           "font_color": "#00BB22",
           "bold": false,
@@ -96,7 +66,7 @@
     },
     {
       "type": "text",
-      "bgcolor": "#222222",
+      "bgcolor": "#AABB00",
       "tts": {
         "text": "With no delays",
         "tts_engine": "gcloud",
@@ -108,7 +78,7 @@
           "text": "Here's all text at once",
           "font": "assets/fonts/font.ttf",
           "x": 206,
-          "y": 100,
+          "y": 776,
           "font_size": 72,
           "font_color": "#00BB22",
           "bold": false,
@@ -118,7 +88,7 @@
           "text": "Everything shows together",
           "font": "assets/fonts/font.ttf",
           "x": 122,
-          "y": 252,
+          "y": 868,
           "font_size": 72,
           "font_color": "#00BB22",
           "bold": false,
@@ -128,7 +98,7 @@
           "text": "With no delays",
           "font": "assets/fonts/font.ttf",
           "x": 309,
-          "y": 404,
+          "y": 960,
           "font_size": 72,
           "font_color": "#00BB22",
           "bold": false,
