@@ -2,8 +2,8 @@
   "screen_size": [1080, 1920],
   "font": {
     "ttf": "font.ttf",
-    "size": 48,
-    "color": "#FFFFFF"
+    "size": 72,
+    "color": "#00BB22"
   },
   "fps": 24,
   "bgm": {

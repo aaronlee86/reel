@@ -1,0 +1,160 @@
+I have a python method to implement.
+The following is the requirement. Don't implement code now.
+Tell me what your thought and how you are gonna do about it first.
+Once we are on the same page, should we start to implement it
+
+# `calculate_text_positions` Method Specification
+
+## Method Signature
+def calculate_text_positions(
+    self,
+    text_entries: List[Dict[str, Any]],
+    screen_size: List[int],
+    valign: str = 'center',
+    halign: str = 'error',
+    padding: int = 40,
+    line_spacing: int = 20
+) -> List[Dict[str, Any]]
+
+## Parameters
+
+### `text_entries` (Required)
+- **Type**: `List[Dict[str, Any]]`
+- **Description**: A list of text entry dictionaries
+- **Expected Structure**: Each entry must contain:
+  {
+    'text': str,  # The actual text content
+    'font': {
+      'size': int,  # Font size
+      'color': str,  # Font color (e.g., '#FFFFFF')
+      'file': str   # Font file path/name
+    },
+    'halign': str  # Optional: Horizontal alignment for this specific entry
+  }
+
+### `screen_size` (Required)
+- **Type**: `List[int]`
+- **Description**: Dimensions of the screen/canvas
+- **Format**: `[width, height]`
+- **Example**: `[1920, 1080]` for a Full HD screen
+
+### `valign` (Optional)
+- **Type**: `str`
+- **Default**: `'center'`
+- **Allowed Values**:
+  - `'top'`: Align text to the top of the screen
+  - `'center'`: Center text vertically
+  - `'bottom'`: Align text to the bottom of the screen
+
+### `halign` (Optional)
+- **Type**: `str`
+- **Default**: `'error'`
+- **Allowed Values**:
+  - `'left'`: Left-align text
+  - `'center'`: Center text horizontally
+  - `'right'`: Right-align text
+  - `'error'`: Fallback to individual entry's halign or raise an error
+
+### `padding` (Optional)
+- **Type**: `int`
+- **Default**: `40`
+- **Description**: Vertical padding from screen edges
+
+### `line_spacing` (Optional)
+- **Type**: `int`
+- **Default**: `20`
+- **Description**: Space between text lines
+
+## Return Value
+- **Type**: `List[Dict[str, Any]]`
+- **Description**: List of text entries with calculated positions
+- **Added Attributes for Each Entry**:
+  ```python
+  {
+    # Original entry attributes
+    ...
+    
+    # New calculated attributes
+    'x': int,        # Horizontal position
+    'y': int,        # Vertical position
+    'font_size': int,
+    'font_color': str,
+    'font': str,
+    'bold': bool, # always set to False
+    'italic': bool # always set to False
+  }
+  ```
+
+## Calculation Logic
+1. Calculate total text height
+   - Sum of individual text entry font sizes
+   - if there's very long text that exceeds screen width, let it exceed. Don't break into two lines
+   - Add line spacing between entries
+
+2. Vertical Positioning
+   - `'top'`: Start at `padding`
+   - `'center'`: Calculate centered start position
+   - `'bottom'`: Start from bottom, subtracting total height and padding
+
+3. Horizontal Positioning
+   - Uses `_calculate_x_position` method (assuming the function is there and works as expected)
+      - def _calculate_x_position(
+            self,
+            text: str,
+            font_size: int,
+            screen_width: int,
+            halign: str,
+            padding: int
+        ) -> int:
+            """
+            Calculate x position based on horizontal alignment
+
+            Args:
+                text (str): Text to position
+                font_size (int): Font size
+                screen_width (int): Screen width
+                halign (str): Horizontal alignment
+                padding (int): Padding from screen edges
+
+            Returns:
+                int: Calculated x position
+            """
+   - Supports per-entry or global horizontal alignment
+   - Considers screen width and padding
+
+## Error Handling
+- Raises errors for:
+  - Invalid vertical alignment
+  - Missing required entry attributes
+  - Inappropriate screen size
+
+## Example Usage
+entries = [
+    {
+        'text': 'Hello, World!',
+        'font': {
+            'size': 36,
+            'color': '#FFFFFF',
+            'file': 'Arial.ttf'
+        },
+        'halign': 'center'
+    },
+    {
+        'text': 'Welcome to the presentation',
+        'font': {
+            'size': 24,
+            'color': '#CCCCCC',
+            'file': 'Roboto.ttf'
+        }
+    }
+]
+
+screen_size = [1920, 1080]
+positioned_entries = strategy.calculate_text_positions(
+    entries, 
+    screen_size, 
+    valign='center', 
+    padding=50
+)
+```
+

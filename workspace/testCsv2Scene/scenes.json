@@ -11,41 +11,54 @@
   },
   "scenes": [
     {
-      "type": "image",
-      "bgcolor": "#644444",
-      "audio": {
-        "tts": {
-          "text": "Thank you slide with solid color",
-          "tts_engine": "eleven",
-          "voice": "jsCqWAovK2LkecY7zXl4",
-          "speed": 1.0
+      "type": "text",
+      "mode": "all",
+      "valign":"bottom",
+      "line_spacing": 80,
+      "padding": 100,
+      "text": [
+        {
+          "text": "Here's all text at once",
+          "font": {
+            "file": "font.ttf",
+            "size": 72,
+            "color": "#00BB22"
+          },
+          "tts": {
+            "tts_engine": "gcloud",
+            "voice": "en-US-Standard-D",
+            "speed": 1.0
+          },
+          "halign": "center"
+        },
+        {
+          "text": "Everything shows together",
+          "font": {
+            "file": "font.ttf",
+            "size": 72,
+            "color": "#00BB22"
+          },
+          "tts": {
+            "tts_engine": "gcloud",
+            "voice": "en-US-Standard-D",
+            "speed": 1.0
+          }
+        },
+        {
+          "text": "With no delays",
+          "font": {
+            "file": "font.ttf",
+            "size": 72,
+            "color": "#00BB22"
+          },
+          "tts": {
+            "tts_engine": "gcloud",
+            "voice": "en-US-Standard-D",
+            "speed": 1.0
+          }
         }
-      }
-    },
-    {
-      "type": "image",
-      "bgcolor": "#344444",
-      "duration": 5.5,
-      "audio": {
-        "tts": {
-          "text": "Thank you slide with solid color",
-          "tts_engine": "eleven",
-          "voice": "jsCqWAovK2LkecY7zXl4",
-          "speed": 1.0
-        }
-      }
-    },
-    {
-      "type": "image",
-      "file": "background.png",
-      "audio": {
-        "tts": {
-          "text": "Beautiful sunset over the mountains",
-          "tts_engine": "eleven",
-          "voice": "jsCqWAovK2LkecY7zXl4",
-          "speed": 1.0
-        }
-      }
+      ],
+      "bgcolor": "#222222"
     }
   ]
 }

@@ -11,41 +11,130 @@
   },
   "vclips": [
     {
-      "type": "image",
-      "bgcolor": "#644444",
-      "audio": {
-        "tts": {
-          "text": "Thank you slide with solid color",
-          "tts_engine": "eleven",
-          "voice": "jsCqWAovK2LkecY7zXl4",
-          "speed": 1.0
+      "type": "text",
+      "bgcolor": "#222222",
+      "tts": {
+        "text": "Here's all text at once",
+        "tts_engine": "gcloud",
+        "voice": "en-US-Standard-D",
+        "speed": 1.0
+      },
+      "sentences": [
+        {
+          "text": "Here's all text at once",
+          "font": "font.ttf",
+          "x": 126,
+          "y": 1444,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "Everything shows together",
+          "font": "font.ttf",
+          "x": 90,
+          "y": 1596,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "With no delays",
+          "font": "font.ttf",
+          "x": 288,
+          "y": 1748,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
         }
-      }
+      ]
     },
     {
-      "type": "image",
-      "duration": 5.5,
-      "bgcolor": "#344444",
-      "audio": {
-        "tts": {
-          "text": "Thank you slide with solid color",
-          "tts_engine": "eleven",
-          "voice": "jsCqWAovK2LkecY7zXl4",
-          "speed": 1.0
+      "type": "text",
+      "bgcolor": "#222222",
+      "tts": {
+        "text": "Everything shows together",
+        "tts_engine": "gcloud",
+        "voice": "en-US-Standard-D",
+        "speed": 1.0
+      },
+      "sentences": [
+        {
+          "text": "Here's all text at once",
+          "font": "font.ttf",
+          "x": 126,
+          "y": 1444,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "Everything shows together",
+          "font": "font.ttf",
+          "x": 90,
+          "y": 1596,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "With no delays",
+          "font": "font.ttf",
+          "x": 288,
+          "y": 1748,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
         }
-      }
+      ]
     },
     {
-      "type": "image",
-      "file": "background.png",
-      "audio": {
-        "tts": {
-          "text": "Beautiful sunset over the mountains",
-          "tts_engine": "eleven",
-          "voice": "jsCqWAovK2LkecY7zXl4",
-          "speed": 1.0
+      "type": "text",
+      "bgcolor": "#222222",
+      "tts": {
+        "text": "With no delays",
+        "tts_engine": "gcloud",
+        "voice": "en-US-Standard-D",
+        "speed": 1.0
+      },
+      "sentences": [
+        {
+          "text": "Here's all text at once",
+          "font": "font.ttf",
+          "x": 126,
+          "y": 1444,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "Everything shows together",
+          "font": "font.ttf",
+          "x": 90,
+          "y": 1596,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "With no delays",
+          "font": "font.ttf",
+          "x": 288,
+          "y": 1748,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
         }
-      }
+      ]
     }
   ]
 }

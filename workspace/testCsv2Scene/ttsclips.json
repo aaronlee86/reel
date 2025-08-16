@@ -11,20 +11,115 @@
   },
   "vclips": [
     {
-      "type": "image",
-      "bgcolor": "#644444",
-      "audio": "tts_f41f063e97547abbc042d780_eleven_jsCqWAovK2LkecY7zXl4_1.0.mp3"
+      "type": "text",
+      "bgcolor": "#222222",
+      "sentences": [
+        {
+          "text": "Here's all text at once",
+          "font": "font.ttf",
+          "x": 126,
+          "y": 1444,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "Everything shows together",
+          "font": "font.ttf",
+          "x": 90,
+          "y": 1596,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "With no delays",
+          "font": "font.ttf",
+          "x": 288,
+          "y": 1748,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        }
+      ],
+      "audio": "tts_60cd075595140b2591bab483_gcloud_en-US-Standard-D_1.0.mp3"
     },
     {
-      "type": "image",
-      "duration": 5.5,
-      "bgcolor": "#344444",
-      "audio": "tts_f41f063e97547abbc042d780_eleven_jsCqWAovK2LkecY7zXl4_1.0.mp3"
+      "type": "text",
+      "bgcolor": "#222222",
+      "sentences": [
+        {
+          "text": "Here's all text at once",
+          "font": "font.ttf",
+          "x": 126,
+          "y": 1444,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "Everything shows together",
+          "font": "font.ttf",
+          "x": 90,
+          "y": 1596,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "With no delays",
+          "font": "font.ttf",
+          "x": 288,
+          "y": 1748,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        }
+      ],
+      "audio": "tts_7c411f8da52e51ad82eb7961_gcloud_en-US-Standard-D_1.0.mp3"
     },
     {
-      "type": "image",
-      "file": "background.png",
-      "audio": "tts_a66ed30466cacb504b214922_eleven_jsCqWAovK2LkecY7zXl4_1.0.mp3"
+      "type": "text",
+      "bgcolor": "#222222",
+      "sentences": [
+        {
+          "text": "Here's all text at once",
+          "font": "font.ttf",
+          "x": 126,
+          "y": 1444,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "Everything shows together",
+          "font": "font.ttf",
+          "x": 90,
+          "y": 1596,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "With no delays",
+          "font": "font.ttf",
+          "x": 288,
+          "y": 1748,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        }
+      ],
+      "audio": "tts_cefa52db751088c882a15017_gcloud_en-US-Standard-D_1.0.mp3"
     }
   ]
 }
