@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Any, List
+from PIL import Image, ImageDraw, ImageFont
+
 
 class TextSceneStrategy(ABC):
     """
@@ -34,37 +36,61 @@ class TextSceneStrategy(ABC):
         self,
         text: str,
         font_size: int,
+        font_path: str,
         screen_width: int,
         halign: str,
         padding: int
     ) -> int:
         """
-        Calculate x position based on horizontal alignment
+        Calculate x position based on horizontal alignment with accurate text measurement
 
         Args:
             text (str): Text to position
-            font_size (int): Font size
-            screen_width (int): Screen width
-            halign (str): Horizontal alignment
-            padding (int): Padding from screen edges
+            font_size (int): Font size in points
+            screen_width (int): Screen width in pixels
+            halign (str): Horizontal alignment ('left', 'center', or 'right')
+            padding (int): Padding from screen edges in pixels
+            font_path (str): Path to the font file (required)
 
         Returns:
             int: Calculated x position
+
+        Raises:
+            ValueError: If halign is invalid or font_path is not provided
+            FileNotFoundError: If font file doesn't exist
+            OSError: If font file is invalid or corrupted
         """
         # Validate horizontal alignment
         if halign not in ['left', 'center', 'right']:
             raise ValueError(f"Invalid halign value: {halign}. Must be 'left', 'center', or 'right'.")
 
-        # Placeholder width calculation
-        estimated_text_width = len(text) * (font_size * 0.5)
+        # Validate font_path is provided
+        if not font_path:
+            raise ValueError("font_path is required. Please provide a valid path to a font file.")
 
-        # Calculate x position
+        try:
+            # Load the font
+            font = ImageFont.truetype(font_path, font_size)
+        except FileNotFoundError:
+            raise FileNotFoundError(f"Font file not found: {font_path}")
+        except OSError as e:
+            raise OSError(f"Invalid or corrupted font file '{font_path}': {str(e)}")
+
+        # Create dummy image for measurement
+        img = Image.new('RGB', (1, 1))
+        draw = ImageDraw.Draw(img)
+
+        # Get actual text dimensions
+        bbox = draw.textbbox((0, 0), text, font=font)
+        text_width = bbox[2] - bbox[0]
+
+        # Calculate position based on alignment
         if halign == 'left':
             return padding
         elif halign == 'right':
-            return screen_width - estimated_text_width - padding
+            return screen_width - text_width - padding
         else:  # center
-            return (screen_width - estimated_text_width) // 2
+            return (screen_width - text_width) // 2
 
     @abstractmethod
     def convert(

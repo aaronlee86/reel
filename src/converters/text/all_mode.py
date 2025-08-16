@@ -47,12 +47,13 @@ class AllModeStrategy(TextSceneStrategy):
         for entry in text_entries:
             # Calculate x based on horizontal alignment
             halign = entry.get('halign', halign)
-            font_size = entry['font']['size']
+            font = entry['font']
 
             # Calculate x based on horizontal alignment
             x = self._calculate_x_position(
                 entry['text'],
-                font_size,
+                font['size'],
+                font['file'],
                 screen_width,
                 halign,
                 padding
@@ -75,7 +76,7 @@ class AllModeStrategy(TextSceneStrategy):
             positioned_entries.append(positioned_entry)
 
             # Move to next line
-            current_y += font_size + line_spacing
+            current_y += font['size'] + line_spacing
 
         return positioned_entries
 

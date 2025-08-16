@@ -64,6 +64,14 @@ class TextSceneConverter(SceneConverter):
             if 'color' not in font:
                 raise ValueError("Font color is required")
 
+            # Validate font file exists in assets/fonts directory
+            font_file = font['file']
+            font_path = os.path.join("assets", "fonts", font_file)
+            if not os.path.isfile(font_path):
+                raise ValueError(f"Font file does not exist: {font_path}")
+
+            font['file'] = font_path
+
         # Get the appropriate strategy
         strategy = TextSceneStrategyFactory.get_strategy(mode)
 

@@ -176,7 +176,7 @@ class VideoGenerator:
         text_lines = [s["text"] for s in sentences]
         positions = [[s["x"], s["y"]] for s in sentences]
         font_sizes = [s["font_size"] for s in sentences]
-        font_path = os.path.join("assets", "fonts", sentences[0]["font"]) if sentences else ""
+        font_path = sentences[0]["font"] if sentences else ""
         font_colors = [s.get("font_color", "#000000") for s in sentences]
         bold_flags = [s.get("bold", False) for s in sentences]
         italic_flags = [s.get("italic", False) for s in sentences]

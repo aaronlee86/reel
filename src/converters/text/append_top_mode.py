@@ -37,13 +37,14 @@ class AppendTopModeStrategy(TextSceneStrategy):
 
             for idx in range(num_sentences):
                 entry = text_entries[idx]
-                font_size = entry['font']['size']
+                font= entry['font']
                 halign = entry.get('halign', halign)
 
                 # Calculate x based on horizontal alignment
                 x = self._calculate_x_position(
                     entry['text'],
-                    font_size,
+                    font['size'],
+                    font['file'],
                     screen_width,
                     halign,
                     padding
@@ -51,7 +52,7 @@ class AppendTopModeStrategy(TextSceneStrategy):
 
                 # Calculate y position
                 # Start from top padding, stack downward
-                current_y = padding + idx * (font_size + line_spacing)
+                current_y = padding + idx * (font['size'] + line_spacing)
 
                 positioned_entry = {
                     **entry,

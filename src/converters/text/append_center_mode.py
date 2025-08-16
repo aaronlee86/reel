@@ -33,13 +33,14 @@ class AppendCenterModeStrategy(TextSceneStrategy):
         # Precompute x positions for each entry
         x_positions = []
         for entry in text_entries:
-            font_size = entry['font']['size']
+            font = entry['font']
             halign = entry.get('halign', halign)
 
             # Calculate x based on horizontal alignment
             x = self._calculate_x_position(
                 entry['text'],
-                font_size,
+                font['size'],
+                font['file'],
                 screen_width,
                 halign,
                 padding

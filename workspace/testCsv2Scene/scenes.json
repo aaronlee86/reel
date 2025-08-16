@@ -13,7 +13,7 @@
     {
       "type": "text",
       "mode": "all",
-      "valign":"bottom",
+      "valign":"top",
       "line_spacing": 80,
       "padding": 100,
       "text": [
