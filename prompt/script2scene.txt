@@ -25,6 +25,7 @@ Required Columns:
 * highlight_color: Reqired only for the first row of "all_with_highlight" mode.
 * highlight_bold: Reqired only for the first row of "all_with_highlight" mode.
 * highlight_italic: Reqired only for the first row of "all_with_highlight" mode.
+* line_spacing: Optional for text scenes. If not specified, use config.json as default value
 
 Optional Columns:
 * ttf: Font file name
@@ -48,7 +49,8 @@ json
   "tts": {
     "tts_engine": "default_engine",
     "voice": "default_voice"
-  }
+  },
+  "line_spacing": 30
 }
 
 Optional Fields:
@@ -65,7 +67,7 @@ json
 Scene Splitting Rules
 1. A new scene starts when the mode value if specified
 2. Consecutive rows without mode specified inherit the previous row and grouped into one scene
-3. The first row of a new mode defines scene-level properties (background, font, tts, etc.)
+3. The first row of a new mode defines scene-level properties (background, font, tts, line_spacing, etc.)
 5. When mode changes, font/TTS settings reset to config defaults if not specified in the first row of the new mode
 
 Output Scene Types
@@ -75,6 +77,7 @@ json
   "type": "text",
   "mode": "append_center",
   "background": "bg1.jpg",  // OR "bgcolor": "#FFFFFF"
+  "line_spacing": 20, // from config.json or specified in csv file
   "text": [
     {
       "text": "Hi <h>there</h>",

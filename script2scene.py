@@ -81,6 +81,8 @@ class Script2Scene:
             raise Script2SceneError("Config font missing required field: size")
         if 'color' not in self.config['font']:
             raise Script2SceneError("Config font missing required field: color")
+        if 'line_spacing' not in self.config:
+            raise Script2SceneError("Config missing required field: line_spacing")
 
         # Validate required TTS section
         if 'tts' not in self.config:
@@ -240,6 +242,18 @@ class Script2Scene:
         if bg_type and bg_value:
             scene[bg_type] = bg_value
 
+        # Add line_spacing handling
+        # Priority: Row-specific line_spacing > Config line_spacing > Default
+        line_spacing = first_row.get('line_spacing', '').strip()
+        if line_spacing:
+            try:
+                scene['line_spacing'] = int(line_spacing)
+            except ValueError:
+                # If conversion fails, use config's line_spacing
+                scene['line_spacing'] = self.config.get('line_spacing', 30)
+        elif 'line_spacing' in self.config:
+            scene['line_spacing'] = self.config['line_spacing']
+
         # Add highlight_style for all_with_highlight mode
         if mode == 'all_with_highlight':
             self.validate_highlight_mode(first_row)
@@ -252,7 +266,6 @@ class Script2Scene:
             highlight_style['italic'] = first_row['highlight_italic'].lower() in ('true', '1', 'yes')
 
             scene['highlight_style'] = highlight_style
-
 
         # Build scene-level font/TTS config from first row (using config defaults as base)
         scene_font_config = self.build_font_config(first_row)

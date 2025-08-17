@@ -14,5 +14,6 @@
   "tts": {
     "tts_engine": "eleven",
     "voice": "jsCqWAovK2LkecY7zXl4"
-  }
+  },
+  "line_spacing": 90
 }
