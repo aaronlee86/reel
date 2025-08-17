@@ -49,8 +49,9 @@ class AllModeStrategy(TextSceneStrategy):
             halign = entry.get('halign', halign)
             font = entry['font']
 
+
             # Calculate x based on horizontal alignment
-            x = self._calculate_x_position(
+            x, adjusted_fontsize = self._calculate_x_position(
                 entry['text'],
                 font['size'],
                 font['file'],
@@ -63,7 +64,7 @@ class AllModeStrategy(TextSceneStrategy):
                 **entry,
                 "x": int(x),
                 "y": int(current_y),
-                "font_size": entry['font']['size'],
+                "font_size": adjusted_fontsize,
                 "font_color": entry['font']['color'],
                 "font": entry['font']['file'],
                 "bold": False,

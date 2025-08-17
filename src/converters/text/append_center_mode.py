@@ -37,7 +37,7 @@ class AppendCenterModeStrategy(TextSceneStrategy):
             halign = entry.get('halign', halign)
 
             # Calculate x based on horizontal alignment
-            x = self._calculate_x_position(
+            x, adjusted_fontsize = self._calculate_x_position(
                 entry['text'],
                 font['size'],
                 font['file'],
@@ -45,6 +45,8 @@ class AppendCenterModeStrategy(TextSceneStrategy):
                 halign,
                 padding
             )
+
+            entry['font']['size'] = adjusted_fontsize
 
             x_positions.append(x)
 
