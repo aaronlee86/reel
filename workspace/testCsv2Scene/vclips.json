@@ -12,18 +12,40 @@
   "vclips": [
     {
       "type": "text",
-      "bgcolor": "#AABB00",
+      "bgcolor": "#AABBCC",
       "tts": {
-        "text": "Here's all text at once",
-        "tts_engine": "gcloud",
-        "voice": "en-US-Standard-D",
+        "text": "\u6253\u5634\u70ae\u7684\u82f1\u6587\u600e\u9ebd\u8aaa",
+        "tts_engine": "eleven",
+        "voice": "jsCqWAovK2LkecY7zXl4",
         "speed": 1.0
       },
       "sentences": [
         {
-          "text": "Here's all text at once",
+          "text": "\u6253\u5634\u70ae\u7684\u82f1\u6587\u600e\u9ebd\u8aaa",
           "font": "assets/fonts/font.ttf",
-          "x": 206,
+          "x": 216,
+          "y": 924,
+          "font_size": 72,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "bgcolor": "#AABB00",
+      "tts": {
+        "text": "All Talk",
+        "tts_engine": "eleven",
+        "voice": "jsCqWAovK2LkecY7zXl4",
+        "speed": 1.0
+      },
+      "sentences": [
+        {
+          "text": "All Talk",
+          "font": "assets/fonts/font.ttf",
+          "x": 429,
           "y": 960,
           "font_size": 72,
           "font_color": "#00BB22",
@@ -36,28 +58,28 @@
       "type": "text",
       "bgcolor": "#AABB00",
       "tts": {
-        "text": "Everything shows together",
-        "tts_engine": "gcloud",
-        "voice": "en-US-Standard-D",
+        "text": "\u53e3\u8a9e\u7247\u8a9e\uff0c\u610f\u601d\u662f\u300c\u5149\u8aaa\u4e0d\u505a\u3001\u53ea\u6703\u5634\u4e0a\u8b1b\u537b\u6c92\u6709\u884c\u52d5\u7684\u4eba\u300d",
+        "tts_engine": "eleven",
+        "voice": "jsCqWAovK2LkecY7zXl4",
         "speed": 1.0
       },
       "sentences": [
         {
-          "text": "Here's all text at once",
+          "text": "All Talk",
           "font": "assets/fonts/font.ttf",
-          "x": 206,
-          "y": 868,
+          "x": 429,
+          "y": 798,
           "font_size": 72,
           "font_color": "#00BB22",
           "bold": false,
           "italic": false
         },
         {
-          "text": "Everything shows together",
+          "text": "\u53e3\u8a9e\u7247\u8a9e\uff0c\u610f\u601d\u662f\u300c\u5149\u8aaa\u4e0d\u505a\u3001\u53ea\u6703\u5634\u4e0a\u8b1b\u537b\u6c92\u6709\u884c\u52d5\u7684\u4eba\u300d",
           "font": "assets/fonts/font.ttf",
-          "x": 122,
+          "x": 40,
           "y": 960,
-          "font_size": 72,
+          "font_size": 37,
           "font_color": "#00BB22",
           "bold": false,
           "italic": false
@@ -68,38 +90,200 @@
       "type": "text",
       "bgcolor": "#AABB00",
       "tts": {
-        "text": "With no delays",
-        "tts_engine": "gcloud",
-        "voice": "en-US-Standard-D",
+        "text": "\u901a\u5e38\u5e36\u6709\u8ca0\u9762\u610f\u601d\uff0c\u7528\u4f86\u5f62\u5bb9\u4e00\u500b\u4eba\u53ea\u6703\u7a7a\u53e3\u627f\u8afe\u6216\u8a87\u53e3\uff0c\u4f46\u6c92\u771f\u6b63\u53bb\u505a",
+        "tts_engine": "eleven",
+        "voice": "jsCqWAovK2LkecY7zXl4",
         "speed": 1.0
       },
       "sentences": [
         {
-          "text": "Here's all text at once",
+          "text": "All Talk",
           "font": "assets/fonts/font.ttf",
-          "x": 206,
-          "y": 776,
+          "x": 429,
+          "y": 636,
           "font_size": 72,
           "font_color": "#00BB22",
           "bold": false,
           "italic": false
         },
         {
-          "text": "Everything shows together",
+          "text": "\u53e3\u8a9e\u7247\u8a9e\uff0c\u610f\u601d\u662f\u300c\u5149\u8aaa\u4e0d\u505a\u3001\u53ea\u6703\u5634\u4e0a\u8b1b\u537b\u6c92\u6709\u884c\u52d5\u7684\u4eba\u300d",
           "font": "assets/fonts/font.ttf",
-          "x": 122,
-          "y": 868,
-          "font_size": 72,
+          "x": 40,
+          "y": 833,
+          "font_size": 37,
           "font_color": "#00BB22",
           "bold": false,
           "italic": false
         },
         {
-          "text": "With no delays",
+          "text": "\u901a\u5e38\u5e36\u6709\u8ca0\u9762\u610f\u601d\uff0c\u7528\u4f86\u5f62\u5bb9\u4e00\u500b\u4eba\u53ea\u6703\u7a7a\u53e3\u627f\u8afe\u6216\u8a87\u53e3\uff0c\u4f46\u6c92\u771f\u6b63\u53bb\u505a",
           "font": "assets/fonts/font.ttf",
-          "x": 309,
+          "x": 44,
           "y": 960,
-          "font_size": 72,
+          "font_size": 31,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "bgcolor": "#AABB00",
+      "tts": {
+        "text": "He says he's going to start a business, but he\u2019s all talk",
+        "tts_engine": "eleven",
+        "voice": "jsCqWAovK2LkecY7zXl4",
+        "speed": 1.0
+      },
+      "sentences": [
+        {
+          "text": "He says he's going to start a business, but he\u2019s all talk",
+          "font": "assets/fonts/font.ttf",
+          "x": 516,
+          "y": 960,
+          "font_size": 2,
+          "font_color": "#FF0000",
+          "bold": false,
+          "italic": false
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "bgcolor": "#AABB00",
+      "tts": {
+        "text": "\u4ed6\u8aaa\u8981\u5275\u696d\uff0c\u4f46\u53ea\u662f\u5634\u4e0a\u8aaa\u8aaa\u800c\u5df2",
+        "tts_engine": "eleven",
+        "voice": "jsCqWAovK2LkecY7zXl4",
+        "speed": 1.0
+      },
+      "sentences": [
+        {
+          "text": "He says he's going to start a business, but he\u2019s all talk",
+          "font": "assets/fonts/font.ttf",
+          "x": 516,
+          "y": 758,
+          "font_size": 2,
+          "font_color": "#FF0000",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "\u4ed6\u8aaa\u8981\u5275\u696d\uff0c\u4f46\u53ea\u662f\u5634\u4e0a\u8aaa\u8aaa\u800c\u5df2",
+          "font": "assets/fonts/font.ttf",
+          "x": 517,
+          "y": 960,
+          "font_size": 3,
+          "font_color": "#FF0000",
+          "bold": false,
+          "italic": false
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "bgcolor": "#AABB00",
+      "tts": {
+        "text": "Don't believe his promises. He's all talk and no action.",
+        "tts_engine": "eleven",
+        "voice": "jsCqWAovK2LkecY7zXl4",
+        "speed": 1.0
+      },
+      "sentences": [
+        {
+          "text": "Don't believe his promises. He's all talk and no action.",
+          "font": "assets/fonts/font.ttf",
+          "x": 47,
+          "y": 960,
+          "font_size": 42,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "bgcolor": "#AABB00",
+      "tts": {
+        "text": "\u5225\u76f8\u4fe1\u4ed6\u7684\u627f\u8afe\uff0c\u4ed6\u53ea\u662f\u5149\u8aaa\u4e0d\u505a",
+        "tts_engine": "eleven",
+        "voice": "jsCqWAovK2LkecY7zXl4",
+        "speed": 1.0
+      },
+      "sentences": [
+        {
+          "text": "Don't believe his promises. He's all talk and no action.",
+          "font": "assets/fonts/font.ttf",
+          "x": 47,
+          "y": 916,
+          "font_size": 42,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "\u5225\u76f8\u4fe1\u4ed6\u7684\u627f\u8afe\uff0c\u4ed6\u53ea\u662f\u5149\u8aaa\u4e0d\u505a",
+          "font": "assets/fonts/font.ttf",
+          "x": 45,
+          "y": 960,
+          "font_size": 66,
+          "font_color": "#0000FF",
+          "bold": false,
+          "italic": false
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "bgcolor": "#AABB00",
+      "tts": {
+        "text": "She claimed she would help, but she turned out to be all talk",
+        "tts_engine": "eleven",
+        "voice": "jsCqWAovK2LkecY7zXl4",
+        "speed": 1.0
+      },
+      "sentences": [
+        {
+          "text": "She claimed she would help, but she turned out to be all talk",
+          "font": "assets/fonts/font.ttf",
+          "x": 50,
+          "y": 960,
+          "font_size": 37,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "bgcolor": "#AABB00",
+      "tts": {
+        "text": "\u5979\u8aaa\u6703\u5e6b\u5fd9\uff0c\u4f46\u7d50\u679c\u53ea\u662f\u8aaa\u8aaa\u800c\u5df2",
+        "tts_engine": "eleven",
+        "voice": "jsCqWAovK2LkecY7zXl4",
+        "speed": 1.0
+      },
+      "sentences": [
+        {
+          "text": "She claimed she would help, but she turned out to be all talk",
+          "font": "assets/fonts/font.ttf",
+          "x": 50,
+          "y": 833,
+          "font_size": 37,
+          "font_color": "#00BB22",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "\u5979\u8aaa\u6703\u5e6b\u5fd9\uff0c\u4f46\u7d50\u679c\u53ea\u662f\u8aaa\u8aaa\u800c\u5df2",
+          "font": "assets/fonts/font.ttf",
+          "x": 45,
+          "y": 960,
+          "font_size": 66,
           "font_color": "#00BB22",
           "bold": false,
           "italic": false

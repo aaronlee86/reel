@@ -181,8 +181,15 @@ class Script2Scene:
             }
 
         # Override with row-specific values if specified
-        if row.get('ttf', '').strip():
+        if row.get('ttf', ''):
             font_config['file'] = row['ttf']
+        if row.get('font_size', ''):
+            try:
+                font_config['size'] = int(row['font_size'])
+            except ValueError as e:
+                raise ValueError(f"invalide font_size format: {e}")
+        if row.get('font_color', ''):
+            font_config['color'] = row['font_color']
 
         return font_config
 

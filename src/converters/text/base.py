@@ -40,7 +40,7 @@ class TextSceneStrategy(ABC):
         screen_width: int,
         halign: str,
         padding: int,
-        min_font_size: int = 8
+        min_font_size: int = 1
     ) -> tuple[int, int]:
         """
         Calculate x position based on horizontal alignment with automatic font scaling
@@ -71,7 +71,7 @@ class TextSceneStrategy(ABC):
             raise ValueError("font_path is required. Please provide a valid path to a font file.")
 
         available_width = screen_width - 2 * padding
-        current_font_size = font_size
+        current_font_size = max(font_size, min_font_size)
 
         # Try to find largest font size that fits
         while current_font_size >= min_font_size:

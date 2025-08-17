@@ -25,6 +25,8 @@ Required Columns:
 * highlight_color: Reqired only for the first row of "all_with_highlight" mode.
 * highlight_bold: Reqired only for the first row of "all_with_highlight" mode.
 * highlight_italic: Reqired only for the first row of "all_with_highlight" mode.
+* font_size: Optional for text scenes. If not specified, use the value in config.json as default
+* font_color: Optional for text scenes. If not specified, use the value in config.json as default
 * line_spacing: Optional for text scenes. If not specified, use config.json as default value
 
 Optional Columns:

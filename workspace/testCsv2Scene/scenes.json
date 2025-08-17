@@ -12,50 +12,173 @@
   "scenes": [
     {
       "type": "text",
-      "mode": "append_center",
+      "mode": "all",
       "text": [
         {
-          "text": "Here's all text at once",
+          "text": "打嘴炮的英文怎麽說",
           "font": {
             "file": "font.ttf",
             "size": 72,
             "color": "#00BB22"
           },
           "tts": {
-            "tts_engine": "gcloud",
-            "voice": "en-US-Standard-D",
-            "speed": 1.0
-          },
-          "halign": "center"
-        },
-        {
-          "text": "Everything shows together",
-          "font": {
-            "file": "font.ttf",
-            "size": 72,
-            "color": "#00BB22"
-          },
-          "tts": {
-            "tts_engine": "gcloud",
-            "voice": "en-US-Standard-D",
-            "speed": 1.0
-          }
-        },
-        {
-          "text": "With no delays",
-          "font": {
-            "file": "font.ttf",
-            "size": 72,
-            "color": "#00BB22"
-          },
-          "tts": {
-            "tts_engine": "gcloud",
-            "voice": "en-US-Standard-D",
+            "tts_engine": "eleven",
+            "voice": "jsCqWAovK2LkecY7zXl4",
             "speed": 1.0
           }
         }
       ],
-      "bgcolor": "#AABB00"
+      "bgcolor": "#AABBCC",
+      "line_spacing": 90
+    },
+    {
+      "type": "text",
+      "mode": "append_center",
+      "text": [
+        {
+          "text": "All Talk",
+          "font": {
+            "file": "font.ttf",
+            "size": 72,
+            "color": "#00BB22"
+          },
+          "tts": {
+            "tts_engine": "eleven",
+            "voice": "jsCqWAovK2LkecY7zXl4",
+            "speed": 1.0
+          }
+        },
+        {
+          "text": "口語片語，意思是「光說不做、只會嘴上講卻沒有行動的人」",
+          "font": {
+            "file": "font.ttf",
+            "size": 72,
+            "color": "#00BB22"
+          },
+          "tts": {
+            "tts_engine": "eleven",
+            "voice": "jsCqWAovK2LkecY7zXl4",
+            "speed": 1.0
+          }
+        },
+        {
+          "text": "通常帶有負面意思，用來形容一個人只會空口承諾或誇口，但沒真正去做",
+          "font": {
+            "file": "font.ttf",
+            "size": 72,
+            "color": "#00BB22"
+          },
+          "tts": {
+            "tts_engine": "eleven",
+            "voice": "jsCqWAovK2LkecY7zXl4",
+            "speed": 1.0
+          }
+        }
+      ],
+      "bgcolor": "#AABB00",
+      "line_spacing": 90
+    },
+    {
+      "type": "text",
+      "mode": "append_center",
+      "text": [
+        {
+          "text": "He says he's going to start a business, but he’s all talk",
+          "font": {
+            "file": "font.ttf",
+            "size": 2,
+            "color": "#FF0000"
+          },
+          "tts": {
+            "tts_engine": "eleven",
+            "voice": "jsCqWAovK2LkecY7zXl4",
+            "speed": 1.0
+          }
+        },
+        {
+          "text": "他說要創業，但只是嘴上說說而已",
+          "font": {
+            "file": "font.ttf",
+            "size": 3,
+            "color": "#FF0000"
+          },
+          "tts": {
+            "tts_engine": "eleven",
+            "voice": "jsCqWAovK2LkecY7zXl4",
+            "speed": 1.0
+          }
+        }
+      ],
+      "bgcolor": "#AABB00",
+      "line_spacing": 200
+    },
+    {
+      "type": "text",
+      "mode": "append_center",
+      "text": [
+        {
+          "text": "Don't believe his promises. He's all talk and no action.",
+          "font": {
+            "file": "font.ttf",
+            "size": 44,
+            "color": "#000000"
+          },
+          "tts": {
+            "tts_engine": "eleven",
+            "voice": "jsCqWAovK2LkecY7zXl4",
+            "speed": 1.0
+          }
+        },
+        {
+          "text": "別相信他的承諾，他只是光說不做",
+          "font": {
+            "file": "font.ttf",
+            "size": 99,
+            "color": "#0000FF"
+          },
+          "tts": {
+            "tts_engine": "eleven",
+            "voice": "jsCqWAovK2LkecY7zXl4",
+            "speed": 1.0
+          }
+        }
+      ],
+      "bgcolor": "#AABB00",
+      "line_spacing": 2
+    },
+    {
+      "type": "text",
+      "mode": "append_center",
+      "text": [
+        {
+          "text": "She claimed she would help, but she turned out to be all talk",
+          "font": {
+            "file": "font.ttf",
+            "size": 72,
+            "color": "#00BB22"
+          },
+          "tts": {
+            "tts_engine": "eleven",
+            "voice": "jsCqWAovK2LkecY7zXl4",
+            "speed": 1.0
+          }
+        },
+        {
+          "text": "她說會幫忙，但結果只是說說而已",
+          "font": {
+            "file": "font.ttf",
+            "size": 72,
+            "color": "#00BB22"
+          },
+          "tts": {
+            "tts_engine": "eleven",
+            "voice": "jsCqWAovK2LkecY7zXl4",
+            "speed": 1.0
+          }
+        }
+      ],
+      "bgcolor": "#AABB00",
+      "line_spacing": 90
     }
   ]
 }
