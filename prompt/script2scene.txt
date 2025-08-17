@@ -63,8 +63,8 @@ json
 }
 
 Scene Splitting Rules
-1. A new scene starts when the mode value changes
-2. Consecutive rows with the same mode are grouped into one scene
+1. A new scene starts when the mode value if specified
+2. Consecutive rows without mode specified inherit the previous row and grouped into one scene
 3. The first row of a new mode defines scene-level properties (background, font, tts, etc.)
 5. When mode changes, font/TTS settings reset to config defaults if not specified in the first row of the new mode
 

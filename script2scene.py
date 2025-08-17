@@ -343,32 +343,27 @@ class Script2Scene:
         for row in rows:
             mode = row.get('mode', '').strip()
 
-            # Skip rows without mode (unless continuing previous mode)
-            if not mode and not current_mode:
-                continue
-
-            # Use previous mode if current row doesn't have one
-            if not mode:
-                mode = current_mode
-                row['mode'] = mode
-
-            # For image and video scenes, always create a new group
-            # This ensures each video/image scene starts a new group
-            if mode in {'image', 'video'}:
+            # Rule 1: If mode is specified, start a new scene
+            if mode:
+                # Save the previous group if it exists
                 if current_group:
                     groups.append((current_mode, current_group))
+
+                # Start new group with this row
                 current_mode = mode
                 current_group = [row]
-            # For text modes, group consecutive rows
-            elif mode != current_mode:
-                if current_group:
-                    groups.append((current_mode, current_group))
-                current_mode = mode
-                current_group = [row]
+
+            # Rule 2: If no mode specified, inherit and group with previous
             else:
+                # Skip if we don't have a current mode to inherit from
+                if current_mode is None:
+                    continue
+
+                # Inherit the mode and add to current group
+                row['mode'] = current_mode
                 current_group.append(row)
 
-        # Add the last group
+        # Add the final group
         if current_group:
             groups.append((current_mode, current_group))
 
