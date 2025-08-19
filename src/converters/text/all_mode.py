@@ -17,7 +17,7 @@ class AllModeStrategy(TextSceneStrategy):
         Args:
             text_entries (List[Dict[str, Any]]): List of text entries
             screen_size (List[int]): Screen dimensions [width, height]
-            vaolign (str): Vertical alignment
+            valign (str): Vertical alignment
             halign (str): Horizontal alignment
             padding (int): Vertical padding
             line_spacing (int): Space between lines

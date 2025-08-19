@@ -2,13 +2,13 @@ import os
 import json
 import logging
 from typing import Dict, Any, List
-from mutagen import File
+from moviepy import VideoFileClip, AudioFileClip
 
 class MediaDurationExtractor:
     @staticmethod
     def get_media_duration(media_file_path: str) -> float:
         """
-        Extract media duration from a file.
+        Extract media duration from a file using MoviePy.
 
         Args:
             media_file_path (str): Path to the media file
@@ -26,11 +26,30 @@ class MediaDurationExtractor:
             raise FileNotFoundError(f"Media file not found: {media_file_path}")
 
         try:
-            media = File(media_file_path)
-            if media is not None:
-                return media.info.length
+            # Get file extension to determine the best approach
+            file_ext = os.path.splitext(media_file_path)[1].lower()
+
+            # Video extensions - use VideoFileClip
+            video_extensions = {'.mp4', '.avi', '.mov', '.mkv', '.webm', '.flv', '.wmv', '.m4v', '.3gp', '.ogv'}
+
+            # Audio extensions - use AudioFileClip
+            audio_extensions = {'.mp3', '.wav', '.flac', '.aac', '.ogg', '.wma', '.m4a', '.opus', '.aiff'}
+
+            if file_ext in video_extensions:
+                with VideoFileClip(media_file_path) as clip:
+                    return clip.duration
+            elif file_ext in audio_extensions:
+                with AudioFileClip(media_file_path) as clip:
+                    return clip.duration
             else:
-                raise ValueError(f"Could not read media file metadata: {media_file_path}")
+                # Try video first, then audio as fallback
+                try:
+                    with VideoFileClip(media_file_path) as clip:
+                        return clip.duration
+                except:
+                    with AudioFileClip(media_file_path) as clip:
+                        return clip.duration
+
         except Exception as e:
             raise RuntimeError(f"Error processing media file {media_file_path}: {e}")
 
@@ -149,6 +168,7 @@ class TtsClipProcessor:
         Args:
             input_file (str): Path to input JSON file
             output_file (str): Path to output JSON file
+            workspace_dir (str): Workspace directory
             audio_folder (str): Folder containing audio files
             video_folder (str): Folder containing video files
             verbose (bool): Enable verbose logging
