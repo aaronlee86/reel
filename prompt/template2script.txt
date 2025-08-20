@@ -1,9 +1,13 @@
 I want a python project. now please understand the requirement, and make sure we are on the same page. don't implement now
 
-Script2Scene Requirements Specification
+Template2Script Requirements Specification
 
 Overview
-Python script that converts a CSV file and config file into a structured scenes.json file for video/presentation generation.
+Python script that converts a txt file into a csv file and config.json.
+
+cover
+bgm
+
 
 Input Files
 1. CSV File (scenes.csv)
@@ -28,8 +32,6 @@ Required Columns:
 * font_size: Optional for text scenes. If not specified, use the value in config.json as default
 * font_color: Optional for text scenes. If not specified, use the value in config.json as default
 * line_spacing: Optional for text scenes. If not specified, use config.json as default value
-* padding: Optional for text scenes. If not specified, use config.json as default value
-* valign: Optional for text scenes. If not specified, use config.json as default value
 
 Optional Columns:
 * ttf: Font file name
@@ -55,7 +57,6 @@ json
     "voice": "default_voice"
   },
   "line_spacing": 30
-  "padding": 40
 }
 
 Optional Fields:
@@ -83,8 +84,6 @@ json
   "mode": "append_center",
   "background": "bg1.jpg",  // OR "bgcolor": "#FFFFFF"
   "line_spacing": 20, // from config.json or specified in csv file
-  "padding": 40, // from config.json or specified in csv file.
-  "valign": "top", // from csv file. valid values are "top", "center", "bottom"
   "text": [
     {
       "text": "Hi <h>there</h>",

@@ -1,14 +1,14 @@
 {
   "screen_size": [1080, 1920],
   "font": {
-    "ttf": "font.ttf",
-    "size": 72,
-    "color": "#00BB22"
+    "ttf": "font-bold.ttf",
+    "size": 42,
+    "color": "#000000"
   },
   "fps": 24,
   "bgm": {
     "file": "clean_bgm.wav",
-    "volume": 0.5,
+    "volume": 0,
     "start": 0
   },
   "tts": {

@@ -51,6 +51,7 @@ class Script2Scene:
         'video', 'image'
     }
     TEXT_MODES = {'append_center', 'append_top', 'all', 'all_with_highlight'}
+    VALID_VALIGN = {'top', 'center', 'bottom'}
 
     def __init__(self, project_name: str, input_csv: str, config_file: str, output_file: str):
         self.project_name = project_name
@@ -91,6 +92,17 @@ class Script2Scene:
             raise Script2SceneError("Config tts missing required field: tts_engine")
         if 'voice' not in self.config['tts']:
             raise Script2SceneError("Config tts missing required field: voice")
+
+        # Validate optional fields if present
+        if 'valign' in self.config:
+            if self.config['valign'] not in self.VALID_VALIGN:
+                raise Script2SceneError(f"Invalid valign in config: {self.config['valign']}. Must be one of {self.VALID_VALIGN}")
+
+        if 'padding' in self.config:
+            try:
+                int(self.config['padding'])
+            except (ValueError, TypeError):
+                raise Script2SceneError(f"Invalid padding value in config: {self.config['padding']}. Must be an integer")
 
     def validate_highlight_mode(self, first_row: Dict[str, str]) -> None:
         """
@@ -135,11 +147,16 @@ class Script2Scene:
         if missing_columns:
             raise Script2SceneError(f"CSV missing required columns: {missing_columns}")
 
-        # Validate mode values
+        # Validate mode values and valign values if present
         for i, row in enumerate(rows):
             mode = row.get('mode', '').strip()
             if mode and mode not in self.VALID_MODES:
                 raise Script2SceneError(f"Invalid mode '{mode}' in row {i+1}")
+
+            # Validate valign if present
+            valign = row.get('valign', '').strip()
+            if valign and valign not in self.VALID_VALIGN:
+                raise Script2SceneError(f"Invalid valign '{valign}' in row {i+1}. Must be one of {self.VALID_VALIGN}")
 
         return rows
 
@@ -257,9 +274,28 @@ class Script2Scene:
                 scene['line_spacing'] = int(line_spacing)
             except ValueError:
                 # If conversion fails, use config's line_spacing
-                scene['line_spacing'] = self.config.get('line_spacing', 30)
+                raise Script2SceneError(f"Invalid line_spacing value: {line_spacing}. Must be an integer")
         elif 'line_spacing' in self.config:
             scene['line_spacing'] = self.config['line_spacing']
+
+        # Add padding handling
+        # Priority: Row-specific padding > Config padding (no default fallback)
+        padding = first_row.get('padding', '').strip()
+        if padding:
+            try:
+                scene['padding'] = int(padding)
+            except ValueError:
+                raise Script2SceneError(f"Invalid padding value: {padding}. Must be an integer")
+        elif 'padding' in self.config:
+            scene['padding'] = self.config['padding']
+
+        # Add valign handling
+        # Priority: Row-specific valign > Config valign (no default fallback)
+        valign = first_row.get('valign', '').strip()
+        if valign:
+            scene['valign'] = valign
+        elif 'valign' in self.config:
+            scene['valign'] = self.config['valign']
 
         # Add highlight_style for all_with_highlight mode
         if mode == 'all_with_highlight':

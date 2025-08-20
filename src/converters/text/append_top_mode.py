@@ -6,7 +6,7 @@ class AppendTopModeStrategy(TextSceneStrategy):
         self,
         text_entries: List[Dict[str, Any]],
         screen_size: List[int],
-        valign: str = 'top',
+        valign: str = 'error',
         halign: str = 'error',
         padding: int = 40,
         line_spacing: int = 20

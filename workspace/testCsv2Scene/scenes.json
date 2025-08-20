@@ -6,7 +6,7 @@
   "fps": 24,
   "bgm": {
     "file": "clean_bgm.wav",
-    "volume": 0.5,
+    "volume": 0,
     "start": 0
   },
   "scenes": [
@@ -15,11 +15,24 @@
       "mode": "all",
       "text": [
         {
-          "text": "打嘴炮的英文怎麽說",
+          "text": "打嘴炮",
           "font": {
-            "file": "font.ttf",
-            "size": 72,
-            "color": "#00BB22"
+            "file": "font-bold.ttf",
+            "size": 100,
+            "color": "#000000"
+          },
+          "tts": {
+            "tts_engine": "eleven",
+            "voice": "jsCqWAovK2LkecY7zXl4",
+            "speed": 1.0
+          }
+        },
+        {
+          "text": "的英文怎麽說",
+          "font": {
+            "file": "font-bold.ttf",
+            "size": 100,
+            "color": "#000000"
           },
           "tts": {
             "tts_engine": "eleven",
@@ -28,8 +41,10 @@
           }
         }
       ],
-      "bgcolor": "#AABBCC",
-      "line_spacing": 90
+      "background": "alltalk.png",
+      "line_spacing": 10,
+      "padding": 333,
+      "valign": "top"
     },
     {
       "type": "text",
@@ -38,9 +53,9 @@
         {
           "text": "All Talk",
           "font": {
-            "file": "font.ttf",
+            "file": "font-bold.ttf",
             "size": 72,
-            "color": "#00BB22"
+            "color": "#000000"
           },
           "tts": {
             "tts_engine": "eleven",
@@ -49,33 +64,20 @@
           }
         },
         {
-          "text": "口語片語，意思是「光說不做、只會嘴上講卻沒有行動的人」",
+          "text": "光說不做、只會嘴上講卻沒有行動的人",
           "font": {
-            "file": "font.ttf",
+            "file": "font-bold.ttf",
             "size": 72,
-            "color": "#00BB22"
+            "color": "#000000"
           },
           "tts": {
             "tts_engine": "eleven",
-            "voice": "jsCqWAovK2LkecY7zXl4",
-            "speed": 1.0
-          }
-        },
-        {
-          "text": "通常帶有負面意思，用來形容一個人只會空口承諾或誇口，但沒真正去做",
-          "font": {
-            "file": "font.ttf",
-            "size": 72,
-            "color": "#00BB22"
-          },
-          "tts": {
-            "tts_engine": "eleven",
-            "voice": "jsCqWAovK2LkecY7zXl4",
+            "voice": "9lHjugDhwqoxA5MhX0az",
             "speed": 1.0
           }
         }
       ],
-      "bgcolor": "#AABB00",
+      "bgcolor": "#f4f5e9",
       "line_spacing": 90
     },
     {
@@ -83,11 +85,11 @@
       "mode": "append_center",
       "text": [
         {
-          "text": "He says he's going to start a business, but he’s all talk",
+          "text": "He says he's going to start a business, but he's all talk",
           "font": {
-            "file": "font.ttf",
-            "size": 2,
-            "color": "#FF0000"
+            "file": "font-bold.ttf",
+            "size": 42,
+            "color": "#000000"
           },
           "tts": {
             "tts_engine": "eleven",
@@ -98,19 +100,19 @@
         {
           "text": "他說要創業，但只是嘴上說說而已",
           "font": {
-            "file": "font.ttf",
-            "size": 3,
-            "color": "#FF0000"
+            "file": "font-bold.ttf",
+            "size": 42,
+            "color": "#000000"
           },
           "tts": {
             "tts_engine": "eleven",
-            "voice": "jsCqWAovK2LkecY7zXl4",
+            "voice": "9lHjugDhwqoxA5MhX0az",
             "speed": 1.0
           }
         }
       ],
-      "bgcolor": "#AABB00",
-      "line_spacing": 200
+      "bgcolor": "#f4f5e9",
+      "line_spacing": 90
     },
     {
       "type": "text",
@@ -119,8 +121,8 @@
         {
           "text": "Don't believe his promises. He's all talk and no action.",
           "font": {
-            "file": "font.ttf",
-            "size": 44,
+            "file": "font-bold.ttf",
+            "size": 42,
             "color": "#000000"
           },
           "tts": {
@@ -132,19 +134,19 @@
         {
           "text": "別相信他的承諾，他只是光說不做",
           "font": {
-            "file": "font.ttf",
-            "size": 99,
-            "color": "#0000FF"
+            "file": "font-bold.ttf",
+            "size": 42,
+            "color": "#000000"
           },
           "tts": {
             "tts_engine": "eleven",
-            "voice": "jsCqWAovK2LkecY7zXl4",
+            "voice": "9lHjugDhwqoxA5MhX0az",
             "speed": 1.0
           }
         }
       ],
-      "bgcolor": "#AABB00",
-      "line_spacing": 2
+      "bgcolor": "#f4f5e9",
+      "line_spacing": 90
     },
     {
       "type": "text",
@@ -153,9 +155,9 @@
         {
           "text": "She claimed she would help, but she turned out to be all talk",
           "font": {
-            "file": "font.ttf",
-            "size": 72,
-            "color": "#00BB22"
+            "file": "font-bold.ttf",
+            "size": 42,
+            "color": "#000000"
           },
           "tts": {
             "tts_engine": "eleven",
@@ -166,18 +168,39 @@
         {
           "text": "她說會幫忙，但結果只是說說而已",
           "font": {
-            "file": "font.ttf",
-            "size": 72,
-            "color": "#00BB22"
+            "file": "font-bold.ttf",
+            "size": 42,
+            "color": "#000000"
           },
           "tts": {
             "tts_engine": "eleven",
-            "voice": "jsCqWAovK2LkecY7zXl4",
+            "voice": "9lHjugDhwqoxA5MhX0az",
             "speed": 1.0
           }
         }
       ],
-      "bgcolor": "#AABB00",
+      "bgcolor": "#f4f5e9",
+      "line_spacing": 90
+    },
+    {
+      "type": "text",
+      "mode": "all",
+      "text": [
+        {
+          "text": "追蹤我們學到更多實用英文",
+          "font": {
+            "file": "font-bold.ttf",
+            "size": 50,
+            "color": "#FF0000"
+          },
+          "tts": {
+            "tts_engine": "gcloud",
+            "voice": "cmn-TW-Standard-A",
+            "speed": 1.5
+          }
+        }
+      ],
+      "bgcolor": "#f4f5e9",
       "line_spacing": 90
     }
   ]
