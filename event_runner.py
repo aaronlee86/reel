@@ -331,8 +331,21 @@ class VideoGenerator:
             raise VideoGenerationError("file attribute is missing in bgm")
 
         try:
+            # Try loading from audio folder
+            bgm_paths = [
+                os.path.join(self.base_path, "audio", bgm_file),
+                os.path.join("assets", "audio", bgm_file),
+                os.path.join("assets", bgm_file)
+            ]
+
+            # Find first existing path
+            bgm_audio_path = next((path for path in bgm_paths if os.path.exists(path)), None)
+
+            if not bgm_audio_path:
+                raise FileNotFoundError(f"Background music file not found: {bgm_file}")
+
             # Load and process background music
-            bgm_audio = AudioFileClip(os.path.join(self.base_path, "audio", bgm_file))
+            bgm_audio = AudioFileClip(bgm_audio_path)
             bgm_volume = bgm_data.get("volume", 1.0)
             bgm_start = bgm_data.get("start", 0.0)
 
