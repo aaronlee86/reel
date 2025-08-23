@@ -1,5 +1,6 @@
 import os
 import argparse
+import sys
 from src.ttsclip_processor import TtsClipProcessor
 
 def parse_arguments():
@@ -72,6 +73,7 @@ def main():
         )
     except Exception as e:
         print(f"Stopped due to error: {e}")
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()

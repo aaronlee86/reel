@@ -1,6 +1,7 @@
 import os
 import json
 import argparse
+import sys
 from typing import Dict, Any
 
 from src.tts.base import TTSEngine
@@ -152,10 +153,10 @@ def main():
                 input_json = json.load(f)
         except FileNotFoundError:
             print(f"Error: Input file {input_path} not found.")
-            return
+            sys.exit(1)
         except json.JSONDecodeError:
             print(f"Error: Invalid JSON in {input_path}")
-            return
+            sys.exit(1)
 
         # Convert the project
         try:
@@ -167,10 +168,10 @@ def main():
         except ValueError as e:
             # Detailed error handling for conversion failures
             print(f"Conversion Error: {e}")
-            return
+            sys.exit(1)
         except Exception as e:
             print(f"Unexpected error during conversion: {e}")
-            return
+            sys.exit(1)
 
         # Write output JSON
         try:
@@ -188,9 +189,11 @@ def main():
             print(f"Audio:  {os.path.abspath(args.audio_output)}")
         except Exception as e:
             print(f"Error writing output file: {e}")
+            sys.exit(1)
 
     except ValueError as e:
         print(f"Error: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
