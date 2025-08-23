@@ -347,19 +347,45 @@ class VideoGenerator:
             # Load and process background music
             bgm_audio = AudioFileClip(bgm_audio_path)
             bgm_volume = bgm_data.get("volume", 1.0)
-            bgm_start = bgm_data.get("start", 0.0)
+
+            # Determine start time - error if both fields are present
+            has_start_time = "start_time" in bgm_data
+            has_start_clip = "start_clip" in bgm_data
+
+            if has_start_time and has_start_clip:
+                raise VideoGenerationError("Cannot specify both start_time and start_clip in bgm configuration")
+            elif has_start_clip:
+                # Use clip index to find start time
+                clip_index = int(bgm_data["start_clip"])
+                print(f"bgm start from clip {clip_index}")
+                if hasattr(video, 'clips') and clip_index < len(video.clips):
+                    bgm_start = video.clips[clip_index].start
+                else:
+                    raise VideoGenerationError(f"Clip index {clip_index} not found in video")
+            elif has_start_time:
+                # Use time directly
+                bgm_start = float(bgm_data["start_time"])
+            else:
+                # Default to start of video
+                bgm_start = 0.0
+
+            print(f"bgm start from {bgm_start} sec")
 
             # Apply volume and start time
             bgm_audio = bgm_audio.with_effects([afx.MultiplyVolume(bgm_volume)]).with_start(bgm_start)
 
             # Ensure background music doesn't exceed video duration
             max_bgm_duration = max(0, video.duration - bgm_start)
+            if max_bgm_duration <= 0:
+                return video  # No room for background music
+
             bgm_audio = bgm_audio.subclipped(0, min(bgm_audio.duration, max_bgm_duration))
 
             # Add background music to video
             if video.audio:
                 return video.with_audio(CompositeAudioClip([video.audio, bgm_audio]))
-            return video.with_audio(bgm_audio)
+            else:
+                return video.with_audio(bgm_audio)
 
         except Exception as e:
             raise VideoGenerationError(f"Failed to add background music: {e}")
