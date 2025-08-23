@@ -1,0 +1,261 @@
+{
+  "size": [
+    1080,
+    1920
+  ],
+  "fps": 24,
+  "bgm": {
+    "file": "bgm1.mp3",
+    "volume": 0.4,
+    "start_clip": 2
+  },
+  "vclips": [
+    {
+      "type": "text",
+      "background": "background1.png",
+      "sentences": [
+        {
+          "text": "\u6253\u5634\u70ae",
+          "font": "assets/fonts/LXGWWenKaiTC.ttf",
+          "x": 390,
+          "y": 827,
+          "font_size": 100,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "\u7684\u82f1\u6587\u600e\u9ebd\u8aaa",
+          "font": "assets/fonts/LXGWWenKaiTC.ttf",
+          "x": 330,
+          "y": 992,
+          "font_size": 70,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        }
+      ],
+      "audio": "tts_6e393a01fb32ac47479d94e3_eleven_jsCqWAovK2LkecY7zXl4_1.0.mp3"
+    },
+    {
+      "type": "text",
+      "background": "background1.png",
+      "sentences": [
+        {
+          "text": "\u6253\u5634\u70ae",
+          "font": "assets/fonts/LXGWWenKaiTC.ttf",
+          "x": 390,
+          "y": 827,
+          "font_size": 100,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "\u7684\u82f1\u6587\u600e\u9ebd\u8aaa",
+          "font": "assets/fonts/LXGWWenKaiTC.ttf",
+          "x": 330,
+          "y": 992,
+          "font_size": 70,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        }
+      ],
+      "audio": "tts_8535b36c20bbde4c3767a309_eleven_jsCqWAovK2LkecY7zXl4_1.0.mp3"
+    },
+    {
+      "type": "text",
+      "bgcolor": "#f4f5e9",
+      "sentences": [
+        {
+          "text": "All Talk",
+          "font": "assets/fonts/font-bold.ttf",
+          "x": 376,
+          "y": 960,
+          "font_size": 92,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        }
+      ],
+      "audio": "tts_f5f71943059a5ffc44bb333f_eleven_jsCqWAovK2LkecY7zXl4_1.0.mp3"
+    },
+    {
+      "type": "text",
+      "bgcolor": "#f4f5e9",
+      "sentences": [
+        {
+          "text": "All Talk",
+          "font": "assets/fonts/font-bold.ttf",
+          "x": 376,
+          "y": 778,
+          "font_size": 92,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "\u5149\u8aaa\u4e0d\u7df4\uff0c\u611b\u6253\u5634\u70ae\u7684\u4eba",
+          "font": "assets/fonts/font-bold.ttf",
+          "x": 265,
+          "y": 960,
+          "font_size": 50,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        }
+      ],
+      "audio": "tts_45de2878607185004a8e1f24_eleven_9lHjugDhwqoxA5MhX0az_1.0.mp3"
+    },
+    {
+      "type": "text",
+      "bgcolor": "#f4f5e9",
+      "sentences": [
+        {
+          "text": "He's all talk",
+          "font": "assets/fonts/DMSerifText.ttf",
+          "x": 365,
+          "y": 960,
+          "font_size": 70,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        }
+      ],
+      "audio": "tts_1980479414abfb5daa66dd4e_eleven_jsCqWAovK2LkecY7zXl4_1.0.mp3"
+    },
+    {
+      "type": "text",
+      "bgcolor": "#f4f5e9",
+      "sentences": [
+        {
+          "text": "He's all talk",
+          "font": "assets/fonts/DMSerifText.ttf",
+          "x": 365,
+          "y": 800,
+          "font_size": 70,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "\u4ed6\u5c31\u611b\u6253\u5634\u70ae",
+          "font": "assets/fonts/font-bold.ttf",
+          "x": 390,
+          "y": 960,
+          "font_size": 50,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        }
+      ],
+      "audio": "tts_ac4b72782c63e641f16803ea_eleven_9lHjugDhwqoxA5MhX0az_1.0.mp3"
+    },
+    {
+      "type": "text",
+      "bgcolor": "#f4f5e9",
+      "sentences": [
+        {
+          "text": "He says he's going to start a business, but he's all talk",
+          "font": "assets/fonts/DMSerifText.ttf",
+          "x": 101,
+          "y": 960,
+          "font_size": 38,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        }
+      ],
+      "audio": "tts_97e440afb2084887a143b669_eleven_jsCqWAovK2LkecY7zXl4_1.0.mp3"
+    },
+    {
+      "type": "text",
+      "bgcolor": "#f4f5e9",
+      "sentences": [
+        {
+          "text": "He says he's going to start a business, but he's all talk",
+          "font": "assets/fonts/DMSerifText.ttf",
+          "x": 101,
+          "y": 832,
+          "font_size": 38,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "\u4ed6\u8aaa\u8981\u5275\u696d\uff0c\u4f46\u53ea\u662f\u5634\u4e0a\u8aaa\u8aaa\u800c\u5df2",
+          "font": "assets/fonts/font-bold.ttf",
+          "x": 165,
+          "y": 960,
+          "font_size": 50,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        }
+      ],
+      "audio": "tts_00a6bd935c21b8976a45a74b_eleven_9lHjugDhwqoxA5MhX0az_1.0.mp3"
+    },
+    {
+      "type": "text",
+      "bgcolor": "#f4f5e9",
+      "sentences": [
+        {
+          "text": "Don't believe his promises. He's all talk and no action.",
+          "font": "assets/fonts/DMSerifText.ttf",
+          "x": 108,
+          "y": 960,
+          "font_size": 37,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        }
+      ],
+      "audio": "tts_0fc840473d4bd06b1332a9ab_eleven_jsCqWAovK2LkecY7zXl4_1.0.mp3"
+    },
+    {
+      "type": "text",
+      "bgcolor": "#f4f5e9",
+      "sentences": [
+        {
+          "text": "Don't believe his promises. He's all talk and no action.",
+          "font": "assets/fonts/DMSerifText.ttf",
+          "x": 108,
+          "y": 833,
+          "font_size": 37,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        },
+        {
+          "text": "\u5225\u76f8\u4fe1\u4ed6\u7684\u627f\u8afe\uff0c\u4ed6\u53ea\u662f\u5149\u8aaa\u4e0d\u505a",
+          "font": "assets/fonts/font-bold.ttf",
+          "x": 165,
+          "y": 960,
+          "font_size": 50,
+          "font_color": "#000000",
+          "bold": false,
+          "italic": false
+        }
+      ],
+      "audio": "tts_52598ca0d07a6006b1e429f2_eleven_9lHjugDhwqoxA5MhX0az_1.0.mp3"
+    },
+    {
+      "type": "text",
+      "bgcolor": "#f4f5e9",
+      "sentences": [
+        {
+          "text": "\u8ffd\u8e64\u6211\u5011\u5b78\u5230\u66f4\u591a\u5be6\u7528\u82f1\u6587",
+          "font": "assets/fonts/font-bold.ttf",
+          "x": 240,
+          "y": 935,
+          "font_size": 50,
+          "font_color": "#FF0000",
+          "bold": false,
+          "italic": false
+        }
+      ],
+      "audio": "tts_9850017710ef16383293adf7_gcloud_cmn-TW-Standard-A_1.5.mp3"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+text,mode,background,valign,padding,ttf,font_size,font_color,line_spacing,alignment,tts,voice,speed,duration,highlight_color,highlight_bold,highlight_italic
+打嘴炮,all,background1.png,center,330,LXGWWenKaiTC.ttf,100,,65,,,,,,,,
+的英文怎麽說,,,,,LXGWWenKaiTC.ttf,,,,,,,,,,,
+All Talk,append_center,#f4f5e9,,,,92,,,,,,,,#DD0000,false,false
+光說不練，愛打嘴炮的人,,,,,,50,,,,eleven,9lHjugDhwqoxA5MhX0az,,,,,
+He's all talk,append_center,#f4f5e9,,,DMSerifText.ttf,70,,,,,,,,#DD0000,false,false
+他就愛打嘴炮,,,,,font-bold.ttf,50,,,,eleven,9lHjugDhwqoxA5MhX0az,,,,,
+"He says he's going to start a business, but he's all talk",append_center,#f4f5e9,,,DMSerifText.ttf,70,,,,,,,,#DD0000,false,false
+他說要創業，但只是嘴上說說而已,,,,,font-bold.ttf,50,,,,eleven,9lHjugDhwqoxA5MhX0az,,,,,
+Don't believe his promises. He's all talk and no action.,append_center,#f4f5e9,,,DMSerifText.ttf,70,,,,,,,,#DD0000,false,false
+別相信他的承諾，他只是光說不做,,,,,font-bold.ttf,50,,,,eleven,9lHjugDhwqoxA5MhX0az,,,,,
+追蹤我們學到更多實用英文,all,#f4f5e9,,,,50,#FF0000,,,gcloud,cmn-TW-Standard-A,1.5,,,,
