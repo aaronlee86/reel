@@ -1,0 +1,78 @@
+I want a python project. now please understand the requirement, and make sure we are on the same page. don't implement now
+
+Requirements Specification
+
+Overview
+Python script that takes one csv file, and output csv files and json files to new folders
+
+Input Files:
+
+1. Data CSV (headered) - Contains project configurations:
+Column 1: project_name -> output folder name
+Column 2: template CSV filename -> which template file to process
+Column 3: JSON filename -> which JSON file to copy
+Columns 4+: replacement values for templating
+
+2. Template CSV file(s) - Contains placeholders in format $(column_name)
+3. JSON file(s) - To be copied and renamed
+
+Process:
+
+For each row in the headered CSV:
+
+Create output folder: workspace/{project_name}/ (create if doesn't exist)
+Load template CSV specified in column 2 (in assets/tempaltes folder)
+Replace all $(column_name) placeholders with corresponding header values from columns 4+
+Save processed template as workspace/{project_name}/script.csv
+Copy JSON file from column 3 (in assets/tempaltes folder) to workspace/{project_name}/config.json
+
+Output Files:
+
+workspace/project_name_1/
+├── script.csv    (processed template with replacements)
+└── config.json   (copied from specified JSON file)
+
+workspace/project_name_2/
+├── script.csv
+└── config.json
+
+CLI commands Specification
+
+python genproject.py <data_csv_file> [--rows <row_specification>]
+
+Arguments:
+Required Positional Argument:
+<data_csv_file> - Path to the input CSV file containing project configurations
+
+Optional Arguments:
+--rows <row_specification> - Specify which rows to process
+
+Row Specification Format:
+Individual rows: 1,3,5 (comma-separated)
+Ranges: 2-5 (inclusive range from 2 to 5)
+Mixed format: 1,3,7-10,15 (combines individual rows and ranges)
+Single row: 1 (process only row 1)
+
+Row Numbering:
+Rows are numbered starting from 2
+Row 2 = first data row (after CSV header)
+
+Exit Codes:
+
+0 - Success
+1 - Error (file not found, invalid row specification, processing error)
+
+Error Conditions:
+Row numbers out of range
+Invalid range format (e.g., 5-2, 1-2-3)
+Non-numeric values in row specification
+Missing or invalid data CSV file
+Missing template/JSON files
+Placeholder validation failures
+
+
+Error handling:
+* if key is missing in text file, error out
+* if any input file not found, error out
+* if template/JSON files referenced in the data CSV don't exist, error out
+* if any placeholder in the template not found in the header, error out
