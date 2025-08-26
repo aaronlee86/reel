@@ -40,9 +40,9 @@ class ElevenLabsTTSEngine(TTSEngine):
         Returns:
             requests.Response: API response
         """
-        audio_generator = self.client.text_to_speech.convert(text=payload['text'], model_id="eleven_multilingual_v2",
+        audio_generator = self.client.text_to_speech.convert(text=payload['text'], model_id="eleven_v3",
             output_format="mp3_44100_128",
-            voice_settings=VoiceSettings(stability=0.95, similarity_boost=0.5, style=0.0, use_speaker_boost=True, speed=payload['speed']),
+            voice_settings=VoiceSettings(stability=1.0, similarity_boost=0.5, style=0.0, use_speaker_boost=True, speed=payload['speed']),
             voice_id=payload['voice']
         )
         return b"".join(audio_generator)

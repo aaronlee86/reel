@@ -1,0 +1,20 @@
+{
+  "screen_size": [1080, 1920],
+  "font": {
+    "ttf": "font-bold.ttf",
+    "size": 42,
+    "color": "#000000"
+  },
+  "fps": 24,
+  "bgm": {
+    "file": "bgm1.mp3",
+    "volume": 0.2,
+    "start_clip": 2
+  },
+  "tts": {
+    "tts_engine": "eleven",
+    "voice": "jsCqWAovK2LkecY7zXl4"
+  },
+  "line_spacing": 90,
+  "padding": 100
+}

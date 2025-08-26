@@ -1,0 +1,4 @@
+project,template csv,config,title,topic,explain,ex1,tran1,ex2,tran2,ex3,tran3
+jinx,ch_tmpl_1.csv,ch_tmpl_1_1.json,烏鴉嘴,Jinx,烏鴉嘴。也可以當動詞，表示「帶來壞運氣」,Don't jinx it,不要烏鴉嘴,"You're a jinx",你真帶賽,"""Don’t say we’ll win for sure, you might jinx it""",別說我們一定會贏，你可能會烏鴉嘴
+oopocket,ch_tmpl_2.csv,ch_tmpl_1_1.json,自費,Out of pocket,自費；自掏腰包,"You have to pay out of pocket",你必須自費,I had to pay for the repair out of pocket,修理費我得自己付,"""The insurance won’t cover it, so you have to pay out of pocket""",保險不理賠，所以你得自己付錢
+chokeup,ch_tmpl_1.csv,ch_tmpl_1_1.json,哽咽,Choke up,哽咽、說不出話（因為情緒激動、想哭）,I choked up,我哽咽了,She choked up when she talked about her family,她講到家人時哽咽了,"""Don’t choke up, just take a deep breath and keep going""",別緊張說不出話，深呼吸繼續下去
