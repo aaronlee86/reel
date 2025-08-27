@@ -73,7 +73,7 @@ class AllWithHighlightModeStrategy(AllModeStrategy):
             # Add TTS or duration
             if tts_entry:
                 vclip['tts'] = {
-                    "text": tts_entry['text'],
+                    "text": tts_entry['dub'] if 'dub' in tts_entry else tts_entry['text'],
                     "tts_engine": tts_entry['tts']['tts_engine'],
                     "voice": tts_entry['tts']['voice'],
                     "speed": tts_entry['tts'].get('speed', 1.0)

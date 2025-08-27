@@ -30,6 +30,7 @@ Required Columns:
 * line_spacing: Optional for text scenes. If not specified, use config.json as default value
 * padding: Optional for text scenes. If not specified, use config.json as default value
 * valign: Optional for text scenes. If not specified, use config.json as default value
+* dub: Optional for text scenes. If specified, this will appear in the output json in the text scene at the same level of the "text" attr
 
 Optional Columns:
 * ttf: Font file name
@@ -88,6 +89,7 @@ json
   "text": [
     {
       "text": "Hi <h>there</h>",
+      "dub": "Hi there",
       "font": {
         "file": "roboto_regular.ttf",
         "size": 54,

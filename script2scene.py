@@ -335,6 +335,10 @@ class Script2Scene:
             if row.get('alignment', '').strip():
                 text_entry['halign'] = row.get('alignment')
 
+            # Add dub if specified in the row
+            if row.get('dub', '').strip():
+                text_entry['dub'] = row['dub']
+
             scene['text'].append(text_entry)
 
         return scene
