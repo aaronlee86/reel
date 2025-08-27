@@ -246,7 +246,8 @@ class VideoGenerator:
         self,
         data: Dict[str, Any],
         preview_start: Optional[float] = None,
-        preview_duration: Optional[float] = None
+        preview_duration: Optional[float] = None,
+        audio_only: Optional[bool] = False
     ) -> str:
         """
         Generate video from configuration data.
@@ -255,6 +256,7 @@ class VideoGenerator:
             data (Dict[str, Any]): Video configuration
             preview_start (Optional[float]): Start time for preview
             preview_duration (Optional[float]): Duration of preview
+            audio_only (Optional[bool]): generate audio file only
 
         Returns:
             str: Path to generated video file
@@ -300,11 +302,14 @@ class VideoGenerator:
         if preview_start is not None and preview_duration is not None:
             video = video.subclipped(preview_start, preview_start + preview_duration)
 
-        # Output final video
-        output_path = os.path.join(self.base_path, "output.mp4")
-        video.write_videofile(output_path, fps=fps, codec="libx264", audio_codec="aac")
-
-        print(f"Video generated successfully: {output_path}")
+        if audio_only:
+            output_path = os.path.join(self.base_path, "output_audio.mp3")
+            video.audio.write_audiofile(output_path, codec="mp3")
+            print(f"Audio generated successfully: {output_path}")
+        else:
+            output_path = os.path.join(self.base_path, "output.mp4")
+            video.write_videofile(output_path, fps=fps, codec="libx264", audio_codec="aac")
+            print(f"Video generated successfully: {output_path}")
         return output_path
 
     def _add_background_music(
@@ -393,7 +398,8 @@ class VideoGenerator:
 def generate_video_from_json(
     folder_path: str,
     preview_start: Optional[float] = None,
-    preview_duration: Optional[float] = None
+    preview_duration: Optional[float] = None,
+    audio_only: Optional[bool] = False
 ) -> str:
     """
     Main function to generate video from JSON configuration.
@@ -402,6 +408,7 @@ def generate_video_from_json(
         folder_path (str): Path to folder containing clips.json
         preview_start (Optional[float]): Start time for preview
         preview_duration (Optional[float]): Duration of preview
+        audio_only (Optional[bool]): generate audio file only
 
     Returns:
         str: Path to generated video file
@@ -420,7 +427,7 @@ def generate_video_from_json(
 
     # Create video generator and generate video
     generator = VideoGenerator(full_path)
-    return generator.generate_video(data, preview_start, preview_duration)
+    return generator.generate_video(data, preview_start, preview_duration, audio_only)
 
 def parse_arguments():
     """
@@ -444,6 +451,12 @@ def parse_arguments():
         type=float,
         help="Duration in seconds for preview clip"
     )
+
+    parser.add_argument(
+        "--audio-only",
+        action="store_true",
+        help="Generate audio only"
+    )
     return parser.parse_args()
 
 def main():
@@ -456,7 +469,7 @@ def main():
         args = parse_arguments()
 
         # Generate video based on command-line arguments
-        generate_video_from_json(args.folder, args.preview_start, args.preview_duration)
+        generate_video_from_json(args.folder, args.preview_start, args.preview_duration, args.audio_only)
     except Exception as e:
         print(f"Video generation failed: {e}")
         exit(1)
