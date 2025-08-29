@@ -164,8 +164,19 @@ class GenProjectProcessor:
         json_path = self.templates_dir / json_filename
         return json_path
 
-    def process_template_csv(self, template_filename, replacement_values):
-        """Process template CSV by replacing placeholders with actual values"""
+    def process_template_csv(self, template_filename: str, replacement_values: dict[str, str]) -> str:
+        """
+        Process template CSV by replacing placeholders with actual values
+        Handles line breaks with improved Unicode support
+        Ensures column 3 is empty for duplicated lines
+
+        Args:
+            template_filename (str): Name of the template CSV file to process
+            replacement_values (dict[str, str]): Dictionary of column headers to replacement values
+
+        Returns:
+            str: Processed template content with placeholders replaced
+        """
         template_path = self.get_template_path(template_filename)
         print(f"  Processing template: {template_path}")
 
@@ -174,28 +185,63 @@ class GenProjectProcessor:
         # Read template content
         try:
             with open(template_path, 'r', newline='', encoding='utf-8') as f:
-                template_content = f.read()
+                template_lines = f.readlines()
         except Exception as e:
             raise RuntimeError(f"Error reading template CSV {template_path}: {str(e)}")
 
-        # Find all placeholders in the template
-        placeholders = re.findall(r'\$\(([^)]+)\)', template_content)
+        # Process lines with line break handling
+        processed_lines: list[str] = []
+        for line in template_lines:
+            # Find all placeholders in the line
+            placeholders = re.findall(r'\$\(([^)]+)\)', line)
 
-        # Validate that all placeholders have corresponding headers
-        for placeholder in placeholders:
-            if placeholder not in self.headers:
-                raise ValueError(f"Placeholder '$(​{placeholder})' in template {template_path} has no matching column header in data CSV")
+            if not placeholders:
+                # If no placeholders, keep the line as is
+                processed_lines.append(line)
+                continue
 
-        # Perform replacements
-        processed_content = template_content
-        for placeholder in placeholders:
-            if placeholder in replacement_values:
-                pattern = f'$({placeholder})'
-                replacement = str(replacement_values[placeholder])
-                processed_content = processed_content.replace(pattern, replacement)
-                print(f"    Replaced $(​{placeholder}) with '{replacement}'")
-            else:
-                raise ValueError(f"Missing replacement value for placeholder '$(​{placeholder})'")
+            # Check max line count for placeholders
+            max_line_count = 1
+            for placeholder in placeholders:
+                if placeholder not in self.headers:
+                    raise ValueError(f"Placeholder '$(​{placeholder})' in template {template_path} has no matching column header in data CSV")
+
+                # Improved line counting for Unicode support
+                replacement = str(replacement_values.get(placeholder, ''))
+
+                # Explicitly split and count lines, handling Unicode
+                replacement_lines = replacement.splitlines()
+                max_line_count = max(max_line_count, len(replacement_lines))
+
+            # Prepare the processed lines for this template line
+            for i in range(max_line_count):
+                current_line = line
+                for placeholder in placeholders:
+                    replacement = str(replacement_values.get(placeholder, ''))
+
+                    # Use splitlines() for robust line splitting
+                    replacement_lines = replacement.splitlines()
+
+                    # Get the line for this iteration, or the last line if not enough lines
+                    replacement_line = replacement_lines[min(i, len(replacement_lines) - 1)] if replacement_lines else ''
+
+                    pattern = f'$({placeholder})'
+                    current_line = current_line.replace(pattern, replacement_line)
+
+                # Special handling for column 3 (index 2 in 0-based indexing)
+                # When duplicating lines, leave column 3 empty
+                if i > 0:
+                    # Split the line into columns
+                    columns = current_line.split(',')
+                    if len(columns) > 2:
+                        # Empty out the third column for duplicated lines
+                        columns[2] = ''
+                        current_line = ','.join(columns)
+
+                processed_lines.append(current_line)
+
+        # Convert processed lines back to content
+        processed_content = ''.join(processed_lines)
 
         return processed_content
 
