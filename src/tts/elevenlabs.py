@@ -1,22 +1,20 @@
 import os
-import requests
 from typing import Dict, Any, Optional
 from .engine_factory import register_tts_engine
 from src.tts.base import TTSEngine
 from dotenv import load_dotenv
-from elevenlabs import Voice, VoiceSettings
-from elevenlabs.client import ElevenLabs
 
 load_dotenv()
 
 @register_tts_engine('eleven')
 class ElevenLabsTTSEngine(TTSEngine):
     """
-    ElevenLabs Text-to-Speech Engine implementation.
+    ElevenLabs Text-to-Speech Engine implementation with lazy importing.
     """
     def __init__(self):
         """
         Initialize the ElevenLabs TTS Engine.
+        Client and modules are loaded lazily when first needed.
         Raises:
             ValueError: If no API key is provided
         """
@@ -24,13 +22,56 @@ class ElevenLabsTTSEngine(TTSEngine):
         if not self.api_key:
             raise ValueError("ElevenLabs API key not found. Set ELEVENLABS_API_KEY environment variable.")
 
-
-        self.client = ElevenLabs(
-            api_key= self.api_key
-        )
+        # Lazy-loaded attributes
+        self._client = None
+        self._elevenlabs = None
+        self._voice = None
+        self._voice_settings = None
+        self._requests = None
         self.name = self.__class__.__name__
+        self.model = "eleven_multilingual_v2"
+        print(f"{self.name} Created")
 
-    def call_api(self, payload: Dict[str, Any]) -> requests.Response:
+    @property
+    def elevenlabs(self):
+        """Lazy import of elevenlabs.client module"""
+        if self._elevenlabs is None:
+            from elevenlabs.client import ElevenLabs
+            self._elevenlabs = ElevenLabs
+        return self._elevenlabs
+
+    @property
+    def voice(self):
+        """Lazy import of Voice class"""
+        if self._voice is None:
+            from elevenlabs import Voice
+            self._voice = Voice
+        return self._voice
+
+    @property
+    def voice_settings(self):
+        """Lazy import of VoiceSettings class"""
+        if self._voice_settings is None:
+            from elevenlabs import VoiceSettings
+            self._voice_settings = VoiceSettings
+        return self._voice_settings
+
+    @property
+    def requests(self):
+        """Lazy import of requests module"""
+        if self._requests is None:
+            import requests
+            self._requests = requests
+        return self._requests
+
+    @property
+    def client(self):
+        """Lazy initialization of ElevenLabs client"""
+        if self._client is None:
+            self._client = self.elevenlabs(api_key=self.api_key)
+        return self._client
+
+    def call_api(self, payload: Dict[str, Any]) -> bytes:
         """
         Call the ElevenLabs API to generate speech.
 
@@ -38,11 +79,19 @@ class ElevenLabsTTSEngine(TTSEngine):
             payload (Dict[str, Any]): Payload containing text and voice parameters
 
         Returns:
-            requests.Response: API response
+            bytes: Audio content as bytes
         """
-        audio_generator = self.client.text_to_speech.convert(text=payload['text'], model_id="eleven_v3",
+        audio_generator = self.client.text_to_speech.convert(
+            text=payload['text'],
+            model_id=self.model,
             output_format="mp3_44100_128",
-            voice_settings=VoiceSettings(stability=1.0, similarity_boost=0.5, style=0.0, use_speaker_boost=True, speed=payload['speed']),
+            voice_settings=self.voice_settings(
+                stability=1.0,
+                similarity_boost=0.5,
+                style=0.0,
+                use_speaker_boost=True,
+                speed=payload['speed']
+            ),
             voice_id=payload['voice']
         )
         return b"".join(audio_generator)
@@ -136,3 +185,18 @@ class ElevenLabsTTSEngine(TTSEngine):
             return super().gen_filename(**kwargs)+f"_{engine_name}_{voice}_{speed}.mp3"
         except Exception as e:
             raise ValueError(f"gen_filename in {self.name} failed: {e}")
+
+
+@register_tts_engine('eleven_v3')
+class ElevenLabsTTSEngineV3(ElevenLabsTTSEngine):
+    """
+    ElevenLabs Text-to-Speech Engine V3 implementation.
+    """
+
+    def __init__(self):
+        """
+        Initialize the ElevenLabs TTS Engine V3.
+        Inherits everything from parent except the name.
+        """
+        super().__init__()
+        self.model = "eleven_v3"

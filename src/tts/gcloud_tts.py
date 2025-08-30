@@ -1,35 +1,52 @@
 import os
 from typing import Dict, Any, Optional
 from .engine_factory import register_tts_engine
-from google.cloud import texttospeech
 from src.tts.base import TTSEngine
 
 @register_tts_engine('gcloud')
 class GoogleCloudTTSEngine(TTSEngine):
     """
-    Google Cloud Text-to-Speech Engine implementation.
+    Google Cloud Text-to-Speech Engine implementation with lazy importing.
     """
 
     def __init__(self):
         """
         Initialize the Google Cloud TTS Engine.
-
-        Raises:
-            ValueError: If no credentials are provided
+        Client is created lazily when first needed.
         """
-        self.client = texttospeech.TextToSpeechClient()
+        self._client = None
+        self._texttospeech = None
         self.name = self.__class__.__name__
+        print(f"{self.name} Created")
+
+    @property
+    def texttospeech(self):
+        """Lazy import of texttospeech module"""
+        if self._texttospeech is None:
+            print(f"dynamic importing texttospeech from google.cloud")
+            from google.cloud import texttospeech
+            self._texttospeech = texttospeech
+        return self._texttospeech
+
+    @property
+    def client(self):
+        """Lazy initialization of TTS client"""
+        if self._client is None:
+            self._client = self.texttospeech.TextToSpeechClient()
+        return self._client
 
     def call_api(self, payload):
-        synthesis_input = texttospeech.SynthesisInput(text=payload['text'])
+        # Now using the lazy-loaded module
+        synthesis_input = self.texttospeech.SynthesisInput(text=payload['text'])
+
         # Build the voice request
-        audio_config = texttospeech.AudioConfig(
-            audio_encoding = texttospeech.AudioEncoding.MP3,
+        audio_config = self.texttospeech.AudioConfig(
+            audio_encoding = self.texttospeech.AudioEncoding.MP3,
             speaking_rate = payload['speed']
         )
 
         lang = "-".join(payload['voice'].split("-")[:2])
-        voice = texttospeech.VoiceSelectionParams(
+        voice = self.texttospeech.VoiceSelectionParams(
             language_code = lang,
             name = payload['voice']
         )
@@ -55,7 +72,7 @@ class GoogleCloudTTSEngine(TTSEngine):
             **kwargs: Additional arguments
 
         Returns:
-            str: Path to the generated (dummy) audio file
+            str: Path to the generated audio file
         """
         if os.path.exists(output_path):
             print(f"[{self.__class__.__name__}] Audio already exists at: {output_path}. Skipping generation.")
