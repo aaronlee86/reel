@@ -2,6 +2,7 @@ import os
 import json
 import argparse
 import sys
+import hashlib
 from typing import Dict, Any
 
 from src.tts.base import TTSEngine
@@ -57,7 +58,108 @@ def parse_arguments():
         help="Print text and audio file names without generating audio files"
     )
 
+    # Optional force processing flag
+    parser.add_argument(
+        '--force',
+        action='store_true',
+        help="Force processing even if input hasn't changed"
+    )
+
     return parser.parse_args()
+
+def calculate_file_hash(file_path: str) -> str:
+    """
+    Calculate MD5 hash of a file.
+
+    Args:
+        file_path (str): Path to the file
+
+    Returns:
+        str: MD5 hash of the file content
+    """
+    hash_md5 = hashlib.md5()
+    try:
+        with open(file_path, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                hash_md5.update(chunk)
+        return hash_md5.hexdigest()
+    except FileNotFoundError:
+        return ""
+
+def get_cache_file_path(workspace_dir: str) -> str:
+    """
+    Get the path to the cache file that stores input hash.
+
+    Args:
+        workspace_dir (str): Workspace directory path
+
+    Returns:
+        str: Path to cache file
+    """
+    return os.path.join(workspace_dir, '.tts_cache')
+
+def load_cached_hash(cache_file_path: str) -> str:
+    """
+    Load the cached input hash.
+
+    Args:
+        cache_file_path (str): Path to cache file
+
+    Returns:
+        str: Cached hash or empty string if no cache exists
+    """
+    try:
+        with open(cache_file_path, 'r') as f:
+            cache_data = json.load(f)
+            return cache_data.get('input_hash', '')
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
+        return ""
+
+def save_cached_hash(cache_file_path: str, input_hash: str):
+    """
+    Save the input hash to cache file.
+
+    Args:
+        cache_file_path (str): Path to cache file
+        input_hash (str): Hash to save
+    """
+    cache_data = {
+        'input_hash': input_hash,
+        'timestamp': os.path.getctime(cache_file_path) if os.path.exists(cache_file_path) else None
+    }
+    with open(cache_file_path, 'w') as f:
+        json.dump(cache_data, f, indent=2)
+
+def should_skip_processing(input_path: str, output_path: str, cache_file_path: str, force: bool) -> bool:
+    """
+    Determine if processing should be skipped based on input changes.
+
+    Args:
+        input_path (str): Path to input file
+        output_path (str): Path to output file
+        cache_file_path (str): Path to cache file
+        force (bool): Force processing flag
+
+    Returns:
+        bool: True if processing should be skipped
+    """
+    if force:
+        return False
+
+    # Check if output file exists
+    if not os.path.exists(output_path):
+        return False
+
+    # Calculate current input hash
+    current_hash = calculate_file_hash(input_path)
+    if not current_hash:
+        return False
+
+    # Load cached hash
+    cached_hash = load_cached_hash(cache_file_path)
+
+    # Compare hashes
+    return current_hash == cached_hash
 
 def ensure_workspace_directory(project_name: str) -> str:
     """
@@ -146,6 +248,16 @@ def main():
         # Construct full input and output paths
         input_path = os.path.join(workspace_dir, args.input)
         output_path = os.path.join(workspace_dir, args.output)
+        cache_file_path = get_cache_file_path(workspace_dir)
+
+        # Check if processing should be skipped
+        if should_skip_processing(input_path, output_path, cache_file_path, args.force):
+            print("Input hasn't changed since last processing. Skipping TTS generation.")
+            print(f"Use --force to override this behavior.")
+            print(f"Input:  {input_path}")
+            print(f"Output: {output_path} (existing)")
+            print(f"Audio:  {os.path.abspath(args.audio_output)} (existing)")
+            return
 
         # Read input JSON
         try:
@@ -187,6 +299,11 @@ def main():
             print(f"Input:  {input_path}")
             print(f"Output: {output_path}")
             print(f"Audio:  {os.path.abspath(args.audio_output)}")
+
+            # Save the current input hash to cache
+            current_hash = calculate_file_hash(input_path)
+            save_cached_hash(cache_file_path, current_hash)
+
         except Exception as e:
             print(f"Error writing output file: {e}")
             sys.exit(1)
