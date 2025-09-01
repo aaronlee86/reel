@@ -29,7 +29,7 @@ def condition(row):
 def add_sentence(row):
     cols_set = [(5,6), (7,8), (9,10)]
 
-    chinese = row[4].strip()
+    chinese = row[2].strip()
     english = row[3].strip()
 
     list1=[]
@@ -61,7 +61,7 @@ def add_explain(row):
     list2=[]
     ans = -1
 
-    chinese = row[4].strip()
+    chinese = row[2].strip()
     english = row[3].strip()
 
     print(f"get explain for {english}")
