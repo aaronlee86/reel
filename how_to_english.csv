@@ -1,21 +1,16 @@
 template csv,config,title,topic,explain,ex1,tran1,ex2,tran2,ex3,tran3
-ch_tmpl_1.csv,ch_tmpl_1_1.json,烏鴉嘴,Jinx,烏鴉嘴。也可以當動詞，表示「帶來壞運氣」,Don't jinx it,不要烏鴉嘴,You're a jinx,你真帶賽,"""Don’t say we’ll win for sure, you might jinx it""",別說我們一定會贏，你可能會烏鴉嘴
-ch_tmpl_1.csv,ch_tmpl_1_1.json,自費,Out of pocket,自費；自掏腰包,You have to pay out of pocket,你必須自費,I had to pay for the repair out of pocket,修理費我得自己付,"""The insurance won’t cover it,""
-so you have to pay out of pocket",保險不理賠，所以你得自己付錢
-ch_tmpl_1.csv,ch_tmpl_1_1.json,哽咽,Choke up,哽咽、說不出話（因為情緒激動、想哭）,I choked up,我哽咽了,She choked up when she talked about her family,她講到家人時哽咽了,"""Don’t choke up, just take a deep breath and keep going""",別緊張說不出話，深呼吸繼續下去
-,,退步,Lose one's touch,退步，失去原本擅長的能力或技巧,I have lost my touch,我退步了,"“I used to cook really well,”
-but I think I’ve lost my touch.",我以前很會煮，但現在好像手藝退步了,"The magician messed up the trick
-Maybe he’s losing his touch
-",魔術師表演失誤了，可能技術退步了
-,,傷口上灑鹽,Rub it in one's face,故意揭人痛處；在別人失敗或難過時，還刻意提醒或嘲笑，讓對方更難受,Don't rub it in my face.,別故意揭我的痛處。,She rubs it in his face.,她在他失敗時故意揭他的痛處。,He kept rubbing it in.,他一直故意揭別人痛處。
-,,被綠了,Got cheated on,被劈腿、被出軌,I got cheated on last night.,我昨晚被劈腿。,He found out he got cheated on by his girlfriend,他發現自己被女友劈腿了,"""If you get cheated on,""
-it’s better to move on",如果被劈腿了，最好的辦法就是往前走
-,,,,,,,,,,
-,,,,,,,,,,
-,,佔位子,Hold a seat,幫人先佔位，暫時把座位留著，等人回來再坐。,Can you hold a seat for me?,你可以幫我暫時留個位嗎？,I'll hold a seat for you.,我會幫你暫時留位。,"Hold a seat, I'm almost there.",幫我留個位，我快到了。
-,,顧一下包包,Keep an eye on,對某人或某事持續留意、注意或監視，確保沒出狀況，偶爾也指照顧或看護。,Keep an eye on my bag.,請幫忙留意我的包包。,Can you keep an eye on this?,你能幫我留意這個嗎？,Keep an eye on the stove.,請幫忙盯著爐子。
-,,穩交,,,,,,,,
-,,贅肉,,,He’s got some flab on his arms,他的手臂上有些贅肉,"Don’t worry, everyone has a little flab",別擔心，每個人都有一點贅肉,I need to lose the flab on my stomach,我需要減掉肚子上的贅肉
+ch_tmpl_1.csv,ch_tmpl_1_1.json,烏鴉嘴,Jinx,烏鴉嘴，或是帶來壞運氣的人或東西,He’s a jinx,他是個烏鴉嘴,"Don’t say we’re going to win.
+You’ll jinx it!",別說我們一定會贏，你會烏鴉嘴,He's a jinx—everything he touches breaks.,他帶賽，他碰的東西都壞掉。
+ch_tmpl_1.csv,ch_tmpl_1_1.json,自費,Out of pocket,自費，自掏腰包付錢,I'll have to pay out of pocket for the repairs.,我得自掏腰包付修理費。,I was out of pocket covering the medical bill.,我自掏腰包付醫療費。,"If it's minor, pay out of pocket and skip insurance.",如果是小問題，就自掏腰包付錢，不走保險理賠。
+ch_tmpl_1.csv,ch_tmpl_1_1.json,哽咽,Choke up,感動或難過到聲音卡住、哽咽，講不下去。,I always choke up during that song.,我每次聽到那首歌都會哽咽。,She choked up when she saw the letter.,她看到那封信時哽咽了。,He chokes up at every goodbye.,每次道別他都會哽咽。
+ch_tmpl_1.csv,ch_tmpl_1_1.json,退步,Lose one's touch,曾經很會，現在手感差了，有點退步,I think I'm starting to lose my touch.,我覺得我開始有點退步了。,He's definitely beginning to lose his touch lately.,他最近確實開始退步了。,She's scared she'll lose her touch without practice.,她擔心如果不練習會退步。
+ch_tmpl_1.csv,ch_tmpl_1_1.json,被劈腿了,Got cheated on,被劈腿了，感情被背叛整個人超受傷,I got cheated on last month.,我上個月被劈腿了。,She got cheated on by her boyfriend.,她被男友劈腿了。,He just found out he got cheated on.,他剛發現自己被劈腿了。
+ch_tmpl_1.csv,ch_tmpl_1_1.json,佔位子,Hold a seat,在旁邊放東西佔位子，替別人保留座位或排隊位置,Can you hold a seat for me?,你可以幫我佔位子嗎？,I'll hold a seat while you grab coffee.,我會佔位子，你去拿咖啡。,Hold a seat—I'll be right back.,幫我佔位子—我馬上回來。
+ch_tmpl_1.csv,ch_tmpl_1_1.json,顧個東西的「顧」,Keep an eye on,盯著看、注意或照顧某物或某人，像是在顧個東西的「顧」。,Can you keep an eye on my bag?,你可以幫我顧一下包嗎？,I'll keep an eye on the kids.,我會幫你顧小孩。,"Keep an eye on the oven, please.",請幫我顧一下烤箱。
+ch_tmpl_1.csv,ch_tmpl_1_1.json,穩交,Go steady,跟某人正式交往、感情穩定，就是所謂的穩交,We went steady throughout college.,我們在大學時期一直穩交。,I don't want to go steady right now.,我現在不想穩交。,Do you think they'll go steady soon?,你覺得他們很快會穩交嗎？
+ch_tmpl_1.csv,ch_tmpl_1_1.json,贅肉,flab,就是身上多餘、鬆軟會晃動的贅肉，常見在小腹、手臂、腰際。,I need to get rid of my flab.,我得把贅肉減掉。,These jeans hide my flab perfectly.,這條牛仔褲完美地遮住我的贅肉。,Her arm flab jiggles when she waves.,她揮手時手臂的贅肉會晃動。
+ch_tmpl_1.csv,ch_tmpl_1_1.json,起水泡,get a blister,,,,,,,
+ch_tmpl_1.csv,ch_tmpl_1_1.json,被冷落,Be left out,被排除在團體或活動之外，感覺被冷落、孤單又沒被重視。,I don't want to be left out.,我不想被冷落。,She felt like she would be left out.,她覺得自己會被冷落。,"Don't make me be left out, please.",別讓我被冷落，拜託。
 ,,,,,,,,,,
 ,,,,,,,,,,
 ,,,,,,,,,,
