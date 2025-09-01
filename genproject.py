@@ -271,9 +271,11 @@ class GenProjectProcessor:
     def process_single_project(self, row, row_number):
         """Process a single row/project from the data CSV"""
         # Extract basic project information
-        project_name = row[0].strip()
-        template_file = row[1].strip()
-        json_file = row[2].strip()
+        # Generate project name based on input filename and row number
+        input_filename = Path(self.data_csv_path).stem
+        project_name = f"{input_filename}_{row_number}"
+        template_file = row[0].strip()
+        json_file = row[1].strip()
 
         print(f"\nProcessing row {row_number}: {project_name}")
 

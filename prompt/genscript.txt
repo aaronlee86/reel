@@ -8,10 +8,9 @@ Python script that takes one csv file, and output csv files and json files to ne
 Input Files:
 
 1. Data CSV (headered) - Contains project configurations:
-Column 1: project_name -> output folder name
-Column 2: template CSV filename -> which template file to process
-Column 3: JSON filename -> which JSON file to copy
-Columns 4+: replacement values for templating
+Column 1: template CSV filename -> which template file to process
+Column 2: JSON filename -> which JSON file to copy
+Columns 3+: replacement values for templating
 
 2. Template CSV file(s) - Contains placeholders in format $(column_name)
 3. JSON file(s) - To be copied and renamed
@@ -20,11 +19,12 @@ Process:
 
 For each row in the headered CSV:
 
+set project_name = input filename+'_'+row number
 Create output folder: workspace/{project_name}/ (create if doesn't exist)
-Load template CSV specified in column 2 (in assets/tempaltes folder)
-Replace all $(column_name) placeholders with corresponding header values from columns 4+
+Load template CSV specified in column 1 (in assets/tempaltes folder)
+Replace all $(column_name) placeholders with corresponding header values from columns 3+
 Save processed template as workspace/{project_name}/script.csv
-Copy JSON file from column 3 (in assets/tempaltes folder) to workspace/{project_name}/config.json
+Copy JSON file from column 2 (in assets/tempaltes folder) to workspace/{project_name}/config.json
 
 Output Files:
 
