@@ -3,6 +3,7 @@ import json
 import argparse
 import numpy as np
 from typing import Dict, Any, Tuple, Optional, List, Callable
+from pathlib import Path
 
 from moviepy import (
     ImageClip,
@@ -245,18 +246,17 @@ class VideoGenerator:
     def generate_video(
         self,
         data: Dict[str, Any],
-        preview_start: Optional[float] = None,
-        preview_duration: Optional[float] = None,
-        audio_only: Optional[bool] = False
+        args
     ) -> str:
         """
         Generate video from configuration data.
 
         Args:
             data (Dict[str, Any]): Video configuration
-            preview_start (Optional[float]): Start time for preview
-            preview_duration (Optional[float]): Duration of preview
-            audio_only (Optional[bool]): generate audio file only
+            args.preview_start (Optional[float]): Start time for preview
+            args.preview_duration (Optional[float]): Duration of preview
+            args.audio_only (Optional[bool]): generate audio file only
+            args.output_folder (Optional[str]): output softlink path
 
         Returns:
             str: Path to generated video file
@@ -298,6 +298,13 @@ class VideoGenerator:
         # Add background music if specified
         video = self._add_background_music(video, data)
 
+        preview_start = args.preview_start
+        preview_duration = args.preview_duration
+        audio_only = args.audio_only
+        output_ln_folder = Path(args.output_folder)
+
+
+
         # Handle video preview if specified
         if preview_start is not None and preview_duration is not None:
             video = video.subclipped(preview_start, preview_start + preview_duration)
@@ -309,6 +316,15 @@ class VideoGenerator:
         else:
             output_path = os.path.join(self.base_path, "output.mp4")
             video.write_videofile(output_path, fps=fps, codec="libx264", audio_codec="aac")
+
+            try:
+                output_ln_folder.mkdir(parents=True, exist_ok=True)
+            except Exception as e:
+                raise RuntimeError(f"Error creating output directory {output_ln_folder}: {str(e)}")
+
+            target = Path(output_path).resolve()
+            link = output_ln_folder / (os.path.basename(self.base_path)+'.mp4')
+            create_symlink(target, link)
             print(f"Video generated successfully: {output_path}")
         return output_path
 
@@ -395,25 +411,43 @@ class VideoGenerator:
         except Exception as e:
             raise VideoGenerationError(f"Failed to add background music: {e}")
 
-def generate_video_from_json(
-    folder_path: str,
-    preview_start: Optional[float] = None,
-    preview_duration: Optional[float] = None,
-    audio_only: Optional[bool] = False
-) -> str:
+def create_symlink(target, link_name):
+    try:
+        # Using pathlib (recommended)
+        link_path = Path(link_name)
+        target_path = Path(target).resolve()
+
+        # Check if target exists
+        if not target_path.exists():
+            print(f"Warning: Target '{target}' does not exist")
+
+        # Remove existing link if it exists
+        if link_path.is_symlink():
+            link_path.unlink()
+
+        # Create the symbolic link
+        link_path.symlink_to(target_path)
+        print(f"Created symbolic link: {link_name} -> {target}")
+
+    except OSError as e:
+        print(f"Error creating symbolic link: {e}")
+
+def generate_video_from_json(args) -> str:
     """
     Main function to generate video from JSON configuration.
 
     Args:
-        folder_path (str): Path to folder containing clips.json
-        preview_start (Optional[float]): Start time for preview
-        preview_duration (Optional[float]): Duration of preview
-        audio_only (Optional[bool]): generate audio file only
+        args.folder (str): Path to folder containing clips.json
+        args.preview_start(Optional[float]): Start time for preview
+        args.preview_duration (Optional[float]): Duration of preview
+        args.audio_only (Optional[bool]): generate audio file only
+        args.output_folder (Optional[str]): output softlink path
 
     Returns:
         str: Path to generated video file
     """
     # Construct full path to project folder
+    folder_path = args.folder
     full_path = os.path.join("workspace", folder_path)
     json_file = "clips.json"
 
@@ -427,7 +461,7 @@ def generate_video_from_json(
 
     # Create video generator and generate video
     generator = VideoGenerator(full_path)
-    return generator.generate_video(data, preview_start, preview_duration, audio_only)
+    return generator.generate_video(data, args)
 
 def parse_arguments():
     """
@@ -451,11 +485,15 @@ def parse_arguments():
         type=float,
         help="Duration in seconds for preview clip"
     )
-
     parser.add_argument(
         "--audio-only",
         action="store_true",
         help="Generate audio only"
+    )
+    parser.add_argument(
+        "--output-folder",
+        help="Folder to save softlink of output video (defaults to output)",
+        default="output"
     )
     return parser.parse_args()
 
@@ -469,7 +507,8 @@ def main():
         args = parse_arguments()
 
         # Generate video based on command-line arguments
-        generate_video_from_json(args.folder, args.preview_start, args.preview_duration, args.audio_only)
+        generate_video_from_json(args)
+        #generate_video_from_json(args.folder, args.preview_start, args.preview_duration, args.audio_only)
     except Exception as e:
         print(f"Video generation failed: {e}")
         exit(1)
