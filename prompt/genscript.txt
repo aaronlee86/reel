@@ -24,6 +24,7 @@ Create output folder: workspace/{project_name}/ (create if doesn't exist)
 Load template CSV specified in column 1 (in assets/tempaltes folder)
 Replace all $(column_name) placeholders with corresponding header values from columns 3+
 Save processed template as workspace/{project_name}/script.csv
+* Note: if replaced value contain comma, it needs to be escaped becuase it's CSV
 Copy JSON file from column 2 (in assets/tempaltes folder) to workspace/{project_name}/config.json
 
 Output Files:

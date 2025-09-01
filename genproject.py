@@ -164,7 +164,7 @@ class GenProjectProcessor:
         json_path = self.templates_dir / json_filename
         return json_path
 
-    def process_template_csv(self, template_filename: str, replacement_values: dict[str, str]) -> str:
+    def process_template_csv(self, template_filename: str, replacement_values: dict[str, str]) -> list[list[str]]:
         """
         Process template CSV by replacing placeholders with actual values
         Handles line breaks with improved Unicode support
@@ -175,34 +175,45 @@ class GenProjectProcessor:
             replacement_values (dict[str, str]): Dictionary of column headers to replacement values
 
         Returns:
-            str: Processed template content with placeholders replaced
+            list[list[str]]: Processed template rows with placeholders replaced
         """
         template_path = self.get_template_path(template_filename)
         print(f"  Processing template: {template_path}")
 
         self.validate_input_file(template_path, "Template CSV")
 
-        # Read template content
+        # Read template content using CSV reader to handle existing escaping
         try:
             with open(template_path, 'r', newline='', encoding='utf-8') as f:
-                template_lines = f.readlines()
+                csv_reader = csv.reader(f)
+                template_rows = list(csv_reader)
         except Exception as e:
             raise RuntimeError(f"Error reading template CSV {template_path}: {str(e)}")
 
-        # Process lines with line break handling
-        processed_lines: list[str] = []
-        for line in template_lines:
-            # Find all placeholders in the line
-            placeholders = re.findall(r'\$\(([^)]+)\)', line)
+        # Validate template has rows
+        if not template_rows:
+            raise ValueError(f"Template CSV {template_path} is empty")
 
-            if not placeholders:
-                # If no placeholders, keep the line as is
-                processed_lines.append(line)
+        # Process rows with line break and placeholder handling
+        processed_rows = []
+        for row_index, row in enumerate(template_rows):
+            # Check if row has placeholders
+            placeholders_in_row = []
+            for col_index, cell in enumerate(row):
+                found_placeholders = re.findall(r'\$\(([^)]+)\)', cell)
+                if found_placeholders:
+                    placeholders_in_row.extend(
+                        (col_index, placeholder) for placeholder in found_placeholders
+                    )
+
+            # If no placeholders, keep row as is
+            if not placeholders_in_row:
+                processed_rows.append(row)
                 continue
 
             # Check max line count for placeholders
             max_line_count = 1
-            for placeholder in placeholders:
+            for col_index, placeholder in placeholders_in_row:
                 if placeholder not in self.headers:
                     raise ValueError(f"Placeholder '$(​{placeholder})' in template {template_path} has no matching column header in data CSV")
 
@@ -213,37 +224,29 @@ class GenProjectProcessor:
                 replacement_lines = replacement.splitlines()
                 max_line_count = max(max_line_count, len(replacement_lines))
 
-            # Prepare the processed lines for this template line
-            for i in range(max_line_count):
-                current_line = line
-                for placeholder in placeholders:
+            # Prepare the processed rows for this template row
+            for line_index in range(max_line_count):
+                new_row = row.copy()
+                for col_index, placeholder in placeholders_in_row:
                     replacement = str(replacement_values.get(placeholder, ''))
 
                     # Use splitlines() for robust line splitting
                     replacement_lines = replacement.splitlines()
 
                     # Get the line for this iteration, or the last line if not enough lines
-                    replacement_line = replacement_lines[min(i, len(replacement_lines) - 1)] if replacement_lines else ''
+                    replacement_line = replacement_lines[min(line_index, len(replacement_lines) - 1)] if replacement_lines else ''
 
                     pattern = f'$({placeholder})'
-                    current_line = current_line.replace(pattern, replacement_line)
+                    new_row[col_index] = new_row[col_index].replace(pattern, replacement_line)
 
                 # Special handling for column 3 (index 2 in 0-based indexing)
                 # When duplicating lines, leave column 3 empty
-                if i > 0:
-                    # Split the line into columns
-                    columns = current_line.split(',')
-                    if len(columns) > 2:
-                        # Empty out the third column for duplicated lines
-                        columns[2] = ''
-                        current_line = ','.join(columns)
+                if line_index > 0 and len(new_row) > 2:
+                    new_row[2] = ''
 
-                processed_lines.append(current_line)
+                processed_rows.append(new_row)
 
-        # Convert processed lines back to content
-        processed_content = ''.join(processed_lines)
-
-        return processed_content
+        return processed_rows
 
     def copy_json_file(self, json_filename, output_path):
         """Copy JSON file from assets/templates to output location"""
@@ -300,13 +303,15 @@ class GenProjectProcessor:
         output_dir = self.create_output_folder(project_name)
 
         # Process template CSV (now from assets/templates folder)
-        processed_csv_content = self.process_template_csv(template_file, replacement_values)
+        processed_rows = self.process_template_csv(template_file, replacement_values)
 
-        # Write processed CSV
+        # Write processed CSV with proper CSV escaping
         script_csv_path = output_dir / "script.csv"
         try:
             with open(script_csv_path, 'w', newline='', encoding='utf-8') as f:
-                f.write(processed_csv_content)
+                csv_writer = csv.writer(f, quoting=csv.QUOTE_ALL)
+                csv_writer.writerows(processed_rows)
+
             print(f"  Created script.csv: {script_csv_path}")
         except Exception as e:
             raise RuntimeError(f"Error writing script.csv for {project_name}: {str(e)}")
