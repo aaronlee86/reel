@@ -1,6 +1,7 @@
 import os
 import json
 import argparse
+import hashlib
 import numpy as np
 from typing import Dict, Any, Tuple, Optional, List, Callable
 from pathlib import Path
@@ -23,7 +24,7 @@ class VideoGenerationError(Exception):
 class VideoGenerator:
     """
     Comprehensive video generation class that encapsulates
-    all video creation logic.
+    all video creation logic with hash-based caching.
     """
     def __init__(self, base_path: str):
         """
@@ -38,6 +39,79 @@ class VideoGenerator:
             "text": self._build_text_clip,
             "video": self._build_video_clip
         }
+
+    def _calculate_project_hash(self, json_path: str) -> str:
+        """
+        Calculate hash of clips.json file.
+
+        Args:
+            json_path (str): Path to clips.json file
+
+        Returns:
+            str: MD5 hash of the clips.json file
+        """
+        try:
+            hasher = hashlib.md5()
+            with open(json_path, 'rb') as f:
+                hasher.update(f.read())
+            return hasher.hexdigest()
+        except FileNotFoundError:
+            return ""
+
+    def _get_cache_file_path(self) -> str:
+        """Get path to cache file."""
+        return os.path.join(self.base_path, '.video_cache.json')
+
+    def _load_cache_data(self) -> Dict[str, Any]:
+        """Load cache data from file."""
+        cache_file = self._get_cache_file_path()
+        try:
+            with open(cache_file, 'r') as f:
+                return json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            return {}
+
+    def _save_cache_data(self, project_hash: str, output_path: str):
+        """Save cache data to file."""
+        cache_file = self._get_cache_file_path()
+        cache_data = {
+            'project_hash': project_hash,
+            'output_path': output_path
+        }
+        with open(cache_file, 'w') as f:
+            json.dump(cache_data, f, indent=2)
+
+    def _should_skip_generation(self, json_path: str, args) -> Tuple[bool, Optional[str]]:
+        """
+        Determine if video generation should be skipped.
+
+        Args:
+            json_path (str): Path to clips.json
+            args: Command line arguments
+
+        Returns:
+            Tuple[bool, Optional[str]]: (should_skip, existing_output_path)
+        """
+        if getattr(args, 'force', False):
+            return False, None
+
+        # Calculate current project hash
+        current_hash = self._calculate_project_hash(json_path)
+        if not current_hash:
+            return False, None
+
+        # Load cache data
+        cache_data = self._load_cache_data()
+        cached_hash = cache_data.get('project_hash')
+        cached_output = cache_data.get('output_path')
+
+        # Check if hashes match and output file exists
+        if (current_hash == cached_hash and
+            cached_output and
+            os.path.exists(cached_output)):
+            return True, cached_output
+
+        return False, None
 
     def _resolve_path(self, filename: str) -> str:
         """
@@ -303,8 +377,6 @@ class VideoGenerator:
         audio_only = args.audio_only
         output_ln_folder = Path(args.output_folder)
 
-
-
         # Handle video preview if specified
         if preview_start is not None and preview_duration is not None:
             video = video.subclipped(preview_start, preview_start + preview_duration)
@@ -442,6 +514,7 @@ def generate_video_from_json(args) -> str:
         args.preview_duration (Optional[float]): Duration of preview
         args.audio_only (Optional[bool]): generate audio file only
         args.output_folder (Optional[str]): output softlink path
+        args.force (Optional[bool]): force regeneration even if cached
 
     Returns:
         str: Path to generated video file
@@ -450,18 +523,49 @@ def generate_video_from_json(args) -> str:
     folder_path = args.folder
     full_path = os.path.join("workspace", folder_path)
     json_file = "clips.json"
+    json_path = os.path.join(full_path, json_file)
+
+    # Create video generator
+    generator = VideoGenerator(full_path)
+
+    # Check if generation should be skipped
+    should_skip, existing_output = generator._should_skip_generation(json_path, args)
+
+    if should_skip:
+        print("Project hasn't changed since last generation. Using cached output.")
+        print(f"Use --force to regenerate anyway.")
+        print(f"Input:  {json_path}")
+        print(f"Output: {existing_output} (existing)")
+
+        # Still create symlink if needed
+        if not args.audio_only:
+            output_ln_folder = Path(args.output_folder)
+            try:
+                output_ln_folder.mkdir(parents=True, exist_ok=True)
+                target = Path(existing_output).resolve()
+                link = output_ln_folder / (os.path.basename(full_path) + '.mp4')
+                create_symlink(target, link)
+            except Exception as e:
+                print(f"Warning: Could not create symlink: {e}")
+
+        return existing_output
 
     # Load JSON configuration
     try:
-        with open(os.path.join(full_path, json_file), 'r', encoding='utf-8') as f:
+        with open(json_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
     except (IOError, json.JSONDecodeError) as e:
         print(f"Error loading JSON: {e}")
         raise VideoGenerationError(f"Failed to load configuration: {e}")
 
-    # Create video generator and generate video
-    generator = VideoGenerator(full_path)
-    return generator.generate_video(data, args)
+    # Generate video
+    output_path = generator.generate_video(data, args)
+
+    # Save cache data
+    project_hash = generator._calculate_project_hash(json_path)
+    generator._save_cache_data(project_hash, output_path)
+
+    return output_path
 
 def parse_arguments():
     """
@@ -495,6 +599,11 @@ def parse_arguments():
         help="Folder to save softlink of output video (defaults to output)",
         default="output"
     )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Force regeneration even if project hasn't changed"
+    )
     return parser.parse_args()
 
 def main():
@@ -508,7 +617,6 @@ def main():
 
         # Generate video based on command-line arguments
         generate_video_from_json(args)
-        #generate_video_from_json(args.folder, args.preview_start, args.preview_duration, args.audio_only)
     except Exception as e:
         print(f"Video generation failed: {e}")
         exit(1)
