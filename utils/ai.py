@@ -21,9 +21,10 @@ def get_sentences(english_text, chinese_text):
         response = client.responses.parse(
             model="gpt-5-mini-2025-08-07",
             input=[
-                {"role": "system", "content": f"""given a English word and its Chinese translation
+                {"role": "system", "content": f"""User will give a English word and its Chinese translation
                                                 Use the English word in given Chinese meaning to make 5 colloquial, and natural sentences which are no more than 12 words.
                                                 Also give me Traditional Chinese translation for each sentence, better use {chinese_text} in translation.
+                                                remove the period at the end.
                                                 return two arrays."""},
                 {"role": "user", "content": f"english:{english_text}; chinese:{chinese_text}"}
             ],
@@ -50,7 +51,7 @@ def get_explain(english_text, chinese_text):
                 {"role": "system", "content": f"""given a English word and its Chinese translation
                                                 explain the English word in Taiwanese traditional chinese in a colloquial, and natural way.
                                                 Don't give me example sentence. just explain in 10 to 20 words.
-                                                better include {chinese_text} in the answer
+                                                better include {chinese_text} in the answer. Remove the period at the end.
                                                 return a array"""},
                 {"role": "user", "content": f"English:{english_text}; Chinese:{chinese_text}"}
             ],
