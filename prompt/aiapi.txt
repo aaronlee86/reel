@@ -1,0 +1,37 @@
+I want a python project. now please understand the requirement, and make sure we are on the same page. don't implement now
+
+Requirements Specification
+
+Overview
+A Python command-line utility for interactive line processing with a configurable waterfall of transformation functions.
+
+Input Files:
+a csv file
+Python module path (containing processing logic)
+
+Process:
+Load the specified Python module
+Iterate through each line in the CSV file
+for each line in the csv file
+    check engine.condition(line)
+    if false: skip to next line
+    if true:
+        run a waterfall functions in engine with line content input:
+        line = func1(line)
+        line = func2(line)
+        ...
+    replace the result line in file immediately
+
+
+CLI commands Specification
+python util.py <input_file> <python_module>
+
+Arguments:
+Required Positional Argument:
+<input_file> - Path to the input filename
+<python_module> - Path to the python module
+
+
+Error handling:
+* if Invalid file paths, error out
+* If user abort by ctrl+c, the input file should be overwritten as well
