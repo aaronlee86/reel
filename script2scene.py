@@ -339,6 +339,10 @@ class Script2Scene:
             if row.get('dub', '').strip():
                 text_entry['dub'] = row['dub']
 
+            # Add duration if available
+            if row.get('duration'):
+                text_entry['duration'] = float(row['duration'])
+
             scene['text'].append(text_entry)
 
         return scene

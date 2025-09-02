@@ -52,9 +52,12 @@ class AllWithHighlightModeStrategy(AllModeStrategy):
 
             if highlight_index < len(text_entries):
                 current_entry = text_entries[highlight_index]
+                if 'tts' not in current_entry and 'duration' not in current_entry:
+                    raise ValueError("Each vclip must have either TTS or duration")
+
                 if 'tts' in current_entry:
                     tts_entry = current_entry
-                elif 'duration' in current_entry:
+                if 'duration' in current_entry:
                     duration = current_entry['duration']
 
             # Create vclip
@@ -78,18 +81,13 @@ class AllWithHighlightModeStrategy(AllModeStrategy):
                     "voice": tts_entry['tts']['voice'],
                     "speed": tts_entry['tts'].get('speed', 1.0)
                 }
-            elif duration is not None:
+
+            if duration:
                 vclip['duration'] = duration
-            else:
-                raise ValueError("Each vclip must have either TTS or duration")
 
             # Add modified sentences
             vclip['sentences'] = modified_entries
 
             output_vclips.append(vclip)
-
-        # If no TTS or duration entries, raise an error
-        if not output_vclips:
-            raise ValueError("At least one text entry must have TTS or duration")
 
         return output_vclips

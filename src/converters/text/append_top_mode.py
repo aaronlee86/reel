@@ -96,14 +96,15 @@ class AppendTopModeStrategy(TextSceneStrategy):
 
         # Find entries with TTS or duration
         text_entries = scene.get('text', [])
-        tts_entries = [entry for entry in text_entries if 'tts' in entry]
-        duration_entries = [entry for entry in text_entries if 'duration' in entry]
 
         # Prepare output vclips
         output_vclips = []
 
         # Generate vclips for TTS entries
-        for i, tts_entry in enumerate(tts_entries):
+        for i, txt_entry in enumerate(text_entries):
+            if not 'tts' in txt_entry and not 'duration' in txt_entry:
+                raise ValueError("Each vclip must have either TTS or duration")
+
             vclip = {
                 "type": "text"
             }
@@ -116,41 +117,21 @@ class AppendTopModeStrategy(TextSceneStrategy):
             else:
                 vclip['bgcolor'] = '#000000'  # Default background
 
-            # Set TTS configuration
-            vclip['tts'] = {
-                "text": tts_entry['dub'] if 'dub' in tts_entry else tts_entry['text'],
-                "tts_engine": tts_entry['tts']['tts_engine'],
-                "voice": tts_entry['tts']['voice'],
-                "speed": tts_entry['tts'].get('speed', 1.0)
-            }
+            if 'tts' in txt_entry:
+                # Set TTS configuration
+                vclip['tts'] = {
+                    "text": txt_entry['dub'] if 'dub' in txt_entry else txt_entry['text'],
+                    "tts_engine": txt_entry['tts']['tts_engine'],
+                    "voice": txt_entry['tts']['voice'],
+                    "speed": txt_entry['tts'].get('speed', 1.0)
+                }
+
+            if 'duration' in txt_entry:
+                vclip['duration'] = txt_entry['duration']
 
             # Add positioned sentences for this vclip
             vclip['sentences'] = positioned_entries_list[i]
 
             output_vclips.append(vclip)
-
-        # Generate vclips for duration-based entries
-        for i, duration_entry in enumerate(duration_entries):
-            vclip = {
-                "type": "text",
-                "duration": duration_entry['duration']
-            }
-
-            # Add background or bgcolor
-            if 'background' in scene:
-                vclip['background'] = scene['background']
-            elif 'bgcolor' in scene:
-                vclip['bgcolor'] = scene['bgcolor']
-            else:
-                vclip['bgcolor'] = '#000000'  # Default background
-
-            # Add positioned sentences for this vclip
-            vclip['sentences'] = positioned_entries_list[len(tts_entries) + i]
-
-            output_vclips.append(vclip)
-
-        # If no TTS or duration entries, raise an error
-        if not output_vclips:
-            raise ValueError("At least one text entry must have TTS or duration")
 
         return output_vclips

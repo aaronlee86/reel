@@ -48,10 +48,6 @@ class TextSceneConverter(SceneConverter):
 
         # Validate text configuration
         for entry in text_entries:
-            # Validate mutually exclusive duration and TTS
-            if 'duration' in entry and 'tts' in entry:
-                raise ValueError("Cannot specify both 'duration' and 'tts' for a text entry")
-
             # Validate font configuration
             if 'font' not in entry:
                 raise ValueError("Font configuration is required for each text entry")
