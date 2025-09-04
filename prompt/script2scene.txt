@@ -27,8 +27,10 @@ Required Columns:
 * highlight_italic: Reqired only for the first row of "all_with_highlight" mode.
 * font_size: Optional for text scenes. If not specified, use the value in config.json as default
 * font_color: Optional for text scenes. If not specified, use the value in config.json as default
+* para_spacing: Optional for text scenes. If not specified, use config.json as default value
 * line_spacing: Optional for text scenes. If not specified, use config.json as default value
-* padding: Optional for text scenes. If not specified, use config.json as default value
+* v_padding: Optional for text scenes. If not specified, use config.json as default value
+* h_padding: Optional for text scenes. If not specified, use config.json as default value
 * valign: Optional for text scenes. If not specified, use config.json as default value
 * dub: Optional for text scenes. If specified, this will appear in the output json in the text scene at the same level of the "text" attr
 
@@ -55,8 +57,10 @@ json
     "tts_engine": "default_engine",
     "voice": "default_voice"
   },
-  "line_spacing": 30
-  "padding": 40
+  "para_spacing": 30,
+  "line_spacing": 5,
+  "v_padding": 40,
+  "h_padding": 40
 }
 
 Optional Fields:

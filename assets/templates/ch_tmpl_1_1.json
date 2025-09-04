@@ -15,6 +15,8 @@
     "tts_engine": "eleven",
     "voice": "jsCqWAovK2LkecY7zXl4"
   },
-  "line_spacing": 90,
-  "padding": 100
+  "para_spacing": 90,
+  "line_spacing": 5,
+  "v_padding": 100,
+  "h_padding": 50
 }

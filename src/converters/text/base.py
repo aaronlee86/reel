@@ -14,8 +14,10 @@ class TextSceneStrategy(ABC):
         screen_size: List[int],
         valign: str,
         halign: str,
-        padding: int = 40,
-        line_spacing: int = 20
+        v_padding: int,
+        h_padding: int,
+        para_spacing: int,
+        line_spacing: int
     ) -> List[Dict[str, Any]]:
         """
         Calculate positions for text entries
@@ -32,6 +34,8 @@ class TextSceneStrategy(ABC):
         """
         pass
 
+    from PIL import Image, ImageDraw, ImageFont
+
     def _calculate_x_position(
         self,
         text: str,
@@ -41,10 +45,9 @@ class TextSceneStrategy(ABC):
         halign: str,
         padding: int,
         min_font_size: int = 1
-    ) -> tuple[int, int]:
+    ) -> tuple[int, int, int]:
         """
         Calculate x position based on horizontal alignment with automatic font scaling
-
         Args:
             text (str): Text to position
             font_size (int): Desired font size in points
@@ -52,11 +55,9 @@ class TextSceneStrategy(ABC):
             screen_width (int): Screen width in pixels
             halign (str): Horizontal alignment ('left', 'center', or 'right')
             padding (int): Padding from screen edges in pixels
-            min_font_size (int): Minimum allowed font size (default: 8)
-
+            min_font_size (int): Minimum allowed font size (default: 1)
         Returns:
-            tuple[int, int]: (x_position, actual_font_size_used)
-
+            tuple[int, int, int]: (x_position, height, actual_font_size_used)
         Raises:
             ValueError: If halign is invalid or font_path is not provided
             FileNotFoundError: If font file doesn't exist
@@ -73,6 +74,10 @@ class TextSceneStrategy(ABC):
         available_width = screen_width - 2 * padding
         current_font_size = max(font_size, min_font_size)
 
+        # Create dummy image for measurement (move outside loop)
+        img = Image.new('RGB', (1, 1))
+        draw = ImageDraw.Draw(img)
+
         # Try to find largest font size that fits
         while current_font_size >= min_font_size:
             try:
@@ -82,10 +87,6 @@ class TextSceneStrategy(ABC):
             except OSError as e:
                 raise OSError(f"Invalid or corrupted font file '{font_path}': {str(e)}")
 
-            # Create dummy image for measurement
-            img = Image.new('RGB', (1, 1))
-            draw = ImageDraw.Draw(img)
-
             # Get actual text dimensions
             bbox = draw.textbbox((0, 0), text, font=font)
             text_width = bbox[2] - bbox[0]
@@ -93,25 +94,26 @@ class TextSceneStrategy(ABC):
             # If it fits, use this font size
             if text_width <= available_width:
                 break
-
             current_font_size -= 1
 
         # If even minimum font size doesn't fit, use minimum anyway
         if current_font_size < min_font_size:
             current_font_size = min_font_size
             font = ImageFont.truetype(font_path, current_font_size)
-            bbox = draw.textbbox((0, 0), text, font=font)
-            text_width = bbox[2] - bbox[0]
+
+        # Get final text dimensions for positioning
+        bbox = draw.textbbox((0, 0), text, font=font)
+        text_width = bbox[2] - bbox[0]
 
         # Calculate position based on alignment
         if halign == 'left':
             x_position = padding
         elif halign == 'right':
-            x_position = screen_width - text_width - padding
+            x_position = screen_width - padding - text_width
         else:  # center
             x_position = (screen_width - text_width) // 2
 
-        return x_position, current_font_size
+        return x_position, bbox[3]-bbox[1], current_font_size
 
     @abstractmethod
     def convert(

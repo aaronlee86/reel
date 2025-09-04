@@ -253,6 +253,7 @@ class VideoGenerator:
         font_sizes = [s["font_size"] for s in sentences]
         font_paths = [s["font"] for s in sentences]
         font_colors = [s.get("font_color", "#000000") for s in sentences]
+        line_spacings = [s["line_spacing"] for s in sentences]
         bold_flags = [s.get("bold", False) for s in sentences]
         italic_flags = [s.get("italic", False) for s in sentences]
 
@@ -263,6 +264,7 @@ class VideoGenerator:
             font_paths=font_paths,
             font_sizes=font_sizes,
             font_colors=font_colors,
+            line_spacings=line_spacings,
             bold_flags=bold_flags,
             italic_flags=italic_flags,
             bg_color=event.get("bgcolor", "#000000"),

@@ -167,8 +167,6 @@ class GenProjectProcessor:
     def process_template_csv(self, template_filename: str, replacement_values: dict[str, str]) -> list[list[str]]:
         """
         Process template CSV by replacing placeholders with actual values
-        Handles line breaks with improved Unicode support
-        Ensures column 3 is empty for duplicated lines
 
         Args:
             template_filename (str): Name of the template CSV file to process
@@ -211,40 +209,18 @@ class GenProjectProcessor:
                 processed_rows.append(row)
                 continue
 
-            # Check max line count for placeholders
-            max_line_count = 1
+            # Validate that all placeholders have corresponding headers
             for col_index, placeholder in placeholders_in_row:
                 if placeholder not in self.headers:
                     raise ValueError(f"Placeholder '$(​{placeholder})' in template {template_path} has no matching column header in data CSV")
 
-                # Improved line counting for Unicode support
-                replacement = str(replacement_values.get(placeholder, ''))
-
-                # Explicitly split and count lines, handling Unicode
-                replacement_lines = replacement.splitlines()
-                max_line_count = max(max_line_count, len(replacement_lines))
-
             # Prepare the processed rows for this template row
-            for line_index in range(max_line_count):
-                new_row = row.copy()
-                for col_index, placeholder in placeholders_in_row:
-                    replacement = str(replacement_values.get(placeholder, ''))
+            for col_index, placeholder in placeholders_in_row:
+                replacement = str(replacement_values.get(placeholder, ''))
+                pattern = f'$({placeholder})'
+                row[col_index] = row[col_index].replace(pattern, replacement)
 
-                    # Use splitlines() for robust line splitting
-                    replacement_lines = replacement.splitlines()
-
-                    # Get the line for this iteration, or the last line if not enough lines
-                    replacement_line = replacement_lines[min(line_index, len(replacement_lines) - 1)] if replacement_lines else ''
-
-                    pattern = f'$({placeholder})'
-                    new_row[col_index] = new_row[col_index].replace(pattern, replacement_line)
-
-                # Special handling for column 3 (index 2 in 0-based indexing)
-                # When duplicating lines, leave column 3 empty
-                if line_index > 0 and len(new_row) > 2:
-                    new_row[2] = ''
-
-                processed_rows.append(new_row)
+            processed_rows.append(row)
 
         return processed_rows
 

@@ -34,9 +34,11 @@ class TextSceneConverter(SceneConverter):
 
         # Extract scene-level configurations
         valign = scene.get('valign', 'center')
-        halign = scene.get('halign','center')
-        padding = scene.get('padding', 40)
-        line_spacing = scene.get('line_spacing', 20)
+        halign = scene.get('halign', 'center')
+        v_padding = scene.get('v_padding')
+        h_padding = scene.get('h_padding')
+        para_spacing = scene.get('para_spacing')
+        lin_spacing = scene.get('line_spacing')
 
         # Validate horizontal alignment
         if halign not in ['left', 'center', 'right']:
@@ -77,8 +79,10 @@ class TextSceneConverter(SceneConverter):
             self.screen_size,
             valign=valign,
             halign=halign,
-            padding=padding,
-            line_spacing=line_spacing
+            v_padding=v_padding,
+            h_padding=h_padding,
+            para_spacing=para_spacing,
+            line_spacing=lin_spacing
         )
 
         # Convert using the strategy

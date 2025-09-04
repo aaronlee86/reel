@@ -82,6 +82,8 @@ class Script2Scene:
             raise Script2SceneError("Config font missing required field: size")
         if 'color' not in self.config['font']:
             raise Script2SceneError("Config font missing required field: color")
+        if 'para_spacing' not in self.config:
+            raise Script2SceneError("Config missing required field: para_spacing")
         if 'line_spacing' not in self.config:
             raise Script2SceneError("Config missing required field: line_spacing")
 
@@ -98,11 +100,22 @@ class Script2Scene:
             if self.config['valign'] not in self.VALID_VALIGN:
                 raise Script2SceneError(f"Invalid valign in config: {self.config['valign']}. Must be one of {self.VALID_VALIGN}")
 
-        if 'padding' in self.config:
-            try:
-                int(self.config['padding'])
-            except (ValueError, TypeError):
-                raise Script2SceneError(f"Invalid padding value in config: {self.config['padding']}. Must be an integer")
+
+        if 'v_padding' not in self.config:
+            raise Script2SceneError("Config missing required field: v_padding")
+        if 'h_padding' not in self.config:
+            raise Script2SceneError("Config missing required field: h_padding")
+
+        try:
+            int(self.config['v_padding'])
+        except (ValueError, TypeError):
+            raise Script2SceneError(f"Invalid v_padding value in config: {self.config['v_padding']}. Must be an integer")
+
+        try:
+            int(self.config['h_padding'])
+        except (ValueError, TypeError):
+            raise Script2SceneError(f"Invalid h_padding value in config: {self.config['h_padding']}. Must be an integer")
+
 
     def validate_highlight_mode(self, first_row: Dict[str, str]) -> None:
         """
@@ -266,6 +279,18 @@ class Script2Scene:
         if bg_type and bg_value:
             scene[bg_type] = bg_value
 
+        # Add para_spacing handling
+        # Priority: Row-specific para_spacing > Config para_spacing > Default
+        para_spacing = first_row.get('para_spacing', '').strip()
+        if para_spacing:
+            try:
+                scene['para_spacing'] = int(para_spacing)
+            except ValueError:
+                # If conversion fails, use config's line_spacing
+                raise Script2SceneError(f"Invalid para_spacing value: {para_spacing}. Must be an integer")
+        elif 'para_spacing' in self.config:
+            scene['para_spacing'] = self.config['para_spacing']
+
         # Add line_spacing handling
         # Priority: Row-specific line_spacing > Config line_spacing > Default
         line_spacing = first_row.get('line_spacing', '').strip()
@@ -278,16 +303,27 @@ class Script2Scene:
         elif 'line_spacing' in self.config:
             scene['line_spacing'] = self.config['line_spacing']
 
-        # Add padding handling
-        # Priority: Row-specific padding > Config padding (no default fallback)
-        padding = first_row.get('padding', '').strip()
-        if padding:
+        # Add v_padding handling
+        # Priority: Row-specific v_padding > Config v_padding (no default fallback)
+        v_padding = first_row.get('v_padding', '').strip()
+        if v_padding:
             try:
-                scene['padding'] = int(padding)
+                scene['v_padding'] = int(v_padding)
             except ValueError:
-                raise Script2SceneError(f"Invalid padding value: {padding}. Must be an integer")
-        elif 'padding' in self.config:
-            scene['padding'] = self.config['padding']
+                raise Script2SceneError(f"Invalid v_padding value: {v_padding}. Must be an integer")
+        elif 'v_padding' in self.config:
+            scene['v_padding'] = self.config['v_padding']
+
+        # Add h_padding handling
+        # Priority: Row-specific h_padding > Config h_padding (no default fallback)
+        h_padding = first_row.get('h_padding', '').strip()
+        if h_padding:
+            try:
+                scene['h_padding'] = int(h_padding)
+            except ValueError:
+                raise Script2SceneError(f"Invalid h_padding value: {h_padding}. Must be an integer")
+        elif 'h_padding' in self.config:
+            scene['h_padding'] = self.config['h_padding']
 
         # Add valign handling
         # Priority: Row-specific valign > Config valign (no default fallback)
@@ -333,7 +369,7 @@ class Script2Scene:
 
             # Only add halign if it's not empty
             if row.get('alignment', '').strip():
-                text_entry['halign'] = row.get('alignment')
+                text_entry['halign'] = row['alignment']
 
             # Add dub if specified in the row
             if row.get('dub', '').strip():
@@ -342,6 +378,14 @@ class Script2Scene:
             # Add duration if available
             if row.get('duration'):
                 text_entry['duration'] = float(row['duration'])
+
+            # Only add line_spacing if it's not empty
+            if row.get('line_spacing', '').strip():
+                try:
+                    text_entry['line_spacing'] = int(row['line_spacing'])
+                except ValueError:
+                    # If conversion fails, use config's line_spacing
+                    raise Script2SceneError(f"Invalid line_spacing value: {line_spacing}. Must be an integer")
 
             scene['text'].append(text_entry)
 

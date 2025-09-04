@@ -6,62 +6,71 @@ class AppendTopModeStrategy(TextSceneStrategy):
         self,
         text_entries: List[Dict[str, Any]],
         screen_size: List[int],
-        valign: str = 'error',
-        halign: str = 'error',
-        padding: int = 40,
-        line_spacing: int = 20
+        valign: str,
+        halign: str,
+        v_padding: int,
+        h_padding: int,
+        para_spacing: int,
+        line_spacing: int
     ) -> List[List[Dict[str, Any]]]:
         """
         Calculate text positions for 'append_top' mode
-
         Args:
             text_entries (List[Dict[str, Any]]): List of text entries
             screen_size (List[int]): Screen dimensions [width, height]
             valign (str): Vertical alignment
             halign (str): Horizontal alignment
-            padding (int): Vertical padding
+            v_padding (int): Vertical padding
+            h_padding (int): Horizontal padding
+            para_spacing (int): Space between paragraphs
             line_spacing (int): Space between lines
-
         Returns:
             List[List[Dict[str, Any]]]: List of positioned entries for each vclip
         """
         screen_width, screen_height = screen_size
-
         # Will store positioning for each vclip
         all_positioned_entries = []
+
+        # Precompute calculations for each entry
+        entry_calculations = []
+        for entry in text_entries:
+            font = entry['font']
+            _halign = entry.get('halign', halign)
+
+            # Calculate x based on horizontal alignment
+            x, height, adjusted_fontsize = self._calculate_x_position(
+                entry['text'],
+                font['size'],
+                font['file'],
+                screen_width,
+                _halign,
+                h_padding
+            )
+
+            # Store all calculation details
+            entry_calculations.append({
+                'original_entry': entry,
+                'x': x,
+                'height': height,
+                'adjusted_fontsize': adjusted_fontsize,
+                'halign': _halign
+            })
 
         # Generate positioning for each progressive set of sentences
         for num_sentences in range(1, len(text_entries) + 1):
             # Create positioned entries for this vclip
             positioned_entries = []
+            current_y = v_padding
 
             for idx in range(num_sentences):
-                entry = text_entries[idx]
-                font= entry['font']
-                halign = entry.get('halign', halign)
-
-                # Calculate x based on horizontal alignment
-                x, adjusted_fontsize = self._calculate_x_position(
-                    entry['text'],
-                    font['size'],
-                    font['file'],
-                    screen_width,
-                    halign,
-                    padding
-                )
-
-                # Update new font size
-                entry['font']['size'] = adjusted_fontsize
-
-                # Calculate y position
-                # Start from top padding, stack downward
-                current_y = padding + idx * (font['size'] + line_spacing)
+                calc = entry_calculations[idx]
+                entry = calc['original_entry']
 
                 positioned_entry = {
                     **entry,
-                    "x": int(x),
+                    "x": int(calc['x']),
                     "y": int(current_y),
-                    "font_size": entry['font']['size'],
+                    "font_size": calc['adjusted_fontsize'],
                     "font_color": entry['font']['color'],
                     "font": entry['font']['file'],
                     "bold": False,
@@ -71,7 +80,14 @@ class AppendTopModeStrategy(TextSceneStrategy):
                 # Clean sentences by removing 'tts' and 'halign'
                 positioned_entry = self.clean_attributes(positioned_entry)
 
+                # Add line_spacing if not specified in row
+                if "line_spacing" not in positioned_entry:
+                    positioned_entry["line_spacing"] = line_spacing
+
                 positioned_entries.append(positioned_entry)
+
+                # Move to next line using the actual height of this entry
+                current_y += calc['height'] + para_spacing
 
             # Store positioned entries for this vclip
             all_positioned_entries.append(positioned_entries)

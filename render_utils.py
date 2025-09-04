@@ -7,6 +7,7 @@ def render_text_block(
     font_paths: list[str],
     font_sizes: list[int],
     font_colors: list[str],
+    line_spacings: list[int],
     bold_flags: list[bool],
     italic_flags: list[bool],
     bg_color: str,
@@ -44,6 +45,7 @@ def render_text_block(
         color = font_colors[i]
         bold = bold_flags[i]
         italic = italic_flags[i]
+        line_spacing = line_spacings[i]
 
         actual_font_path = font_paths[i]
         font_style_tag = ""
@@ -65,6 +67,6 @@ def render_text_block(
         except Exception:
             font = ImageFont.load_default()
 
-        draw.text((x, y), line, font=font, fill=color)
+        draw.text((x, y), line, font=font, fill=color, spacing=line_spacing)
 
     return img
