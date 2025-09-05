@@ -376,3 +376,6 @@ class TextSceneStrategy(ABC):
             'adjusted_fontsize': adjusted_fontsize,
             'halign': entry_halign
         }
+
+    def remove_special_char_for_tts(self, text: str) -> str:
+        return text.replace('\n','')

@@ -124,7 +124,7 @@ class AllModeStrategy(TextSceneStrategy):
             if 'tts' in txt_entry:
                 # Set TTS configuration
                 vclip['tts'] = {
-                    "text": txt_entry['dub'] if 'dub' in txt_entry else txt_entry['text'],
+                    "text": self.remove_special_char_for_tts(txt_entry['dub'] if 'dub' in txt_entry else txt_entry['text']),
                     "tts_engine": txt_entry['tts']['tts_engine'],
                     "voice": txt_entry['tts']['voice'],
                     "speed": txt_entry['tts'].get('speed', 1.0)
