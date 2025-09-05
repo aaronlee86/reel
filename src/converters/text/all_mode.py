@@ -29,43 +29,19 @@ class AllModeStrategy(TextSceneStrategy):
         Returns:
             List[Dict[str, Any]]: Text entries with calculated positions
         """
-        # Calculate total text height with multi-line support
-        total_height = 0
-        positioned_calculations = []
+        # Get screen size from input
+        screen_width, screen_height = screen_size
 
-        # First pass: calculate heights and prepare positioning information
-        for entry in text_entries:
-            # Calculate x based on horizontal alignment
-            _halign = entry.get('halign', halign)
-            font = entry['font']
+        # First pass: handle wrapping, calculate heights and prepare positioning information
+        positioned_calculations = [
+            self._prepare_text_entry(entry, halign, screen_width, h_padding)
+            for entry in text_entries
+        ]
 
-            # Get text height using _calculate_x_position method
-            x, height, adjusted_fontsize = self._calculate_x_position(
-                entry['text'],
-                font['size'],
-                font['file'],
-                screen_size[0],  # screen width
-                _halign,
-                h_padding
-            )
-
-            # Store calculation details
-            positioned_calculations.append({
-                'entry': entry,
-                'x': x,
-                'height': height,
-                'adjusted_fontsize': adjusted_fontsize,
-                'halign': _halign
-            })
-
-            # Accumulate total height
-            total_height += height
+        total_height = sum(calc['height'] for calc in positioned_calculations)
 
         # Add paragraph spacing between entries
         total_height += para_spacing * (len(text_entries) - 1)
-
-        # Get screen size from input
-        screen_width, screen_height = screen_size
 
         # Determine starting y based on vertical alignment
         if valign == 'top':

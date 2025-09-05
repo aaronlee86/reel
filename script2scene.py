@@ -8,8 +8,7 @@ import csv
 import json
 import os
 import sys
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any, Tuple
 
 
 class Script2SceneError(Exception):
@@ -217,7 +216,7 @@ class Script2Scene:
             try:
                 font_config['size'] = int(row['font_size'])
             except ValueError as e:
-                raise ValueError(f"invalide font_size format: {e}")
+                raise ValueError(f"Invalid font_size format: {e}")
         if row.get('font_color', ''):
             font_config['color'] = row['font_color']
 
@@ -386,6 +385,14 @@ class Script2Scene:
                 except ValueError:
                     # If conversion fails, use config's line_spacing
                     raise Script2SceneError(f"Invalid line_spacing value: {line_spacing}. Must be an integer")
+
+            # Add wrap if specified in the row or config
+            wrap = row.get('wrap', '').strip()
+            if wrap:
+                # Convert string to boolean
+                text_entry['wrap'] = wrap.lower() in ('true', '1', 'y')
+            elif 'wrap' in self.config:
+                text_entry['wrap'] = self.config['wrap']
 
             scene['text'].append(text_entry)
 

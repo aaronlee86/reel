@@ -31,30 +31,11 @@ class AppendTopModeStrategy(TextSceneStrategy):
         # Will store positioning for each vclip
         all_positioned_entries = []
 
-        # Precompute calculations for each entry
-        entry_calculations = []
-        for entry in text_entries:
-            font = entry['font']
-            _halign = entry.get('halign', halign)
-
-            # Calculate x based on horizontal alignment
-            x, height, adjusted_fontsize = self._calculate_x_position(
-                entry['text'],
-                font['size'],
-                font['file'],
-                screen_width,
-                _halign,
-                h_padding
-            )
-
-            # Store all calculation details
-            entry_calculations.append({
-                'original_entry': entry,
-                'x': x,
-                'height': height,
-                'adjusted_fontsize': adjusted_fontsize,
-                'halign': _halign
-            })
+        # First pass: handle wrapping, calculate heights and prepare positioning information
+        positioned_calculations = [
+            self._prepare_text_entry(entry, halign, screen_width, h_padding)
+            for entry in text_entries
+        ]
 
         # Generate positioning for each progressive set of sentences
         for num_sentences in range(1, len(text_entries) + 1):
@@ -63,8 +44,8 @@ class AppendTopModeStrategy(TextSceneStrategy):
             current_y = v_padding
 
             for idx in range(num_sentences):
-                calc = entry_calculations[idx]
-                entry = calc['original_entry']
+                calc = positioned_calculations[idx]
+                entry = calc['entry']
 
                 positioned_entry = {
                     **entry,

@@ -33,6 +33,7 @@ Required Columns:
 * h_padding: Optional for text scenes. If not specified, use config.json as default value
 * valign: Optional for text scenes. If not specified, use config.json as default value
 * dub: Optional for text scenes. If specified, this will appear in the output json in the text scene at the same level of the "text" attr
+* wrap: Optional for text scenes. If not specified, use config.json as default value
 
 Optional Columns:
 * ttf: Font file name
@@ -88,7 +89,9 @@ json
   "mode": "append_center",
   "background": "bg1.jpg",  // OR "bgcolor": "#FFFFFF"
   "line_spacing": 20, // from config.json or specified in csv file
-  "padding": 40, // from config.json or specified in csv file.
+  "para_spacing": 20, // from config.json or specified in csv file
+  "h_padding": 40, // from config.json or specified in csv file.
+  "v_padding": 40, // from config.json or specified in csv file.
   "valign": "top", // from csv file. valid values are "top", "center", "bottom"
   "text": [
     {
@@ -99,6 +102,7 @@ json
         "size": 54,
         "color": "#27AE60"
       },
+      "wrap": True,
       "halign": "center",
       "tts": {
         "tts_engine": "edge-tts",
