@@ -104,8 +104,8 @@ def main():
 
     # Write output JSON
     try:
-        with open(output_path, 'w') as f:
-            json.dump(output_json, f, indent=2)
+        with open(output_path, 'w', encoding='utf-8') as f:
+            json.dump(output_json, f, indent=2, ensure_ascii=False)
 
         print(f"Conversion successful:")
         print(f"Input:  {input_path}")
