@@ -51,8 +51,8 @@ class AppendCenterModeStrategy(TextSceneStrategy):
             total_content_height += para_spacing * (num_sentences - 1)
 
             # Calculate starting Y position
-            latest_sentence_y = screen_height // 2
-            current_y = latest_sentence_y - (total_content_height // 2)
+            latest_sentence_y = screen_height // 2 - positioned_calculations[num_sentences-1]['height'] // 2
+            current_y = latest_sentence_y - (total_content_height) + positioned_calculations[num_sentences-1]['height']
 
             for idx in range(num_sentences):
                 calc = positioned_calculations[idx]
