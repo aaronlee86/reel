@@ -29,6 +29,8 @@ class VideoSceneConverter(SceneConverter):
         file = scene['file']
         start_time = scene.get('start_time', 0)
         duration = scene.get('duration')
+        pregap = scene.get('pregap')
+        postgap = scene.get('postgap')
 
         # Validate start_time and duration
         if start_time < 0:
@@ -48,7 +50,15 @@ class VideoSceneConverter(SceneConverter):
             vclip['start_time'] = start_time
 
         # Add duration if specified
-        if duration is not None:
+        if duration:
             vclip['duration'] = duration
+
+        # Add pregap if specified
+        if pregap:
+            vclip['pregap'] = pregap
+
+        # Add postgap if specified
+        if postgap:
+            vclip['postgap'] = postgap
 
         return [vclip]

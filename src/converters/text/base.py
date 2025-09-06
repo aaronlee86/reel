@@ -150,10 +150,10 @@ class TextSceneStrategy(ABC):
             List[Dict]: Cleaned virtual clips
         """
         try:
-            # Create a copy of the sentence, excluding 'tts' and 'halign'
+            # Create a copy of the sentence, excluding attributs in the list
             cleaned_sentence = {
                 k: v for k, v in sentence.items()
-                if k not in ['tts', 'halign']
+                if k not in ['tts', 'halign', 'pregap', 'postgap', 'duration']
             }
             return cleaned_sentence
         except Exception as e:
@@ -379,3 +379,39 @@ class TextSceneStrategy(ABC):
 
     def remove_special_char_for_tts(self, text: str) -> str:
         return text.replace('\n','')
+
+    def _create_vclip(self, txt_entry, scene, positioned_entries):
+        if not 'tts' in txt_entry and not 'duration' in txt_entry:
+                raise ValueError("Each vclip must have either TTS or duration")
+
+        vclip = {"type": "text"}
+
+        # Set background color or image
+        if 'background' in scene:
+            vclip['background'] = scene['background']
+        elif 'bgcolor' in scene:
+            vclip['bgcolor'] = scene['bgcolor']
+        else:
+            vclip['bgcolor'] = '#000000'  # Default background
+
+        # Set TTS configuration if present
+        if 'tts' in txt_entry:
+            vclip['tts'] = {
+                "text": self.remove_special_char_for_tts(txt_entry['dub'] if 'dub' in txt_entry else txt_entry['text']),
+                "tts_engine": txt_entry['tts']['tts_engine'],
+                "voice": txt_entry['tts']['voice'],
+                "speed": txt_entry['tts'].get('speed', 1.0)
+            }
+
+        self._passthrough_properties(vclip, txt_entry, 'duration')
+        self._passthrough_properties(vclip, txt_entry, 'pregap')
+        self._passthrough_properties(vclip, txt_entry, 'postgap')
+
+        # Add positioned sentences
+        vclip['sentences'] = positioned_entries
+
+        return vclip
+
+    def _passthrough_properties(self, dest, src, prop):
+        if prop in src:
+           dest[prop] = src[prop]

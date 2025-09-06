@@ -111,7 +111,7 @@ class JSONTransformer:
 
             # Determine duration
             if 'duration' in event:
-                duration = event['duration']
+                total_duration = event['duration']
             else:
                 # Determine duration based on type
                 if event['type'] == 'video':
@@ -120,7 +120,7 @@ class JSONTransformer:
                     if not os.path.exists(video_path):
                         video_path = os.path.join(video_folder, event['file'])
 
-                    duration = MediaDurationExtractor.get_media_duration(video_path)
+                    total_duration = MediaDurationExtractor.get_media_duration(video_path)
                 elif event['type'] in ['image', 'text']:
                     # Use audio_folder to locate audio file
                     if 'audio' not in event:
@@ -130,14 +130,18 @@ class JSONTransformer:
                     if not os.path.exists(audio_path):
                         audio_path = os.path.join(audio_folder, event['audio'])
 
-                    duration = MediaDurationExtractor.get_media_duration(audio_path)
+                    total_duration = MediaDurationExtractor.get_media_duration(audio_path)
                 else:
                     raise ValueError(f"Unsupported clip type: {event['type']}")
+
+            # add gap to duration
+            total_duration += event.get('pregap', 0)
+            total_duration += event.get('postgap', 0)
 
             # Create a new event dictionary with 'start' first, then 'duration'
             transformed_event = {
                 'start': current_start_time,
-                'duration': duration
+                'total_duration': total_duration
             }
 
             # Add all original event properties
@@ -145,7 +149,7 @@ class JSONTransformer:
 
             # Add to events and update start time
             output_json['events'].append(transformed_event)
-            current_start_time += duration
+            current_start_time += total_duration
 
         # Remove original vclips
         del output_json['vclips']

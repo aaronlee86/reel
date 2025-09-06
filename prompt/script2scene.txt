@@ -42,6 +42,8 @@ Optional Columns:
 * voice: Voice name (default: "zh-TW-HsiaoChenNeural")
 * speed: Speech speed (default: 1.0)
 * duration: image/video scenes only
+* pregap
+* postgap
 
 2. Config File (config.json)
 Required Fields:
@@ -108,11 +110,12 @@ json
         "tts_engine": "edge-tts",
         "voice": "en-US-AriaNeural",
         "speed": 0.9
-      }
+      },
+      "pregap": 1.0,  //optional
+      "postgap": 2.1  //optional
     }
   ]
 }
-Note: No duration field for text scenes
 NOte: don't output halign if empty
 Note: for "all_with_highlight" mode, it must have 'highlight_style' attribute with
 {
@@ -128,6 +131,8 @@ json
   "type": "image",
   "file": "pic1.jpg", // OR "bgcolor": "#FFFFFF"
   "duration": 5.0, // optional from csv
+  "pregap": 1.0,  //optional
+  "postgap": 2.1  //optional
   "audio": {
     "tts": {
       "text": "Welcome to our presentation",  // This comes from the 'text' column in CSV
@@ -147,10 +152,10 @@ json
 {
   "type": "video",
   "file": "detailed_explanation.mp4",  // This comes from the 'background' column in CSV
-  "duration": 15
+  "duration": 15, //optional
+  "pregap": 1.0,  //optional
+  "postgap": 2.1  //optional
 }
-Note:
-* Duration is optional
 
 Background Field Rules
 * Starts with #: Interpreted as background color

@@ -12,7 +12,9 @@ from moviepy import (
     VideoFileClip,
     ColorClip,
     CompositeVideoClip,
-    CompositeAudioClip
+    CompositeAudioClip,
+    AudioClip,
+    concatenate_audioclips
 )
 import moviepy.audio.fx as afx
 from render_utils import render_text_block
@@ -125,7 +127,11 @@ class VideoGenerator:
         """
         return os.path.join(self.base_path, filename)
 
-    def _load_audio(self, audio_path: Optional[str], duration: float) -> Optional[AudioFileClip]:
+    def _load_audio(self,
+            audio_path: Optional[str],
+            duration: Optional[float],
+            pregap: float = 0,
+            postgap: float = 0) -> Optional[AudioFileClip]:
         """
         Load and process audio clip.
 
@@ -151,9 +157,19 @@ class VideoGenerator:
         audio_clip = AudioFileClip(full_audio_path)
 
         # Handle audio duration
-        if audio_clip.duration > duration:
+        if duration and audio_clip.duration > duration:
             # Trim audio if longer than clip
-            return audio_clip.subclipped(0, duration)
+            audio_clip = audio_clip.subclipped(0, duration)
+
+        # Add pregap (silence before)
+        if  pregap > 0:
+            silence_before = AudioClip(lambda t: 0, duration=pregap)
+            audio_clip = concatenate_audioclips([silence_before, audio_clip])
+
+        # Add postgap (silence after)
+        if postgap > 0:
+            silence_after = AudioClip(lambda t: 0, duration=postgap)
+            audio_clip = concatenate_audioclips([audio_clip, silence_after])
 
         # Return full audio if shorter or equal to duration
         return audio_clip
@@ -186,8 +202,8 @@ class VideoGenerator:
             VideoGenerationError: If required parameters are missing
         """
         # Validate required parameters
-        if "duration" not in event:
-            raise VideoGenerationError("Duration is required for image clips")
+        if "total_duration" not in event:
+            raise VideoGenerationError("total_duration is required for image clips")
 
         # Create base clip
         if "file" in event:
@@ -205,10 +221,13 @@ class VideoGenerator:
             clip = ColorClip(size=size, color=tuple(bgcolor))
 
         # Set duration
-        clip = clip.with_duration(event["duration"])
+        clip = clip.with_duration(event["total_duration"])
 
         # Add audio if specified
-        audio_clip = self._load_audio(event.get("audio"), event["duration"])
+        audio_clip = self._load_audio(event.get("audio"),
+                                    event.get("duration",None),
+                                    event.get("pregap",0),
+                                    event.get("postgap",0))
         if audio_clip:
             clip = clip.with_audio(audio_clip)
 
@@ -230,8 +249,8 @@ class VideoGenerator:
             VideoGenerationError: If required parameters are missing
         """
         # Validate required parameters
-        if "duration" not in event or "sentences" not in event:
-            raise VideoGenerationError("Duration and sentences are required for text clips")
+        if "total_duration" not in event or "sentences" not in event:
+            raise VideoGenerationError("total_duration and sentences are required for text clips")
 
         # Handle background image
         background_image = None
@@ -276,11 +295,14 @@ class VideoGenerator:
         clip = ImageClip(np.array(img))
 
         # Add audio if specified
-        audio_clip = self._load_audio(event.get("audio"), event["duration"])
+        audio_clip = self._load_audio(event.get("audio"),
+                                    event.get("duration",None),
+                                    event.get("pregap",0),
+                                    event.get("postgap",0))
         if audio_clip:
             clip = clip.with_audio(audio_clip)
 
-        clip = clip.with_start(event["start"]).with_duration(event["duration"])
+        clip = clip.with_start(event["start"]).with_duration(event["total_duration"])
 
         return clip
 
@@ -313,8 +335,8 @@ class VideoGenerator:
         clip = VideoFileClip(full_video_path)
 
         # Trim clip if duration specified
-        if duration := event.get("duration"):
-            clip = clip.subclipped(0, duration)
+        if total_duration := event.get("total_duration"):
+            clip = clip.subclipped(0, total_duration)
 
         # Set start time
         return clip.with_start(event["start"])

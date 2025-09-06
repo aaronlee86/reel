@@ -51,6 +51,8 @@ class ImageSceneConverter(SceneConverter):
         duration = scene.get('duration', None)
         file = scene.get('file')
         bgcolor = scene.get('bgcolor')
+        pregap = scene.get('pregap')
+        postgap = scene.get('postgap')
 
         # Ensure at least one of file or bgcolor is specified
         if file is None and bgcolor is None:
@@ -69,6 +71,14 @@ class ImageSceneConverter(SceneConverter):
         # Add file if specified
         if file:
             vclip['file'] = file
+
+        # Add pregap if specified
+        if pregap:
+            vclip['pregap'] = pregap
+
+        # Add postgap if specified
+        if postgap:
+            vclip['postgap'] = postgap
 
         # Add background color if no file
         if bgcolor:

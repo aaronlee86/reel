@@ -106,36 +106,9 @@ class AllModeStrategy(TextSceneStrategy):
 
         # Generate vclips for TTS entries
         for txt_entry in text_entries:
-            if not 'tts' in txt_entry and not 'duration' in txt_entry:
-                raise ValueError("Each vclip must have either TTS or duration")
-
-            vclip = {
-                "type": "text"
-            }
-
-            # Add background or bgcolor
-            if 'background' in scene:
-                vclip['background'] = scene['background']
-            elif 'bgcolor' in scene:
-                vclip['bgcolor'] = scene['bgcolor']
-            else:
-                vclip['bgcolor'] = '#000000'  # Default background
-
-            if 'tts' in txt_entry:
-                # Set TTS configuration
-                vclip['tts'] = {
-                    "text": self.remove_special_char_for_tts(txt_entry['dub'] if 'dub' in txt_entry else txt_entry['text']),
-                    "tts_engine": txt_entry['tts']['tts_engine'],
-                    "voice": txt_entry['tts']['voice'],
-                    "speed": txt_entry['tts'].get('speed', 1.0)
-                }
-
-            if 'duration' in txt_entry:
-                vclip['duration'] = txt_entry['duration']
-
-            # Add positioned sentences
-            vclip['sentences'] = positioned_entries
-
+            vclip = self._create_vclip(txt_entry, scene, positioned_entries)
             output_vclips.append(vclip)
 
         return output_vclips
+
+

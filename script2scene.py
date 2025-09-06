@@ -394,6 +394,20 @@ class Script2Scene:
             elif 'wrap' in self.config:
                 text_entry['wrap'] = self.config['wrap']
 
+            # Add pregap if specified in the row
+            if row.get('pregap'):
+                try:
+                    text_entry['pregap'] = float(row['pregap'])
+                except ValueError:
+                    raise Script2SceneError(f"Invalid pregap value: {row['pregap']}")
+
+            # Add postgap if specified in the row
+            if row.get('postgap'):
+                try:
+                    text_entry['postgap'] = float(row['postgap'])
+                except ValueError:
+                    raise Script2SceneError(f"Invalid postgap value: {row['postgap']}")
+
             scene['text'].append(text_entry)
 
         return scene
@@ -429,6 +443,20 @@ class Script2Scene:
                 }
             }
 
+        # Add pregap if specified in the row
+        if first_row.get('pregap'):
+            try:
+                scene['pregap'] = float(first_row['pregap'])
+            except ValueError:
+                raise Script2SceneError(f"Invalid pregap value: {first_row['pregap']}")
+
+        # Add postgap if specified in the row
+        if first_row.get('postgap'):
+            try:
+                scene['postgap'] = float(first_row['postgap'])
+            except ValueError:
+                raise Script2SceneError(f"Invalid postgap value: {first_row['postgap']}")
+
         return scene
 
     def create_video_scene(self, rows: List[Dict[str, str]]) -> Dict[str, Any]:
@@ -443,6 +471,20 @@ class Script2Scene:
         # Add duration if available
         if first_row.get('duration'):
             scene['duration'] = float(first_row['duration'])
+
+        # Add pregap if specified in the row
+        if first_row.get('pregap'):
+            try:
+                scene['pregap'] = float(first_row['pregap'])
+            except ValueError:
+                raise Script2SceneError(f"Invalid pregap value: {first_row['pregap']}")
+
+        # Add postgap if specified in the row
+        if first_row.get('postgap'):
+            try:
+                scene['postgap'] = float(first_row['postgap'])
+            except ValueError:
+                raise Script2SceneError(f"Invalid postgap value: {first_row['postgap']}")
 
         return scene
 

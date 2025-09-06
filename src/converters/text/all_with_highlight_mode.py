@@ -46,47 +46,8 @@ class AllWithHighlightModeStrategy(AllModeStrategy):
                 else:
                     modified_entries.append(entry)
 
-            # Find the entry with TTS or duration for this vclip
-            tts_entry = None
-            duration = None
-
-            if highlight_index < len(text_entries):
-                current_entry = text_entries[highlight_index]
-                if 'tts' not in current_entry and 'duration' not in current_entry:
-                    raise ValueError("Each vclip must have either TTS or duration")
-
-                if 'tts' in current_entry:
-                    tts_entry = current_entry
-                if 'duration' in current_entry:
-                    duration = current_entry['duration']
-
-            # Create vclip
-            vclip = {
-                "type": "text"
-            }
-
-            # Add background or bgcolor
-            if 'background' in scene:
-                vclip['background'] = scene['background']
-            elif 'bgcolor' in scene:
-                vclip['bgcolor'] = scene['bgcolor']
-            else:
-                vclip['bgcolor'] = '#000000'  # Default background
-
-            # Add TTS or duration
-            if tts_entry:
-                vclip['tts'] = {
-                    "text": tts_entry['dub'] if 'dub' in tts_entry else tts_entry['text'],
-                    "tts_engine": tts_entry['tts']['tts_engine'],
-                    "voice": tts_entry['tts']['voice'],
-                    "speed": tts_entry['tts'].get('speed', 1.0)
-                }
-
-            if duration:
-                vclip['duration'] = duration
-
-            # Add modified sentences
-            vclip['sentences'] = modified_entries
+            current_entry = text_entries[highlight_index]
+            vclip = self._create_vclip(current_entry, scene, positioned_entries)
 
             output_vclips.append(vclip)
 
