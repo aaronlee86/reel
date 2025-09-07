@@ -109,7 +109,8 @@ class AppendCenterModeStrategy(TextSceneStrategy):
 
         # Generate vclips for TTS entries
         for i, txt_entry in enumerate(text_entries):
-            vclip = self._create_vclip(txt_entry, scene, positioned_entries_list[i])
-            output_vclips.append(vclip)
+            vclips = self._create_vclips(txt_entry, scene, positioned_entries_list[i])
+            for one_vclip in vclips:
+                output_vclips.append(one_vclip)
 
         return output_vclips

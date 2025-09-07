@@ -106,8 +106,9 @@ class AllModeStrategy(TextSceneStrategy):
 
         # Generate vclips for TTS entries
         for txt_entry in text_entries:
-            vclip = self._create_vclip(txt_entry, scene, positioned_entries)
-            output_vclips.append(vclip)
+            vclips = self._create_vclips(txt_entry, scene, positioned_entries)
+            for one_vclip in vclips:
+                output_vclips.append(one_vclip)
 
         return output_vclips
 

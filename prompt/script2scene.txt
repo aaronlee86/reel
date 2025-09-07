@@ -38,12 +38,21 @@ Required Columns:
 Optional Columns:
 * ttf: Font file name
 * alignment: Text alignment (center, left, right)
-* tts: TTS engine (default: "edge-tts")
-* voice: Voice name (default: "zh-TW-HsiaoChenNeural")
-* speed: Speech speed (default: 1.0)
+* tts: TTS engine. If not specified, use config.json as default value.
+* voice: Voice name. If not specified, use config.json as default value.
+* speed: Speech speed
 * duration: image/video scenes only
 * pregap
 * postgap
+* Repeating Same Text Supports:
+  "tts" column can specify multiple tts engine names in diffrent lines, meaning reading once by that tts engine.
+  For example, if "tts" contains three lines, the output "tts" attr will have an array of three items.
+  each line can optinally provide an pregap by using a decimal number followed by a ','(comma) before the engine name.
+  For example, "2.2,eleven" means the text should be read by eleven engine after 2.2 secs of silence.
+  If there is no comma, then it means no gap. Therefore, the first line cannot have comma, otherwise error out.
+  The seconds of gap will become "pregap" in the "tts" output json.
+  For each row, the line number of voice and speed must match the line number of the tts column.
+  and the same line of these three columns mean a combination of a tts engine setting.
 
 2. Config File (config.json)
 Required Fields:
@@ -106,11 +115,17 @@ json
       },
       "wrap": True,
       "halign": "center",
-      "tts": {
+      "tts": [{ // an array. multiple number of objects means repeating
         "tts_engine": "edge-tts",
         "voice": "en-US-AriaNeural",
         "speed": 0.9
       },
+      {
+        "pregap": 1.2 //optional, comes from tts col
+       "tts_engine": "edge-tts",
+        "voice": "en-US-AriaNeural",
+        "speed": 1.0
+      }],
       "pregap": 1.0,  //optional
       "postgap": 2.1  //optional
     }
@@ -170,6 +185,8 @@ The script should fail fast with clear error messages for:
 Validation
 * No file existence validation (images, videos, fonts, BGM)
 * Text array elements maintain CSV row order within each scene
+* If "tts" format error should error out
+* If line number of tts, voice, speed don't match, error out
 
 Output
 * Single scenes.json file

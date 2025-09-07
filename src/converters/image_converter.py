@@ -1,12 +1,12 @@
 import os
 from typing import Dict, Any, List, Optional, Union
 from .base import SceneConverter
+import copy
 
 class ImageSceneConverter(SceneConverter):
     def convert(
         self,
-        scene: Dict[str, Any],
-        project_name: str = 'default'
+        scene: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
         """
         Convert an image scene to virtual clips
@@ -84,6 +84,8 @@ class ImageSceneConverter(SceneConverter):
         if bgcolor:
             vclip['bgcolor'] = bgcolor
 
+        vclips = []
+
         # Handle audio
         if audio_config:
             # Add audio details to vclip
@@ -92,41 +94,28 @@ class ImageSceneConverter(SceneConverter):
             # Handle file-based audio
             if 'file' in audio_config:
                 vclip['audio']['file'] = audio_config['file']
+                vclips.append(vclip)
 
             # Handle TTS
             if 'tts' in audio_config:
-                tts_config = audio_config['tts']
-                vclip['audio']['tts'] = {
-                    'text': tts_config['text'],
-                    'tts_engine': tts_config['tts_engine'],
-                    'voice': tts_config['voice'],
-                    'speed': tts_config.get('speed', 1.0)
-                }
+                for i, tts_config in enumerate(audio_config['tts']['tts']):
+                    repeated_vclip = copy.deepcopy(vclip)
+                    if i > 0:
+                        repeated_vclip.pop('pregap', None)
+                    if i < len(audio_config['tts']['tts'])-1:
+                        repeated_vclip.pop('postgap', None)
 
-        # Handle offset clips
-        offset = audio_config.get('offset', 0) if audio_config else 0
+                    if 'pregap' in tts_config:
+                        repeated_vclip['pregap'] = tts_config['pregap']
 
-        # Generate clips
-        if offset > 0:
-            # Create a silent clip for the offset
-            offset_clip = {
-                "type": "image",
-                "duration": offset,
-            }
+                    repeated_vclip['audio']['tts'] = {
+                        "text": audio_config['tts']['text'],
+                        "tts_engine": tts_config['tts_engine'],
+                        "voice": tts_config['voice'],
+                        "speed": tts_config.get('speed', 1.0)
+                    }
+                    vclips.append(repeated_vclip)
+        else:
+            vclips.append(vclip)
 
-            # If file or bgcolor was in original scene, add to offset clip
-            if 'file' in vclip:
-                offset_clip['file'] = vclip['file']
-            if 'bgcolor' in vclip:
-                offset_clip['bgcolor'] = vclip['bgcolor']
-
-            # Prepare the second vclip with audio
-            audio_vclip = vclip.copy()
-
-            # Adjust duration if specified
-            if duration is not None:
-                audio_vclip['duration'] = duration - offset
-
-            return [offset_clip, audio_vclip]
-
-        return [vclip]
+        return vclips

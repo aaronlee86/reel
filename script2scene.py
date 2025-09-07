@@ -222,7 +222,57 @@ class Script2Scene:
 
         return font_config
 
-    def build_tts_config(self, row: Dict[str, str], inherit_from: Dict[str, Any] = None) -> Dict[str, Any]:
+    def parse_multi_line_tts(self, row: Dict[str, str]) -> List[Dict[str, Any]]:
+        """
+        Parse multi-line TTS configuration with optional pregap
+
+        Args:
+            row (Dict[str, str]): CSV row data
+
+        Returns:
+            List[Dict[str, Any]]: List of TTS configurations
+
+        Raises:
+            Script2SceneError: If TTS parsing fails
+        """
+        tts_lines = row.get('tts', '').strip().split('\n')
+        voice_lines = row.get('voice', '').strip().split('\n')
+        speed_lines = row.get('speed', '').strip().split('\n')
+
+        # Validate line counts match
+        if not (len(tts_lines) == len(voice_lines) == len(speed_lines)):
+            raise Script2SceneError("Number of lines must match for tts, voice, and speed")
+
+        print(f"the row is {row}")
+        tts_configs = []
+
+        for i, tts_line in enumerate(tts_lines):
+            # Check if line contains a comma (indicating pregap)
+            if ',' in tts_line:
+                if i == 0:
+                    raise Script2SceneError(f"First TTS lines does NOT allow pregap specification (line {i+1})")
+                try:
+                    pregap, tts_engine = tts_line.split(',')
+                    tts_config = {
+                        'pregap': float(pregap),
+                        'tts_engine': tts_engine.strip(),
+                        'voice': voice_lines[i],
+                        'speed': float(speed_lines[i])
+                    }
+                except ValueError:
+                    raise Script2SceneError(f"Invalid pregap format in TTS line {i+1}")
+            else:
+                tts_config = {
+                    'tts_engine': tts_line.strip(),
+                    'voice': voice_lines[i],
+                    'speed': float(speed_lines[i])
+                }
+
+            tts_configs.append(tts_config)
+
+        return tts_configs
+
+    def build_tts_config(self, row: Dict[str, str], inherit_from: List[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         Build TTS configuration from row data.
 
@@ -233,35 +283,21 @@ class Script2Scene:
         Returns:
             TTS configuration dictionary
         """
+
+        tts_configs = self.parse_multi_line_tts(row)
+        if tts_configs:
+            return tts_configs
+
         if inherit_from:
-            # Start with inherited config (either config defaults or scene config)
-            tts_config = {
-                'tts_engine': inherit_from.get('tts_engine', self.config['tts']['tts_engine']),
-                'voice': inherit_from.get('voice', self.config['tts']['voice']),
-                'speed': inherit_from.get('speed', 1.0)
-            }
-        else:
-            # Fallback to config defaults if no inheritance specified
-            tts_config = {
-                'tts_engine': self.config['tts']['tts_engine'],
-                'voice': self.config['tts']['voice'],
-                'speed': 1.0
-            }
+            return inherit_from
 
-        # Override with row-specific values if specified
-        if row.get('tts', '').strip():
-            tts_config['tts_engine'] = row['tts']
+        # Fallback to config defaults if no inheritance specified
+        return [{
+            'tts_engine': self.config['tts']['tts_engine'],
+            'voice': self.config['tts']['voice'],
+            'speed': 1.0
+        }]
 
-        if row.get('voice', '').strip():
-            tts_config['voice'] = row['voice']
-
-        if row.get('speed', '').strip():
-            try:
-                tts_config['speed'] = float(row['speed'])
-            except ValueError:
-                pass  # Keep inherited/default value
-
-        return tts_config
 
     def create_text_scene(self, mode: str, rows: List[Dict[str, str]]) -> Dict[str, Any]:
         """Create a text scene from grouped rows"""
@@ -347,7 +383,7 @@ class Script2Scene:
 
         # Build scene-level font/TTS config from first row (using config defaults as base)
         scene_font_config = self.build_font_config(first_row)
-        scene_tts_config = self.build_tts_config(first_row)
+        scene_tts_configs = self.build_tts_config(first_row)
 
         # Add text entries
         for i, row in enumerate(rows):
@@ -356,14 +392,14 @@ class Script2Scene:
                 text_entry = {
                     'text': row['text'],
                     'font': scene_font_config,
-                    'tts': scene_tts_config
+                    'tts': scene_tts_configs
                 }
             else:
                 # Subsequent rows inherit from scene config but can override individual fields
                 text_entry = {
                     'text': row['text'],
                     'font': self.build_font_config(row, inherit_from=scene_font_config),
-                    'tts': self.build_tts_config(row, inherit_from=scene_tts_config)
+                    'tts': self.build_tts_config(row, inherit_from=scene_tts_configs)
                 }
 
             # Only add halign if it's not empty
@@ -435,11 +471,11 @@ class Script2Scene:
 
         # Add TTS audio if text is provided
         if first_row.get('text', '').strip():
-            tts_config = self.build_tts_config(first_row)
+            tts_configs = self.build_tts_config(first_row)
             scene['audio'] = {
                 'tts': {
                     'text': first_row['text'],
-                    **tts_config
+                    'tts': tts_configs
                 }
             }
 

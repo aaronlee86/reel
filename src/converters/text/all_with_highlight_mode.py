@@ -47,8 +47,8 @@ class AllWithHighlightModeStrategy(AllModeStrategy):
                     modified_entries.append(entry)
 
             current_entry = text_entries[highlight_index]
-            vclip = self._create_vclip(current_entry, scene, positioned_entries)
-
-            output_vclips.append(vclip)
+            vclips = self._create_vclips(current_entry, scene, positioned_entries)
+            for one_vclip in vclips:
+                output_vclips.append(one_vclip)
 
         return output_vclips

@@ -3,6 +3,7 @@ from typing import Dict, Any, List, Union
 from PIL import Image, ImageDraw, ImageFont
 import unicodedata
 import re
+import copy
 
 
 class TextSceneStrategy(ABC):
@@ -380,9 +381,11 @@ class TextSceneStrategy(ABC):
     def remove_special_char_for_tts(self, text: str) -> str:
         return text.replace('\n','')
 
-    def _create_vclip(self, txt_entry, scene, positioned_entries):
+    def _create_vclips(self, txt_entry, scene, positioned_entries):
         if not 'tts' in txt_entry and not 'duration' in txt_entry:
-                raise ValueError("Each vclip must have either TTS or duration")
+            raise ValueError("Each vclip must have either TTS or duration")
+
+        vclips = []
 
         vclip = {"type": "text"}
 
@@ -394,15 +397,6 @@ class TextSceneStrategy(ABC):
         else:
             vclip['bgcolor'] = '#000000'  # Default background
 
-        # Set TTS configuration if present
-        if 'tts' in txt_entry:
-            vclip['tts'] = {
-                "text": self.remove_special_char_for_tts(txt_entry['dub'] if 'dub' in txt_entry else txt_entry['text']),
-                "tts_engine": txt_entry['tts']['tts_engine'],
-                "voice": txt_entry['tts']['voice'],
-                "speed": txt_entry['tts'].get('speed', 1.0)
-            }
-
         self._passthrough_properties(vclip, txt_entry, 'duration')
         self._passthrough_properties(vclip, txt_entry, 'pregap')
         self._passthrough_properties(vclip, txt_entry, 'postgap')
@@ -410,7 +404,28 @@ class TextSceneStrategy(ABC):
         # Add positioned sentences
         vclip['sentences'] = positioned_entries
 
-        return vclip
+        if 'tts' in txt_entry:
+            for i, tts_entry in enumerate(txt_entry['tts']):
+                repeated_vclip = copy.deepcopy(vclip)
+                if i > 0:
+                    repeated_vclip.pop('pregap', None)
+                if i < len(txt_entry['tts'])-1:
+                    repeated_vclip.pop('postgap', None)
+
+                if 'pregap' in tts_entry:
+                    repeated_vclip['pregap'] = tts_entry['pregap']
+
+                repeated_vclip['tts'] = {
+                    "text": self.remove_special_char_for_tts(txt_entry['dub'] if 'dub' in txt_entry else txt_entry['text']),
+                    "tts_engine": tts_entry['tts_engine'],
+                    "voice": tts_entry['voice'],
+                    "speed": tts_entry.get('speed', 1.0)
+                }
+                vclips.append(repeated_vclip)
+        else:
+            vclips.append(vclip)
+
+        return vclips
 
     def _passthrough_properties(self, dest, src, prop):
         if prop in src:
