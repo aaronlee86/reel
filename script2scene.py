@@ -243,7 +243,6 @@ class Script2Scene:
         if not (len(tts_lines) == len(voice_lines) == len(speed_lines)):
             raise Script2SceneError("Number of lines must match for tts, voice, and speed")
 
-        print(f"the row is {row}")
         tts_configs = []
 
         for i, tts_line in enumerate(tts_lines):
