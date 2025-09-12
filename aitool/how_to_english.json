@@ -1,0 +1,26 @@
+{
+  "filename": "../how_to_english.csv",
+  "trigger_column": [2, 3],
+  "data": [
+    {
+      "cols": [4],
+      "function": "ai_generator.get_explain",
+      "parameter": [3, 2]
+    },
+    {
+      "cols": [5, 6],
+      "function": "ai_generator.get_sentences",
+      "parameter": [3, 2]
+    },
+    {
+      "cols": [7, 8],
+      "function": "ai_generator.get_sentences",
+      "parameter": [3, 2]
+    },
+    {
+      "cols": [9, 10],
+      "function": "ai_generator.get_sentences",
+      "parameter": [3, 2]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+I want a python project. now please understand the requirement, and make sure we are on the same page. don't implement now
+
+Requirements Specification
+
+Overview
+
+Create a Python script (aiload.py) that processes a CSV file based on a JSON configuration
+The script will be run via CLI with a JSON config file as an argument
+
+JSON Configuration Structure:
+
+filename: Path to the CSV file to be processed
+trigger_column: List of column indices that must be populated to trigger processing
+data: An array of processing instructions with the following properties:
+
+cols: Column indices to be processed
+function: Name of the function to call
+parameter: Column indices to use as parameters for the function
+
+
+Example Json Structure:
+{
+  "filename": "xxxx.csv", // the csv file to read
+  "trigger_column": [3,4]
+  "data":
+  [
+    {
+     "cols": [1,2],
+     "function": "abc",
+     "parameter": [2,3,4]
+    }, ...
+  ]
+}
+
+Processing Workflow:
+
+Load the JSON configuration
+Open the specified CSV file
+Skip the header (start from row 2)
+Continuous processing loop:
+
+Check if all trigger columns are populated
+If triggered, iterate through data array
+For each data entry:
+
+Check if specified columns are empty
+Call the specified function (which is async, will be imported) with parameters from specified columns using await
+Store the result back in the specified columns
+(Use tempfile for safe writing
+Atomically replace original file
+Ensure complete file cleanup)
+
+Error Handling:
+* If json loaded fails, error out
+* If input files missging, error out
+* If function call failes, error out
+
+
+CLI commands Specification
+python aiload.py <input_json>
+
+Arguments:
+Required Positional Argument:
+<input_json> - Path to the input json filename
+
