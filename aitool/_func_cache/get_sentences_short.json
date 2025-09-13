@@ -1,0 +1,190 @@
+{
+  "('Out of pocket', '自費')": [
+    [
+      "She paid out of pocket.",
+      "她自費支付了。"
+    ],
+    [
+      "You'll go out of pocket.",
+      "你會自費的。"
+    ],
+    [
+      "I'll pay out of pocket.",
+      "我會自費支付。"
+    ],
+    [
+      "She paid out of pocket.",
+      "她自費支付了。"
+    ],
+    [
+      "He bought it out of pocket.",
+      "他自費買的。"
+    ]
+  ],
+  "('Hold a seat', '佔位子')": [
+    [
+      "Hold a seat for me.",
+      "幫我佔位子。"
+    ],
+    [
+      "I'll hold a seat.",
+      "我會佔位子。"
+    ],
+    [
+      "Hold a seat for me.",
+      "幫我佔位子。"
+    ],
+    [
+      "Can you hold a seat?",
+      "你可以幫我佔位子嗎？"
+    ],
+    [
+      "I'll hold a seat here.",
+      "我先在這裡佔位子。"
+    ]
+  ],
+  "(\"Lose one's touch\", '退步')": [
+    [
+      "You lost your touch?",
+      "你已經退步了嗎？"
+    ],
+    [
+      "They've lost their touch.",
+      "他們已經退步了。"
+    ],
+    [
+      "I've definitely lost my touch.",
+      "我肯定退步了。"
+    ],
+    [
+      "You're losing your touch, man.",
+      "你在退步啊，老兄。"
+    ],
+    [
+      "She's losing her touch lately.",
+      "她最近有點退步。"
+    ]
+  ],
+  "('Got cheated on', '被劈腿了')": [
+    [
+      "He just got cheated on.",
+      "他剛被劈腿了。"
+    ],
+    [
+      "She got cheated on again.",
+      "她又被劈腿了。"
+    ],
+    [
+      "I got cheated on again.",
+      "我又被劈腿了。"
+    ],
+    [
+      "She got cheated on yesterday.",
+      "她昨天被劈腿了。"
+    ],
+    [
+      "He got cheated on last night.",
+      "他昨晚被劈腿了。"
+    ]
+  ],
+  "('Keep an eye on', '顧個東西的「顧」')": [
+    [
+      "Keep an eye on my bag",
+      "幫我顧一下我的包包"
+    ],
+    [
+      "Keep an eye on dinner",
+      "幫我顧一下晚餐"
+    ],
+    [
+      "Keep an eye on the kids.",
+      "幫我顧一下小孩。"
+    ],
+    [
+      "Keep an eye on dinner.",
+      "幫我顧一下晚餐。"
+    ],
+    [
+      "Keep an eye on that.",
+      "幫我顧一下那個。"
+    ]
+  ],
+  "('get a blister', '起水泡')": [
+    [
+      "I might get a blister.",
+      "我可能會起水泡。"
+    ],
+    [
+      "You'll get a blister.",
+      "你會起水泡的。"
+    ]
+  ],
+  "('kept man', '小白臉')": [
+    [
+      "Don't be a kept man.",
+      "別當小白臉。"
+    ],
+    [
+      "She's dating a kept man.",
+      "她交往的是個小白臉。"
+    ]
+  ],
+  "('jump the gun', '操之過急')": [
+    [
+      "He jumped the gun.",
+      "他操之過急了。"
+    ],
+    [
+      "Let's not jump the gun.",
+      "我們別操之過急。"
+    ]
+  ],
+  "('slowpoke', '慢郎中')": [
+    [
+      "Come on, slowpoke, hurry up.",
+      "快點，慢郎中！"
+    ],
+    [
+      "Hurry up, slowpoke!",
+      "快點，慢郎中！"
+    ],
+    [
+      "Don't be a slowpoke.",
+      "別當慢郎中。"
+    ],
+    [
+      "Stop being a slowpoke.",
+      "別再當慢郎中。"
+    ]
+  ],
+  "('vicious cycle', '惡性循環')": [
+    [
+      "This creates a vicious cycle.",
+      "這會造成惡性循環。"
+    ],
+    [
+      "Break the vicious cycle now.",
+      "現在就打破惡性循環。"
+    ]
+  ],
+  "('fair-weather friend', '酒肉朋友')": [
+    [
+      "Don't trust fair-weather friends.",
+      "別相信酒肉朋友。"
+    ],
+    [
+      "They proved fair-weather friends.",
+      "他們果然是酒肉朋友。"
+    ]
+  ],
+  "('s', '慢郎中')": [
+    [
+      "s moves like a slowpoke.",
+      "s動作像個慢郎中。"
+    ],
+    [
+      "s is such a slowpoke.",
+      "s真是個慢郎中。"
+    ]
+  ]
+}

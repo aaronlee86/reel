@@ -1,0 +1,182 @@
+{
+  "('Jinx', '烏鴉嘴')": [
+    [
+      "Calling it perfect might jinx our chances tonight.",
+      "說它完美可能會讓我們今晚的機會被烏鴉嘴毀掉。"
+    ],
+    [
+      "She's such a jinx whenever she walks in.",
+      "她一出現就是個烏鴉嘴，總把好運嚇跑。"
+    ],
+    [
+      "Don't be a jinx, stop talking about failure.",
+      "別當烏鴉嘴，別再說會失敗的話。"
+    ],
+    [
+      "I think he's a jinx for our team.",
+      "我覺得他是我們隊的烏鴉嘴。"
+    ],
+    [
+      "Calling him a jinx only makes things worse.",
+      "叫他烏鴉嘴只會讓事情變得更糟。"
+    ]
+  ],
+  "('Out of pocket', '自費')": [
+    [
+      "I'll pay out of pocket for the repairs.",
+      "我會自費支付這次維修費。"
+    ],
+    [
+      "They had to go out of pocket for medication.",
+      "他們只好自費買藥。"
+    ],
+    [
+      "I went out of pocket covering the extra costs.",
+      "我自費支付了額外費用。"
+    ]
+  ],
+  "('Choke up', '哽咽')": [
+    [
+      "Don't choke up, just tell them how you feel.",
+      "別哽咽，直接告訴他們你的感受。"
+    ],
+    [
+      "She'll choke up at her father's speech tonight.",
+      "她今晚在爸爸的演講時會哽咽。"
+    ]
+  ],
+  "('Hold a seat', '佔位子')": [
+    [
+      "I'll hold a seat while you get food.",
+      "你去拿食物時，我會幫你佔位子。"
+    ],
+    [
+      "Someone needs to hold a seat near the stage.",
+      "有人需要在舞台附近佔位子。"
+    ]
+  ],
+  "('Keep an eye on', '顧個東西的「顧」')": [
+    [
+      "I'll keep an eye on the kids today.",
+      "我今天會顧著小孩。"
+    ],
+    [
+      "Keep an eye on the soup while I cook.",
+      "我煮飯時你幫我顧一下湯，好嗎？"
+    ]
+  ],
+  "(\"Hit one's funny bone\", '戳中笑點')": [
+    [
+      "His silly dance always hits my funny bone instantly.",
+      "他那個搞笑的舞蹈總是立刻戳中我的笑點。"
+    ],
+    [
+      "That pun hit her funny bone and she snorted.",
+      "那個雙關語戳中她的笑點，她還噴了一聲。"
+    ]
+  ],
+  "('Give someone the eye', '拋媚眼')": [
+    [
+      "Don't give her the eye if you're taken.",
+      "如果你已經有伴，不要對她拋媚眼。"
+    ],
+    [
+      "He keeps giving his coworker the eye daily.",
+      "他每天都對同事拋媚眼。"
+    ]
+  ],
+  "('flab', '贅肉')": [
+    [
+      "She pinched the flab on her waist jokingly.",
+      "她開玩笑地捏了捏腰間的贅肉。"
+    ],
+    [
+      "Daily cardio helped shrink the annoying arm flab.",
+      "每天的有氧運動幫我縮小惱人的手臂贅肉。"
+    ]
+  ],
+  "('kept man', '小白臉')": [
+    [
+      "Nobody respects him because he's a kept man.",
+      "沒有人尊重他，因為他是個小白臉。"
+    ],
+    [
+      "She prefers a kept man over a struggling partner.",
+      "她寧願要個小白臉，也不要辛苦打拼的伴侶。"
+    ]
+  ],
+  "('jump the gun', '操之過急')": [
+    [
+      "We might jump the gun if we decide now.",
+      "如果我們現在就決定，可能會操之過急。"
+    ],
+    [
+      "Don't jump the gun and sign anything yet.",
+      "別操之過急，還不要簽任何東西。"
+    ],
+    [
+      "She jumped the gun, starting the meeting without me.",
+      "她操之過急，沒等我就開始開會。"
+    ],
+    [
+      "Don't jump the gun — wait for confirmation first.",
+      "別操之過急，先等確認再說。"
+    ]
+  ],
+  "('slowpoke', '慢郎中')": [
+    [
+      "He's a slowpoke when it comes to homework.",
+      "他做功課時真是個慢郎中。"
+    ],
+    [
+      "Don't be such a slowpoke, hurry up now.",
+      "別當慢郎中了，快點走吧。"
+    ],
+    [
+      "That slowpoke missed the bus again this morning.",
+      "那個慢郎中今天早上又錯過公車了。"
+    ],
+    [
+      "Stop acting like a slowpoke and move it.",
+      "別再裝成慢郎中，快點動起來。"
+    ]
+  ],
+  "('vicious cycle', '惡性循環')": [
+    [
+      "Low morale led to mistakes, fueling a vicious cycle.",
+      "士氣低落導致錯誤，進而加劇惡性循環。"
+    ],
+    [
+      "We must break the vicious cycle before it worsens.",
+      "我們必須在惡化前打破這個惡性循環。"
+    ]
+  ],
+  "('fair-weather friend', '酒肉朋友')": [
+    [
+      "If trouble comes, my fair-weather friends disappear quickly.",
+      "有麻煩時，我的酒肉朋友很快就消失了。"
+    ],
+    [
+      "Don't trust him; he's a fair-weather friend.",
+      "別信他；他只是個酒肉朋友。"
+    ],
+    [
+      "A fair-weather friend disappears when things get tough.",
+      "遇到困難時，酒肉朋友就會消失。"
+    ],
+    [
+      "I dumped my fair-weather friend after they lied.",
+      "他們說謊後，我就跟那個酒肉朋友斷交了。"
+    ]
+  ],
+  "('s', '慢郎中')": [
+    [
+      "If you're an s, you'll miss the meeting.",
+      "如果你當慢郎中，你會錯過會議。"
+    ],
+    [
+      "I hate waiting when someone is such an s.",
+      "我討厭等人，尤其是那個慢郎中。"
+    ]
+  ]
+}
