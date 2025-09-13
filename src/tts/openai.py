@@ -54,7 +54,7 @@ class OpenAiTTSEngine(TTSEngine):
                 voice=kwargs.get('voice'),
                 input=text,
                 speed=kwargs.get('speed', 1.0),
-                instructions="Speak in a cheerful and positive tone.",
+                instructions="use natural, gentle, Taiwan accent",
             ) as response:
                 response.stream_to_file(output_path)
                 print(f"[{self.name}] Generated audio at: {output_path}")
