@@ -62,7 +62,7 @@ class CSVProcessor:
             func = self._load_refill_func(function_name)
             self.function_map[function_name] = AsyncDictionaryManager(
                 refill_func=func,
-                threshold=4
+                threshold=2
             )
 
     def _load_refill_func(self, refill_func: str) -> Callable[[str], Any]:
