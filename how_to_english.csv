@@ -1,22 +1,43 @@
 template csv,config,title,topic,explain,ex1,tran1,ex2,tran2,ex3,tran3
 ch_tmpl_1.csv,ch_tmpl_1_1.json,烏鴉嘴,Jinx,烏鴉嘴，或是帶來壞運氣的人或東西,He’s a jinx,他是個烏鴉嘴,"Don’t say we’re going to win.
-You’ll jinx it!",別說我們一定會贏，你會烏鴉嘴,He's a jinx—everything he touches breaks.,他帶賽，他碰的東西都壞掉
-ch_tmpl_1.csv,ch_tmpl_1_1.json,自費,Out of pocket,自費，自掏腰包付錢,I'll have to pay out of pocket for the repairs.,我得自掏腰包付修理費,I was out of pocket covering the medical bill.,我自掏腰包付醫療費,"If it's minor, pay out of pocket and skip insurance.",如果是小問題，就自掏腰包付錢，不走保險理賠
+You’ll jinx it!",別說我們一定會贏，你會烏鴉嘴,Don't jinx it,別當烏鴉嘴
+ch_tmpl_2.csv,ch_tmpl_2_1.json,自費,Out of pocket,自費，自掏腰包付錢,I'll have to pay out of pocket for the repairs.,我得自掏腰包付修理費,I was out of pocket covering the medical bill.,我自掏腰包付醫療費,"If it's minor, pay out of pocket and skip insurance.",如果是小問題，就自掏腰包付錢，不走保險理賠
 ch_tmpl_1.csv,ch_tmpl_1_1.json,哽咽,Choke up,感動或難過到聲音卡住、哽咽，講不下去,I always choke up during that song.,我每次聽到那首歌都會哽咽,She choked up when she saw the letter.,她看到那封信時哽咽了,He chokes up at every goodbye.,每次道別他都會哽咽
-ch_tmpl_1.csv,ch_tmpl_1_1.json,退步,Lose one's touch,曾經很會，現在手感差了，有點退步,I think I'm starting to lose my touch.,我覺得我開始有點退步了,He's definitely beginning to lose his touch lately.,他最近確實開始退步了,She's scared she'll lose her touch without practice.,她擔心如果不練習會退步
+ch_tmpl_2.csv,ch_tmpl_2_1.json,退步,Lose one's touch,曾經很會，現在手感差了，有點退步,I think I'm starting to lose my touch.,我覺得我開始有點退步了,He's definitely beginning to lose his touch lately.,他最近確實開始退步了,She's scared she'll lose her touch without practice.,她擔心如果不練習會退步
 ch_tmpl_1.csv,ch_tmpl_1_1.json,被劈腿了,Got cheated on,被劈腿了，感情被背叛整個人超受傷,I got cheated on last month.,我上個月被劈腿了,She got cheated on by her boyfriend.,她被男友劈腿了,He just found out he got cheated on.,他剛發現自己被劈腿了
-ch_tmpl_1.csv,ch_tmpl_1_1.json,佔位子,Hold a seat,在旁邊放東西佔位子，替別人保留座位或排隊位置,Can you hold a seat for me?,你可以幫我佔位子嗎？,I'll hold a seat while you grab coffee.,我會佔位子，你去拿咖啡,Hold a seat—I'll be right back.,幫我佔位子—我馬上回來
+ch_tmpl_2.csv,ch_tmpl_2_1.json,佔位子,Hold a seat,在旁邊放東西佔位子，替別人保留座位或排隊位置,Can you hold a seat for me?,你可以幫我佔位子嗎？,I'll hold a seat while you grab coffee.,我會佔位子，你去拿咖啡,Hold a seat—I'll be right back.,幫我佔位子—我馬上回來
 ch_tmpl_1.csv,ch_tmpl_1_1.json,顧個東西的「顧」,Keep an eye on,盯著看、注意或照顧某物或某人，像是在顧個東西的「顧」,Can you keep an eye on my bag?,你可以幫我顧一下包嗎？,I'll keep an eye on the kids.,我會幫你顧小孩,"Keep an eye on the oven, please.",請幫我顧一下烤箱
-ch_tmpl_1.csv,ch_tmpl_1_1.json,穩交,Go steady,跟某人正式交往、感情穩定，就是所謂的穩交,We went steady throughout college.,我們在大學時期一直穩交,I don't want to go steady right now.,我現在不想穩交,Do you think they'll go steady soon?,你覺得他們很快會穩交嗎？
-ch_tmpl_1.csv,ch_tmpl_1_1.json,贅肉,flab,就是身上多餘、鬆軟會晃動的贅肉，常見在小腹、手臂、腰際,I need to get rid of my flab.,我得把贅肉減掉,These jeans hide my flab perfectly.,這條牛仔褲完美地遮住我的贅肉,Her arm flab jiggles when she waves.,她揮手時手臂的贅肉會晃動
-ch_tmpl_1.csv,ch_tmpl_1_1.json,起水泡,get a blister,皮膚被摩擦或燙傷而起水泡，常常又痛又癢,If you walk too long you'll get a blister,如果你走太久會起水泡,Don't run too long or you'll get a blister,別跑太久，不然你會起水泡,I always get a blister from new shoes,我穿新鞋總是會起水泡
-ch_tmpl_2.csv,ch_tmpl_2_1.json,被冷落,Be left out,被排除在團體或活動之外，感覺被冷落、孤單又沒被重視,I don't want to be left out.,我不想被冷落,She felt like she would be left out.,她覺得自己會被冷落,"Don't make me be left out, please.",別讓我被冷落，拜託
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
-,,,,,,,,,,
+ch_tmpl_2.csv,ch_tmpl_2_1.json,穩交,Go steady,跟某人正式交往、感情穩定，就是所謂的穩交,We went steady throughout college.,我們在大學時期一直穩交,I don't want to go steady right now.,我現在不想穩交,Do you think they'll go steady soon?,你覺得他們很快會穩交嗎？
+ch_tmpl_1.csv,ch_tmpl_1_1.json,贅肉,flab,身上多餘、鬆軟會晃動的贅肉，常見在小腹、手臂、腰際,I need to get rid of my flab.,我得把贅肉減掉,These jeans hide my flab perfectly.,這條牛仔褲完美地遮住我的贅肉,Her arm flab jiggles when she waves.,她揮手時手臂的贅肉會晃動
+ch_tmpl_2.csv,ch_tmpl_2_1.json,起水泡,get a blister,皮膚被摩擦或燙傷而起水泡，常常又痛又癢,If you walk too long you'll get a blister,如果你走太久會起水泡,Don't run too long or you'll get a blister,別跑太久，不然你會起水泡,I always get a blister from new shoes,我穿新鞋總是會起水泡
+ch_tmpl_1.csv,ch_tmpl_1_1.json,被冷落,Be left out,被排除在團體或活動之外，感覺被冷落、孤單又沒被重視,I don't want to be left out.,我不想被冷落,She felt like she would be left out.,她覺得自己會被冷落,"Don't make me be left out, please.",別讓我被冷落，拜託
+ch_tmpl_2.csv,ch_tmpl_2_1.json,放鴿子,Stand someone up,放鴿子，約好時間沒出現、也沒事先通知，讓人尷尬又空等,Don't stand me up again,別再放我鴿子了,He stood her up last night,他昨晚放她鴿子,Why would you stand someone up like that,你為什麼要這樣放人家鴿子
+ch_tmpl_1.csv,ch_tmpl_1_1.json,偽君子,hypocrite,外表裝得很道德，私底下卻做壞事的偽君子，講一套做一套讓人看破手腳,Don't be a hypocrite,別做偽君子,He's such a hypocrite,他真是個偽君子,You're a hypocrite,你真是個偽君子
+ch_tmpl_2.csv,ch_tmpl_2_1.json,死會,taken,表示某人已經有固定對象，不能追求，大家口語會說他死會,He's taken,他已經死會了,"Don't hit on him, he's taken",別勾搭他，他已經死會了,"I like her, but she's already taken",我喜歡她，但她已經死會了
+ch_tmpl_1.csv,ch_tmpl_1_1.json,戳中笑點,Hit one's funny bone,指講話或情節直接戳中笑點，讓人當場噴笑、停不下來,That joke hit my funny bone,那個笑話戳中我的笑點,You really hit her funny bone,你真的戳中她的笑點,That sketch totally hit my funny bone last night,那段短劇昨晚完全戳中我的笑點
+ch_tmpl_2.csv,ch_tmpl_2_1.json,打假球,throw the game,故意輸掉比賽、為投注或收錢而打假球，破壞運動公平,They try to throw the game,他們試圖打假球,Don't let them throw the game,別讓他們打假球,Some players were paid to throw the game last season,上賽季有些球員收錢打假球
+ch_tmpl_1.csv,ch_tmpl_1_1.json,頻率很合,on the same wavelength,形容兩個人想法、節奏和幽默感都很合，聊天做事都順手，簡單說就是頻率很合,We're on the same wavelength,我們的頻率很合,We're totally on the same wavelength,我們的頻率完全很合,I think we're on the same wavelength about this project,我覺得我們對這個專案的頻率很合
+ch_tmpl_2.csv,ch_tmpl_2_1.json,罷免,recall,指透過公民投票或選民連署，把不稱職的民選官員罷免下台，讓人民決定是否續任,They will recall the mayor,他們會罷免市長,They launched a campaign to recall the corrupt official,他們發起運動要罷免貪污官員,Citizens petitioned to recall the city council member,市民請願罷免那位市議員
+ch_tmpl_1.csv,ch_tmpl_1_1.json,拋媚眼,Give someone the eye,用眼神故意吸引別人的注意或示好，像是對人拋媚眼、眉來眼去，帶點調情或玩笑味道,She gave me the eye,她對我拋媚眼,Don't give him the eye,別對他拋媚眼,He kept giving her the eye across the bar,他在吧台那頭一直對她拋媚眼
+ch_tmpl_2.csv,ch_tmpl_2_1.json,,,,,,,,,
+ch_tmpl_1.csv,ch_tmpl_1_1.json,,,,,,,,,
+ch_tmpl_2.csv,ch_tmpl_2_1.json,,,,,,,,,
+ch_tmpl_1.csv,ch_tmpl_1_1.json,,,,,,,,,
+ch_tmpl_2.csv,ch_tmpl_2_1.json,,,,,,,,,
+ch_tmpl_1.csv,ch_tmpl_1_1.json,,,,,,,,,
+ch_tmpl_2.csv,ch_tmpl_2_1.json,,,,,,,,,
+ch_tmpl_1.csv,ch_tmpl_1_1.json,,,,,,,,,
+ch_tmpl_2.csv,ch_tmpl_2_1.json,,,,,,,,,
+ch_tmpl_1.csv,ch_tmpl_1_1.json,,,,,,,,,
+ch_tmpl_2.csv,ch_tmpl_2_1.json,,,,,,,,,
+ch_tmpl_1.csv,ch_tmpl_1_1.json,,,,,,,,,
+ch_tmpl_2.csv,ch_tmpl_2_1.json,,,,,,,,,
+ch_tmpl_1.csv,ch_tmpl_1_1.json,,,,,,,,,
+ch_tmpl_2.csv,ch_tmpl_2_1.json,,,,,,,,,
+ch_tmpl_1.csv,ch_tmpl_1_1.json,,,,,,,,,
+ch_tmpl_2.csv,ch_tmpl_2_1.json,,,,,,,,,
+ch_tmpl_1.csv,ch_tmpl_1_1.json,,,,,,,,,
+ch_tmpl_2.csv,ch_tmpl_2_1.json,,,,,,,,,
+ch_tmpl_1.csv,ch_tmpl_1_1.json,,,,,,,,,
+ch_tmpl_2.csv,ch_tmpl_2_1.json,,,,,,,,,
 ,,,,,,,,,,
