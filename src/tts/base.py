@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Dict, Any, Union
+from typing import Dict, Any, Union
 import hashlib
 
 class TTSEngine(ABC):
