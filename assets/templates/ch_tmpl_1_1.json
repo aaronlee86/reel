@@ -8,7 +8,7 @@
   "fps": 24,
   "bgm": {
     "file": "bgm1.mp3",
-    "volume": 0.2,
+    "volume": 0.1,
     "start_clip": 2
   },
   "tts": {
@@ -18,5 +18,5 @@
   "para_spacing": 90,
   "line_spacing": 5,
   "v_padding": 100,
-  "h_padding": 50
+  "h_padding": 60
 }
