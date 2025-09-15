@@ -178,5 +178,181 @@
       "I hate waiting when someone is such an s.",
       "我討厭等人，尤其是那個慢郎中。"
     ]
+  ],
+  "('烏鴉嘴',)": [
+    [
+      "You're such a jinx, cut it out.",
+      "你真是個烏鴉嘴，別再這樣了。"
+    ],
+    [
+      "Saying that might jinx our whole plan.",
+      "這麼說可能會讓我們整個計畫破功。"
+    ]
+  ],
+  "(\"I'll give you that.\",)": [
+    [
+      "Fine, I'll give you that—your story makes sense.",
+      "好吧，我承認——你的故事有道理。"
+    ],
+    [
+      "Okay, I'll give you that, you warned me earlier.",
+      "好，我承認，你早就警告過我。"
+    ]
+  ],
+  "(\"That's a given\",)": [
+    [
+      "With her resume, that's a given during hiring.",
+      "憑她的履歷，錄取時那是理所當然的。"
+    ],
+    [
+      "If she volunteers, I'll help. That's a given.",
+      "如果她自願，我會幫忙。那是理所當然的。"
+    ],
+    [
+      "With his experience, that's a given in interviews.",
+      "以他的經驗，面試時那是理所當然的。"
+    ],
+    [
+      "You think he'll quit? That's a given, honestly.",
+      "你覺得他會辭職？老實說，那是理所當然的。"
+    ]
+  ],
+  "('Learn the ropes',)": [
+    [
+      "It took me weeks to learn the ropes here.",
+      "我花了好幾週才熟悉這裡的工作。"
+    ],
+    [
+      "New hires must learn the ropes before Friday.",
+      "新進員工必須在週五前熟悉工作流程。"
+    ]
+  ],
+  "(\"twist one's arm\",)": [
+    [
+      "She won't buy it unless you twist her arm.",
+      "除非你逼她，否則她不會同意。"
+    ],
+    [
+      "Don't twist my arm; I'll help willingly.",
+      "別逼我，我會自願幫忙。"
+    ]
+  ],
+  "('Savage',)": [
+    [
+      "He's a savage on the football field, no mercy.",
+      "他在足球場上很兇猛，毫不留情。"
+    ],
+    [
+      "Don't be savage; apologize for what you said.",
+      "別那麼野蠻；為你說的話道歉。"
+    ]
+  ],
+  "(\"Don't put yourself out\",)": [
+    [
+      "If it's too much, don't put yourself out.",
+      "如果太吃力，就別太勉強自己。"
+    ],
+    [
+      "Don't put yourself out just to please others.",
+      "別為了討好別人而委屈自己。"
+    ]
+  ],
+  "('Sassy',)": [
+    [
+      "Don't be so sassy with your teacher, okay?",
+      "別對老師那麼放肆，好嗎？"
+    ],
+    [
+      "I love her sassy style and bold attitude.",
+      "我喜歡她俏皮的風格和大膽的態度。"
+    ]
+  ],
+  "('I have a thing for you',)": [
+    [
+      "Between us, I have a thing for you.",
+      "我們之間，我對你有感覺。"
+    ],
+    [
+      "Honestly, I have a thing for you, can't deny.",
+      "老實說，我對你有意思，無法否認。"
+    ],
+    [
+      "I have a thing for you, and it's serious.",
+      "我對你有感覺，而且是認真的。"
+    ],
+    [
+      "I have a thing for you; hope that's okay.",
+      "我對你有意思，希望你不介意。"
+    ]
+  ],
+  "('Make a scene',)": [
+    [
+      "He threatened to make a scene over the bill.",
+      "他威脅要為了那張帳單大吵大鬧。"
+    ],
+    [
+      "If you call her, she'll probably make a scene.",
+      "如果你打給她，她很可能會大吵大鬧。"
+    ]
+  ],
+  "('Hand to god',)": [
+    [
+      "Hand to god, I'm telling the truth this time.",
+      "我向上帝發誓，這次我說的是真的。"
+    ],
+    [
+      "Hand to god, he'll be here before the movie starts.",
+      "我向上帝發誓，他會在電影開始前到這裡。"
+    ]
+  ],
+  "('take it in stride',)": [
+    [
+      "When plans changed, he simply took it in stride.",
+      "計畫改變時，他只是從容應對。"
+    ],
+    [
+      "You'll face setbacks; just take it in stride.",
+      "你會遇到挫折；只要處之泰然就好。"
+    ]
+  ],
+  "(\"pull one's leg\",)": [
+    [
+      "I thought she was serious, but she pulled my leg.",
+      "我以為她是認真的，但她只是在逗我玩。"
+    ],
+    [
+      "Stop pulling his leg about the job offer, please.",
+      "別再拿那份工作逗他了，拜託。"
+    ]
+  ],
+  "('Beats me',)": [
+    [
+      "Beats me how they managed to finish early.",
+      "我搞不懂他們怎麼能提早完成。"
+    ],
+    [
+      "Honestly, beats me what she meant by that.",
+      "老實說，我真不知道她那句話是什麼意思。"
+    ]
+  ],
+  "('have someone going',)": [
+    [
+      "Don't try to have me going like that again.",
+      "別再那樣騙我了。"
+    ],
+    [
+      "Her prank had everyone going for a while there.",
+      "她的惡作劇一度讓大家都信以為真。"
+    ]
+  ],
+  "(\"You're way off\",)": [
+    [
+      "Honestly, you're way off with that assumption.",
+      "說實話，你那個假設完全錯了。"
+    ],
+    [
+      "You're way off if you think it's simple.",
+      "如果你認為這很簡單，那你就大錯特錯。"
+    ]
   ]
 }

@@ -186,5 +186,349 @@
       "s is such a slowpoke.",
       "s真是個慢郎中。"
     ]
+  ],
+  "('烏鴉嘴',)": [
+    [
+      "You're a jinx",
+      "你就是個衰神"
+    ],
+    [
+      "Every time he speaks, he jinxes everything",
+      "每次他一說話就會招來厄運"
+    ],
+    [
+      "Don't even say that, you'll jinx our luck",
+      "別那樣說，你會把我們的運氣弄壞"
+    ],
+    [
+      "We think he's a jinx because his tips always backfire",
+      "我們覺得他是個衰神，因為他的建議總是適得其反"
+    ],
+    [
+      "Stop being a jinx and say something positive for once",
+      "別再當衰神了，這次說點正面的話吧"
+    ]
+  ],
+  "(\"I'll give you that.\",)": [
+    [
+      "I'll give you that, you made a good point about the budget",
+      "那點我承認，你關於預算的說法很有道理"
+    ],
+    [
+      "I'll give you that, the movie was visually stunning despite the slow plot",
+      "那點我承認，雖然劇情緩慢，但電影畫面很驚豔"
+    ],
+    [
+      "I'll give you that, she handled the crisis better than anyone else in the office",
+      "那點我承認，她處理危機比辦公室裡其他人都好"
+    ],
+    [
+      "I'll give you that, but we still need concrete data before making the final decision",
+      "那點我承認，但我們在做最終決定前仍需要具體數據"
+    ]
+  ],
+  "(\"That's a given\",)": [
+    [
+      "He's worked hard, so that's a given",
+      "他一直很努力，所以那是理所當然的"
+    ],
+    [
+      "When the boss says yes, that's a given",
+      "當老闆說同意，那是理所當然的"
+    ],
+    [
+      "With their experience, a win here? That's a given",
+      "憑他們的經驗，要贏這場比賽？那是理所當然的"
+    ],
+    [
+      "Skip practice for months, then expect results? That's a given",
+      "幾個月都沒練，還想有成果？那是理所當然的"
+    ]
+  ],
+  "('Savage',)": [
+    [
+      "Savage move",
+      "太殘酷了"
+    ],
+    [
+      "He gave a savage attack on the intruder",
+      "他對入侵者發動了殘酷的攻擊"
+    ],
+    [
+      "The critic's review was savage and brutally honest",
+      "那位評論家的評論既殘酷又直言不諱"
+    ],
+    [
+      "That movie's violence felt savage and unnecessary for the plot",
+      "那部電影的暴力看起來殘暴且對劇情毫無必要"
+    ],
+    [
+      "They launched a savage campaign that left the town devastated and terrified",
+      "他們發起了一場殘酷的行動，讓整個城鎮陷入毀滅與驚恐"
+    ]
+  ],
+  "(\"twist one's arm\",)": [
+    [
+      "You can't twist my arm",
+      "你別想逼我"
+    ],
+    [
+      "She twisted his arm to join the team",
+      "她勉強說服他加入球隊"
+    ],
+    [
+      "I didn't have to twist his arm at all",
+      "我根本不用強迫他"
+    ],
+    [
+      "If you twist my arm I'll help out this weekend",
+      "如果你逼我，我這個週末會幫忙"
+    ],
+    [
+      "They had to twist her arm before she agreed to the interview",
+      "他們得勉強說服她，她才同意接受訪問"
+    ]
+  ],
+  "('Learn the ropes',)": [
+    [
+      "She learned the ropes quickly",
+      "她很快就學會了要領"
+    ],
+    [
+      "It takes time to learn the ropes at work",
+      "在工作上熟悉流程需要時間"
+    ],
+    [
+      "New hires need weeks to learn the ropes properly",
+      "新進員工需要好幾週才能真正熟悉流程"
+    ],
+    [
+      "If you shadow a mentor, you'll learn the ropes much faster",
+      "跟著導師學，你會更快熟悉流程"
+    ],
+    [
+      "Take notes during training and you'll learn the ropes sooner than expected",
+      "培訓時做筆記，你會比預期更快學會要領"
+    ]
+  ],
+  "(\"Don't put yourself out\",)": [
+    [
+      "Please don't put yourself out",
+      "請別勉強自己"
+    ],
+    [
+      "Don't put yourself out for them, you deserve rest",
+      "別為他們勉強自己，你值得休息"
+    ],
+    [
+      "If they're fine, don't put yourself out trying to help",
+      "如果他們沒事，就別為了幫忙勉強自己"
+    ],
+    [
+      "Don't put yourself out to impress others; your health comes first",
+      "別為了給別人留下印象而勉強自己；你的健康最重要"
+    ],
+    [
+      "When work piles up, don't put yourself out—set limits and ask for help",
+      "工作堆積時別逼自己——要設界限並尋求幫助"
+    ]
+  ],
+  "('Sassy',)": [
+    [
+      "Don't get sassy with me",
+      "別對我那麼無禮"
+    ],
+    [
+      "That sassy remark made everyone laugh out loud",
+      "那句俏皮的話讓大家笑出聲"
+    ],
+    [
+      "He gave a sassy wink and walked away",
+      "他俏皮地眨了眨眼就走了"
+    ],
+    [
+      "Her sassy attitude wins fans, but sometimes gets her into trouble",
+      "她的俏皮態度贏得粉絲，但有時也會惹麻煩"
+    ],
+    [
+      "I love your sassy comebacks they're witty and unexpected",
+      "我喜歡你那些俏皮的回嘴，既機智又出人意料"
+    ]
+  ],
+  "('I have a thing for you',)": [
+    [
+      "I've got a thing for you",
+      "我對你有點心動"
+    ],
+    [
+      "Honestly, I have a thing for you, not joking",
+      "說真的，我對你有好感，不是在開玩笑"
+    ],
+    [
+      "I have a thing for you, and I can't hide it",
+      "我對你有好感，無法隱藏"
+    ],
+    [
+      "I have a thing for you since college, I've liked you for years",
+      "從大學起我就對你有好感，我已喜歡你好多年"
+    ],
+    [
+      "Even when you're annoying, I have a thing for you, it's true",
+      "即使你有點煩，我還是對你有好感，這是真的"
+    ]
+  ],
+  "('Make a scene',)": [
+    [
+      "Please don't make a scene",
+      "拜託別大吵大鬧"
+    ],
+    [
+      "She threatened to make a scene at dinner",
+      "她威脅在晚餐時大吵大鬧"
+    ],
+    [
+      "If you make a scene now, we'll leave",
+      "如果你現在大吵大鬧，我們就走"
+    ],
+    [
+      "He always makes a scene when criticized in public",
+      "他一被當眾批評就總是大吵大鬧"
+    ],
+    [
+      "Don't encourage her to make a scene; calm her down instead",
+      "別鼓勵她大吵大鬧；要安撫她"
+    ]
+  ],
+  "('Hand to god',)": [
+    [
+      "Hand to God, I'm telling the truth",
+      "我向上帝發誓我說的是真的"
+    ],
+    [
+      "Hand to God, she was here last night",
+      "我向上帝發誓她昨晚在這裡"
+    ],
+    [
+      "Hand to God, he said he paid the money",
+      "我向上帝發誓他說他已經付過錢"
+    ],
+    [
+      "Hand to God, I would never betray your trust",
+      "我向上帝發誓我絕不會背叛你的信任"
+    ],
+    [
+      "Hand to God, ask anyone — they'll tell you I helped",
+      "我向上帝發誓，你去問任何人，他們會說我有幫忙"
+    ]
+  ],
+  "('take it in stride',)": [
+    [
+      "She took it in stride",
+      "她從容面對"
+    ],
+    [
+      "Just take it in stride and move on",
+      "就從容面對，然後繼續前進"
+    ],
+    [
+      "When things go wrong, try to take it in stride",
+      "事情出錯時，試著從容應對"
+    ],
+    [
+      "He always takes setbacks in stride and rarely loses his cool",
+      "他總是從容面對挫折，很少失去冷靜"
+    ],
+    [
+      "If you can take it in stride now, you'll handle worse challenges later with confidence",
+      "如果你現在能從容面對，將來就能自信地應對更嚴峻的挑戰"
+    ]
+  ],
+  "('Beats me',)": [
+    [
+      "Beats me, honestly",
+      "老實說，我不知道"
+    ],
+    [
+      "Beats me, I haven't checked the schedule yet",
+      "我不知道，我還沒看行程表"
+    ],
+    [
+      "Beats me, maybe ask Sarah—she might know",
+      "我不知道，也許問莎拉，她可能知道"
+    ],
+    [
+      "Honestly, beats me when it comes to taxes and legal stuff",
+      "坦白說，遇到稅務和法律方面的事我就不懂"
+    ],
+    [
+      "Beats me how they fixed the server so quickly without telling anyone",
+      "我不懂他們怎麼沒告訴任何人就這麼快修好伺服器"
+    ]
+  ],
+  "(\"pull one's leg\",)": [
+    [
+      "Stop pulling my leg",
+      "別再耍我"
+    ],
+    [
+      "I thought he was serious but he was pulling my leg",
+      "我以為他是認真的，但他只是在耍我"
+    ],
+    [
+      "She loves to pull my leg about my terrible cooking",
+      "她喜歡拿我糟糕的廚藝開玩笑"
+    ],
+    [
+      "When they said I won a million dollars I knew they were pulling my leg",
+      "當他們說我贏了一百萬時，我就知道他們在耍我"
+    ],
+    [
+      "He can be so sarcastic that sometimes it's hard to tell if he's pulling your leg or being sincere",
+      "他常常那麼諷刺，有時很難分辨他是在耍你還是很真心"
+    ]
+  ],
+  "('have someone going',)": [
+    [
+      "That prank had me going",
+      "那個惡作劇把我騙到了"
+    ],
+    [
+      "She had everyone going with that fake story",
+      "她用那個假故事把大家都騙了"
+    ],
+    [
+      "Don't try to have me going again",
+      "別想再騙我了"
+    ],
+    [
+      "He managed to have the whole office going for hours",
+      "他讓整個辦公室好幾個小時都上當了"
+    ],
+    [
+      "By pretending to be the CEO, she had investors going for weeks",
+      "她冒充執行長，讓投資者好幾個星期都上當了"
+    ]
+  ],
+  "(\"You're way off\",)": [
+    [
+      "Dude, you're way off",
+      "老兄，你完全錯了"
+    ],
+    [
+      "You're way off if you think that's right",
+      "如果你認為那是對的，那你就大錯特錯了"
+    ],
+    [
+      "You're way off about the timeline they gave",
+      "你對他們給的時間表估計完全錯了"
+    ],
+    [
+      "I hate to tell you this, but you're way off about the project's budget",
+      "我很不想說，但你對專案預算的估計完全錯了"
+    ],
+    [
+      "When it comes to predicting weather, you're way off more often than not",
+      "說到預測天氣，你經常大錯特錯"
+    ]
   ]
 }

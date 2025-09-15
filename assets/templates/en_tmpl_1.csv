@@ -1,24 +1,24 @@
 "text","dub",wrap,pregap,postgap,"mode","background","valign","padding","ttf","font_size","font_color","line_spacing","alignment","tts","voice","speed","duration","highlight_color","highlight_bold","highlight_italic"
-"$(title)",,,0,,"all","background2.png","center",,"Kalam-Bold.ttf","110",,,,"eleven","pNInz6obpgDQGcFmaJgB","0.7",,,,
-"是什麼意思",,,,1,,,,,"LXGWWenKaiTC-Bold.ttf","100",,,,"eleven","pNInz6obpgDQGcFmaJgB",1,,,,
-$(title),,n,,,all,#f4f5e9,,,DMSerifText.ttf,90,,,,silent,,1,0,,,
-"$(explain)",,,,1,,,,,"LXGWWenKaiTC.ttf","70",,,,"gcloud","cmn-CN-Chirp3-HD-Despina","1.3",,,,
-例句,,,,,append_center,#f4f5e9,,,LXGWWenKaiTC-Bold.ttf,90,,,,silent,,1,0,,,
-"$(ex1)",,,,,,,,,"DMSerifText.ttf","70",,,,"eleven
-0.3,eleven","pNInz6obpgDQGcFmaJgB
-tnSpp4vdxKPjI9w0GnoV","0.8
-0.9",,,,
-"$(tran1)",,,,1,,,,,"LXGWWenKaiTC.ttf","70",,,,"gcloud","cmn-CN-Chirp3-HD-Despina","1.2",,,,
-例句,,,,,append_center,#f4f5e9,,,LXGWWenKaiTC-Bold.ttf,90,,,,silent,,1,0,,,
-"$(ex2)",,,,,,,,,"DMSerifText.ttf","70",,,,"eleven
-0.3,eleven","pNInz6obpgDQGcFmaJgB
-tnSpp4vdxKPjI9w0GnoV","0.8
-0.9",,,,
-"$(tran2)",,,,1,,,,,"LXGWWenKaiTC.ttf","70",,,,"gcloud","cmn-CN-Chirp3-HD-Despina","1.2",,,,
-例句,,,,,append_center,#f4f5e9,,,LXGWWenKaiTC-Bold.ttf,90,,,,silent,,1,0,,,
-"$(ex3)",,,,,,,,,"DMSerifText.ttf","70",,,,"eleven
-0.3,eleven","pNInz6obpgDQGcFmaJgB
-tnSpp4vdxKPjI9w0GnoV","0.8
-0.9",,,,
-"$(tran3)",,,,1,,,,,"LXGWWenKaiTC.ttf","70",,,,"gcloud","cmn-CN-Chirp3-HD-Despina","1.2",,,,
+"$(title)",,,0,,"all","background2.png","center",,"Kalam-Bold.ttf","120",,,,"eleven","pNInz6obpgDQGcFmaJgB","0.7",,,,
+"是什麼意思",,,,1,,,,,"LXGWWenKaiTC-Bold.ttf","120",,,,"eleven","pNInz6obpgDQGcFmaJgB",1,,,,
+$(title),,,,,all,#f4f5e9,,,DMSerifText.ttf,90,,,,silent,,1,0,,,
+"$(explain)",,,,1,,,,,"LXGWWenKaiTC.ttf","70",,,,"openai","marin","1.1",,,,
+例句 1,,,,,append_center,#f4f5e9,,,LXGWWenKaiTC-Bold.ttf,90,,,,silent,,1,0,,,
+"$(ex1)",,,,1,,,,,"DMSerifText.ttf","70",,,,"eleven
+0.8,eleven","aMSt68OGf4xUZAnLpTU8
+yl2ZDV1MzN4HbQJbMihG","0.8
+1",,,,
+"$(tran1)",,,,1,,,,,"LXGWWenKaiTC.ttf","70",,,,"openai","cedar","1",,,,
+例句 2,,,,,append_center,#f4f5e9,,,LXGWWenKaiTC-Bold.ttf,90,,,,silent,,1,0,,,
+"$(ex2)",,,,1,,,,,"DMSerifText.ttf","70",,,,"eleven
+0.8,eleven","aMSt68OGf4xUZAnLpTU8
+yl2ZDV1MzN4HbQJbMihG","0.8
+1",,,,
+"$(tran2)",,,,1,,,,,"LXGWWenKaiTC.ttf","70",,,,"openai","cedar","1",,,,
+例句 3,,,,,append_center,#f4f5e9,,,LXGWWenKaiTC-Bold.ttf,90,,,,silent,,1,0,,,
+"$(ex3)",,,,1,,,,,"DMSerifText.ttf","70",,,,"eleven
+0.8,eleven","aMSt68OGf4xUZAnLpTU8
+yl2ZDV1MzN4HbQJbMihG","0.8
+1",,,,
+"$(tran3)",,,,1,,,,,"LXGWWenKaiTC.ttf","70",,,,"openai","cedar","1",,,,
 "追蹤我們學到更多實用英文",,,,,"all","#f4f5e9",,,,"70","#FF0000",,,"gcloud","cmn-TW-Standard-A","1.5",,,,
