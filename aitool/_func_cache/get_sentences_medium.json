@@ -1,24 +1,12 @@
 {
   "('Jinx', '烏鴉嘴')": [
     [
-      "Calling it perfect might jinx our chances tonight.",
-      "說它完美可能會讓我們今晚的機會被烏鴉嘴毀掉。"
+      "He's a Jinx whenever we try to win games.",
+      "每次我們想贏遊戲，他就是個烏鴉嘴。"
     ],
     [
-      "She's such a jinx whenever she walks in.",
-      "她一出現就是個烏鴉嘴，總把好運嚇跑。"
-    ],
-    [
-      "Don't be a jinx, stop talking about failure.",
-      "別當烏鴉嘴，別再說會失敗的話。"
-    ],
-    [
-      "I think he's a jinx for our team.",
-      "我覺得他是我們隊的烏鴉嘴。"
-    ],
-    [
-      "Calling him a jinx only makes things worse.",
-      "叫他烏鴉嘴只會讓事情變得更糟。"
+      "Calling it perfect will make you a Jinx, honestly.",
+      "說它完美真的會讓你變成烏鴉嘴，老實說。"
     ]
   ],
   "('Out of pocket', '自費')": [
@@ -353,6 +341,56 @@
     [
       "You're way off if you think it's simple.",
       "如果你認為這很簡單，那你就大錯特錯。"
+    ]
+  ],
+  "('rainmaker', '搖錢樹')": [
+    [
+      "We need a rainmaker to boost sales this year.",
+      "我們需要一位搖錢樹，來提升今年的銷售。"
+    ],
+    [
+      "His network makes him the team's top rainmaker.",
+      "他的人脈讓他成為團隊的頭號搖錢樹。"
+    ]
+  ],
+  "('power trip', '耍官威')": [
+    [
+      "Stop letting him go on a power trip at work.",
+      "別再讓他在公司耍官威了。"
+    ],
+    [
+      "Don't let your boss go on a power trip.",
+      "別讓你的老闆耍官威。"
+    ]
+  ],
+  "('PDA (public display of affection)', '放閃')": [
+    [
+      "Stop the PDA, some people are trying to eat.",
+      "別放閃了，有人在努力吃飯。"
+    ],
+    [
+      "Her constant PDA made everyone roll their eyes.",
+      "她一直放閃，讓大家翻白眼。"
+    ]
+  ],
+  "('talk back', '頂嘴')": [
+    [
+      "If she talks back, she'll get grounded this weekend.",
+      "如果她頂嘴，就會在這個週末被禁足。"
+    ],
+    [
+      "Why do kids always talk back these days?",
+      "現在的小孩為什麼老是頂嘴？"
+    ]
+  ],
+  "('give a hickey', '種草莓')": [
+    [
+      "She tried to give a hickey but failed.",
+      "她試圖種草莓但沒成功。"
+    ],
+    [
+      "I saw them give a hickey under the table.",
+      "我看到他們在桌下種草莓。"
     ]
   ]
 }

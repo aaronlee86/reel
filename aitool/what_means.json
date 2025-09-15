@@ -1,0 +1,26 @@
+{
+  "filename": "../what_means.csv",
+  "trigger_column": [2],
+  "data": [
+    {
+      "cols": [3],
+      "function": "ai_generator_en.get_explain",
+      "parameter": [2]
+    },
+    {
+      "cols": [4, 5],
+      "function": "ai_generator_en.get_sentences_short",
+      "parameter": [2]
+    },
+    {
+      "cols": [6, 7],
+      "function": "ai_generator_en.get_sentences_medium",
+      "parameter": [2]
+    },
+    {
+      "cols": [8, 9],
+      "function": "ai_generator_en.get_sentences_long",
+      "parameter": [2]
+    }
+  ]
+}

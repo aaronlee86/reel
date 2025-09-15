@@ -1,31 +1,15 @@
 {
   "('Jinx', '烏鴉嘴')": [
     [
-      "Every time she walks in, the team's luck flips because she's a total Jinx.",
-      "她一進來，團隊的運氣就翻了，真是個十足的烏鴉嘴。"
+      "He always jinxes the team whenever he brags about an easy win.",
+      "他每次吹噓會輕鬆贏就當烏鴉嘴，總是害球隊倒楣。"
     ],
     [
-      "I hate being a Jinx, I mention plans and they instantly fall apart.",
-      "我討厭自己是個烏鴉嘴，只要我一說計畫，它們就立刻全都泡湯。"
-    ],
-    [
-      "Calling someone a Jinx after one mistake just makes everyone nervous and awkward.",
-      "把別人說成烏鴉嘴只是讓大家緊張又尷尬。"
-    ],
-    [
-      "We shouldn't say she is a Jinx before the project's even had a chance.",
-      "在專案還沒開始前就說她是烏鴉嘴，太不應該了。"
-    ],
-    [
-      "My brother jokingly calls me a Jinx whenever I mention future travel plans.",
-      "每次我提到未來旅行計劃，我哥哥就笑著叫我烏鴉嘴。"
+      "If you jinx your luck now, we might lose the whole opportunity tonight.",
+      "如果你現在當烏鴉嘴，我們今晚可能會失去整個機會。"
     ]
   ],
   "('Out of pocket', '自費')": [
-    [
-      "I paid the whole procedure out of pocket since insurance didn't cover it.",
-      "因為保險不理賠，我只好自費負擔整個療程。"
-    ],
     [
       "She decided to travel abroad out of pocket for the special research opportunity.",
       "她決定自費出國，參加那個特別的研究機會。"
@@ -449,6 +433,56 @@
     [
       "If you base decisions on that rumor, you're way off and will regret it.",
       "如果你根據那個謠言做決定，你完全錯了會後悔的。"
+    ]
+  ],
+  "('rainmaker', '搖錢樹')": [
+    [
+      "She's the rainmaker on our team, closing deals nobody else could manage.",
+      "她是我們團隊的搖錢樹，能完成其他人無法達成的交易。"
+    ],
+    [
+      "If you hire a rainmaker, expect clients and profits to increase almost immediately.",
+      "如果你聘請一位搖錢樹，客戶與利潤幾乎會立即增加。"
+    ]
+  ],
+  "('power trip', '耍官威')": [
+    [
+      "She accused the supervisor of going on a power trip during the meeting.",
+      "她指控主管在會議上耍官威。"
+    ],
+    [
+      "Employees quit because the CEO's power trip created a toxic, oppressive work environment.",
+      "員工因為執行長耍官威，造成有毒且壓迫的工作環境而離職。"
+    ]
+  ],
+  "('PDA (public display of affection)', '放閃')": [
+    [
+      "I don't mind small PDA, but full-on public kissing makes me awkward sometimes.",
+      "我不介意小小放閃，但當眾熱吻會讓我有點尷尬。"
+    ],
+    [
+      "After a few drinks, couples tend to escalate PDA and annoy everyone nearby.",
+      "喝了幾杯後，情侶常常放閃升級，惹得周圍的人很不爽。"
+    ]
+  ],
+  "('talk back', '頂嘴')": [
+    [
+      "Don't let him talk back to his elders during the family dinner tonight.",
+      "不要讓他在家庭聚餐時跟長輩頂嘴。"
+    ],
+    [
+      "Kids who talk back to coaches usually learn respect the hard way pretty quickly.",
+      "常對教練頂嘴的孩子通常很快就會被教訓並學會尊重。"
+    ]
+  ],
+  "('give a hickey', '種草莓')": [
+    [
+      "After they joked around, he impulsively decided to give a hickey that night.",
+      "閒聊後，他一時衝動決定當晚在她脖子上種草莓。"
+    ],
+    [
+      "Don't let him give a hickey before the interview; it'll be obvious on camera.",
+      "別讓他在面試前種草莓；鏡頭上會很明顯。"
     ]
   ]
 }
