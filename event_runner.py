@@ -3,6 +3,7 @@ import json
 import argparse
 import hashlib
 import numpy as np
+import subprocess
 from typing import Dict, Any, Tuple, Optional, List, Callable
 from pathlib import Path
 
@@ -25,8 +26,7 @@ class VideoGenerationError(Exception):
 
 class VideoGenerator:
     """
-    Comprehensive video generation class that encapsulates
-    all video creation logic with hash-based caching.
+    Comprehensive video generation class with per-clip caching.
     """
     def __init__(self, base_path: str):
         """
@@ -36,84 +36,33 @@ class VideoGenerator:
             base_path (str): Base directory for project assets
         """
         self.base_path = base_path
+        self.cache_dir = os.path.join(base_path, ".clip_cache")
+        os.makedirs(self.cache_dir, exist_ok=True)
+
         self.clip_builders: Dict[str, Callable] = {
             "image": self._build_image_clip,
             "text": self._build_text_clip,
             "video": self._build_video_clip
         }
 
-    def _calculate_project_hash(self, json_path: str) -> str:
+    def _calculate_clip_hash(self, event: Dict[str, Any]) -> str:
         """
-        Calculate hash of clips.json file.
+        Calculate hash for a single clip configuration.
 
         Args:
-            json_path (str): Path to clips.json file
+            event (Dict[str, Any]): Clip configuration
 
         Returns:
-            str: MD5 hash of the clips.json file
+            str: MD5 hash of the clip configuration
         """
-        try:
-            hasher = hashlib.md5()
-            with open(json_path, 'rb') as f:
-                hasher.update(f.read())
-            return hasher.hexdigest()
-        except FileNotFoundError:
-            return ""
+        # Create a copy without 'start' field since timing doesn't affect content
+        clip_data = {k: v for k, v in event.items() if k != 'start'}
+        clip_json = json.dumps(clip_data, sort_keys=True)
+        return hashlib.md5(clip_json.encode()).hexdigest()
 
-    def _get_cache_file_path(self) -> str:
-        """Get path to cache file."""
-        return os.path.join(self.base_path, '.video_cache.json')
-
-    def _load_cache_data(self) -> Dict[str, Any]:
-        """Load cache data from file."""
-        cache_file = self._get_cache_file_path()
-        try:
-            with open(cache_file, 'r') as f:
-                return json.load(f)
-        except (FileNotFoundError, json.JSONDecodeError):
-            return {}
-
-    def _save_cache_data(self, project_hash: str, output_path: str):
-        """Save cache data to file."""
-        cache_file = self._get_cache_file_path()
-        cache_data = {
-            'project_hash': project_hash,
-            'output_path': output_path
-        }
-        with open(cache_file, 'w') as f:
-            json.dump(cache_data, f, indent=2)
-
-    def _should_skip_generation(self, json_path: str, args) -> Tuple[bool, Optional[str]]:
-        """
-        Determine if video generation should be skipped.
-
-        Args:
-            json_path (str): Path to clips.json
-            args: Command line arguments
-
-        Returns:
-            Tuple[bool, Optional[str]]: (should_skip, existing_output_path)
-        """
-        if getattr(args, 'force', False):
-            return False, None
-
-        # Calculate current project hash
-        current_hash = self._calculate_project_hash(json_path)
-        if not current_hash:
-            return False, None
-
-        # Load cache data
-        cache_data = self._load_cache_data()
-        cached_hash = cache_data.get('project_hash')
-        cached_output = cache_data.get('output_path')
-
-        # Check if hashes match and output file exists
-        if (current_hash == cached_hash and
-            cached_output and
-            os.path.exists(cached_output)):
-            return True, cached_output
-
-        return False, None
+    def _get_clip_cache_path(self, clip_index: int, clip_hash: str) -> str:
+        """Get path for cached clip."""
+        return os.path.join(self.cache_dir, f"clip_{clip_index:03d}_{clip_hash}.mp4")
 
     def _resolve_path(self, filename: str) -> str:
         """
@@ -162,7 +111,7 @@ class VideoGenerator:
             audio_clip = audio_clip.subclipped(0, duration)
 
         # Add pregap (silence before)
-        if  pregap > 0:
+        if pregap > 0:
             silence_before = AudioClip(lambda t: 0, duration=pregap)
             audio_clip = concatenate_audioclips([silence_before, audio_clip])
 
@@ -231,8 +180,8 @@ class VideoGenerator:
         if audio_clip:
             clip = clip.with_audio(audio_clip)
 
-        # Set start time
-        return clip.with_start(event["start"])
+        # Set start time to 0 for individual clip
+        return clip.with_start(0)
 
     def _build_text_clip(self, event: Dict[str, Any], size: Tuple[int, int]) -> ImageClip:
         """
@@ -302,7 +251,7 @@ class VideoGenerator:
         if audio_clip:
             clip = clip.with_audio(audio_clip)
 
-        clip = clip.with_start(event["start"]).with_duration(event["total_duration"])
+        clip = clip.with_start(0).with_duration(event["total_duration"])
 
         return clip
 
@@ -338,174 +287,372 @@ class VideoGenerator:
         if total_duration := event.get("total_duration"):
             clip = clip.subclipped(0, total_duration)
 
-        # Set start time
-        return clip.with_start(event["start"])
+        # Set start time to 0 for individual clip
+        return clip.with_start(0)
 
-    def generate_video(
+    def _generate_single_clip(
         self,
+        event: Dict[str, Any],
+        clip_index: int,
+        size: tuple,
+        fps: int
+    ) -> Optional[str]:
+        """Generate or retrieve cached MP4 for a single clip."""
+
+        # Check if clip has zero duration - skip it
+        duration = event.get("total_duration", 0)
+        if duration <= 0:
+            print(f"  Skipping clip #{clip_index} (zero duration)")
+            return None
+
+        # Calculate clip hash
+        clip_hash = self._calculate_clip_hash(event)
+        clip_path = self._get_clip_cache_path(clip_index, clip_hash)
+
+        # Return cached clip if exists
+        if os.path.exists(clip_path):
+            print(f"  Using cached clip #{clip_index}")
+            return clip_path
+
+        print(f"  Generating clip #{clip_index} ({event.get('type', 'unknown')})")
+
+        # Build clip using existing methods
+        builder = self.clip_builders.get(event["type"])
+        if not builder:
+            raise VideoGenerationError(f"Unsupported clip type: {event['type']}")
+
+        # Create clip with duration but start at 0 for individual file
+        clip = builder(event, size)
+
+        # Ensure clip has proper duration
+        clip = clip.with_start(0).with_duration(duration)
+
+        # Write individual clip
+        clip.write_videofile(
+            clip_path,
+            fps=fps,
+            codec="h264_videotoolbox",
+            audio_codec="aac",
+            logger=None  # Suppress moviepy progress bars for cleaner output
+        )
+
+        # Clean up old cached versions of this clip index
+        self._cleanup_old_clip_versions(clip_index, clip_hash)
+
+        return clip_path
+
+    def _cleanup_old_clip_versions(self, clip_index: int, current_hash: str):
+        """Remove old cached versions of a clip."""
+        pattern = f"clip_{clip_index:03d}_"
+        for filename in os.listdir(self.cache_dir):
+            if filename.startswith(pattern) and current_hash not in filename:
+                old_file = os.path.join(self.cache_dir, filename)
+                try:
+                    os.remove(old_file)
+                    print(f"  Removed old cache: {filename}")
+                except OSError:
+                    pass
+
+    def _concat_clips_ffmpeg(self, clip_paths: List[str], output_path: str):
+        """Concatenate clips using FFmpeg (fast, no re-encoding)."""
+
+        # Handle empty clip list
+        if not clip_paths:
+            raise VideoGenerationError("No clips to concatenate (all clips may have zero duration)")
+
+        # Create concat file
+        concat_file = os.path.join(self.cache_dir, "concat_list.txt")
+        with open(concat_file, 'w') as f:
+            for path in clip_paths:
+                # FFmpeg needs absolute paths or paths relative to concat file
+                abs_path = os.path.abspath(path)
+                f.write(f"file '{abs_path}'\n")
+
+        # Use FFmpeg concat demuxer
+        cmd = [
+            'ffmpeg', '-y',
+            '-f', 'concat',
+            '-safe', '0',
+            '-i', concat_file,
+            '-c', 'copy',  # Copy streams without re-encoding!
+            output_path
+        ]
+
+        print("\nMerging clips...")
+        result = subprocess.run(cmd, capture_output=True, text=True)
+
+        if result.returncode != 0:
+            raise VideoGenerationError(f"FFmpeg concat failed: {result.stderr}")
+
+        print(f"Merged {len(clip_paths)} clips successfully")
+
+    def _add_bgm_to_merged_video(
+        self,
+        video_path: str,
         data: Dict[str, Any],
-        args
+        events: List[Dict[str, Any]]
     ) -> str:
+        """Add background music to already-merged video."""
+
+        bgm_data = data.get("bgm")
+        if not isinstance(bgm_data, dict):
+            return video_path
+
+        bgm_file = bgm_data.get("file")
+        if not bgm_file:
+            return video_path
+
+        print("\nAdding background music...")
+
+        # Find BGM file
+        bgm_paths = [
+            os.path.join(self.base_path, "audio", bgm_file),
+            os.path.join("assets", "audio", bgm_file),
+            os.path.join("assets", bgm_file)
+        ]
+        bgm_path = next((p for p in bgm_paths if os.path.exists(p)), None)
+
+        if not bgm_path:
+            raise VideoGenerationError(f"BGM file not found: {bgm_file}")
+
+        # Calculate BGM start time
+        bgm_start = 0.0
+        if "start_clip" in bgm_data:
+            clip_index = int(bgm_data["start_clip"])
+            if clip_index < len(events):
+                bgm_start = events[clip_index].get("start", 0.0)
+        elif "start_time" in bgm_data:
+            bgm_start = float(bgm_data["start_time"])
+
+        bgm_volume = bgm_data.get("volume", 1.0)
+
+        # Output path for video with BGM
+        output_with_bgm = video_path.replace(".mp4", "_with_bgm.mp4")
+
+        # FFmpeg command to mix audio
+        cmd = [
+            'ffmpeg', '-y',
+            '-i', video_path,
+            '-i', bgm_path,
+            '-filter_complex',
+            f'[1:a]adelay={int(bgm_start*1000)}|{int(bgm_start*1000)},volume={bgm_volume}[bgm];'
+            f'[0:a][bgm]amix=inputs=2:duration=first[aout]',
+            '-map', '0:v',
+            '-map', '[aout]',
+            '-c:v', 'copy',  # Copy video stream
+            '-c:a', 'aac',
+            output_with_bgm
+        ]
+
+        result = subprocess.run(cmd, capture_output=True, text=True)
+
+        if result.returncode != 0:
+            raise VideoGenerationError(f"BGM addition failed: {result.stderr}")
+
+        # Replace original with BGM version
+        os.replace(output_with_bgm, video_path)
+        print("Background music added")
+
+        return video_path
+
+    def generate_video(self, data: Dict[str, Any], args) -> str:
         """
-        Generate video from configuration data.
+        Generate video with per-clip caching.
 
         Args:
             data (Dict[str, Any]): Video configuration
-            args.preview_start (Optional[float]): Start time for preview
-            args.preview_duration (Optional[float]): Duration of preview
-            args.audio_only (Optional[bool]): generate audio file only
-            args.output_folder (Optional[str]): output softlink path
+            args: Command line arguments
 
         Returns:
             str: Path to generated video file
         """
+        # Clear cache if force flag is set
+        if args.force and os.path.exists(self.cache_dir):
+            import shutil
+            shutil.rmtree(self.cache_dir)
+            os.makedirs(self.cache_dir)
+            print("Cleared clip cache (--force)\n")
+
         # Validate video size configuration
         if "size" not in data:
             raise VideoGenerationError("Missing required 'size' field in JSON")
 
         # Extract video configuration
         size = tuple(data["size"])
-        fps = data.get("fps", 24)  # Default to 24 fps if not specified
-        events = data.get("events", data)  # Fallback for backward compatibility
+        fps = data.get("fps", 24)
+        events = data.get("events", data)
 
-        # Build clips
-        clips = []
+        print(f"\nGenerating video with {len(events)} clips\n")
+
+        # Generate or retrieve each clip
+        clip_paths = []
         for i, event in enumerate(events):
             try:
-                print(f"Processing clip #{i} ({event.get('type', 'unknown')})")
-                # Build clip using appropriate method
-                builder = self.clip_builders.get(event["type"])
-                if not builder:
-                    print(f"Unsupported clip type: {event['type']} for clip #{i}")
-                    continue
-
-                clip = builder(event, size)
-                clips.append(clip)
+                clip_path = self._generate_single_clip(event, i, size, fps)
+                # Only add non-None paths (skip zero-duration clips)
+                if clip_path:
+                    clip_paths.append(clip_path)
             except Exception as e:
-                print(f"Error processing clip #{i} : {e}")
+                print(f"Error processing clip #{i}: {e}")
                 print(f"Clip details: {event}")
-                raise # Rethrows the original exception
+                raise
 
-        for i in range(1, len(clips)):
-            if clips[i].start < clips[i-1].end:
-                print(f"Warning: Clip {i} overlaps with previous clip.")
-
-        # Create composite video from clips
-        video = CompositeVideoClip(clips, size=size)
-
-        # Add background music if specified
-        video = self._add_background_music(video, data)
-
+        # Handle preview mode
         preview_start = args.preview_start
         preview_duration = args.preview_duration
         audio_only = args.audio_only
         output_ln_folder = Path(args.output_folder)
 
-        # Handle video preview if specified
         if preview_start is not None and preview_duration is not None:
-            video = video.subclipped(preview_start, preview_start + preview_duration)
+            # For preview, load clips and use moviepy
+            print("\nGenerating preview...")
+            return self._generate_preview(clip_paths, events, size, fps,
+                                         preview_start, preview_duration, data, args)
 
+        # Concatenate all clips
         if audio_only:
-            output_path = os.path.join(self.base_path, "output_audio.mp3")
-            video.audio.write_audiofile(output_path, codec="mp3")
-            print(f"Audio generated successfully: {output_path}")
+            # Extract audio from clips and merge
+            output_path = self._generate_audio_only(clip_paths, args)
+
+            # Add BGM if specified
+            if "bgm" in data:
+                output_path = self._add_bgm_to_audio(output_path, data, events)
+
+            print(f"\nAudio generated: {output_path}")
+            return output_path
         else:
             output_path = os.path.join(self.base_path, "output.mp4")
-            video.write_videofile(output_path, fps=fps, codec="libx264", audio_codec="aac")
+            self._concat_clips_ffmpeg(clip_paths, output_path)
 
+            # Add BGM if specified
+            if "bgm" in data:
+                output_path = self._add_bgm_to_merged_video(output_path, data, events)
+
+            # Create symlink
             try:
                 output_ln_folder.mkdir(parents=True, exist_ok=True)
             except Exception as e:
                 raise RuntimeError(f"Error creating output directory {output_ln_folder}: {str(e)}")
 
             target = Path(output_path).resolve()
-            link = output_ln_folder / (os.path.basename(self.base_path)+'.mp4')
+            link = output_ln_folder / (os.path.basename(self.base_path) + '.mp4')
             create_symlink(target, link)
-            print(f"Video generated successfully: {output_path}")
+
+            print(f"\nVideo generated: {output_path}")
+            return output_path
+
+    def _generate_preview(self, clip_paths, events, size, fps,
+                         preview_start, preview_duration, data, args):
+        """Generate preview using moviepy (for subclipping)."""
+        # Filter out zero-duration events and their corresponding paths
+        valid_clips = [(p, e) for p, e in zip(clip_paths, events) if p is not None]
+
+        if not valid_clips:
+            raise VideoGenerationError("No valid clips for preview")
+
+        clips = [VideoFileClip(p).with_start(e["start"])
+                for p, e in valid_clips]
+        video = CompositeVideoClip(clips, size=size)
+        video = video.subclipped(preview_start, preview_start + preview_duration)
+
+        output_path = os.path.join(self.base_path, "output.mp4")
+        video.write_videofile(output_path, fps=fps, codec="h264_videotoolbox", audio_codec="aac")
         return output_path
 
-    def _add_background_music(
+    def _generate_audio_only(self, clip_paths, args):
+        """Extract and merge audio from clips."""
+        # Filter out None paths (zero-duration clips)
+        valid_paths = [p for p in clip_paths if p is not None]
+
+        if not valid_paths:
+            raise VideoGenerationError("No valid clips with audio to merge")
+
+        audio_list = os.path.join(self.cache_dir, "audio_list.txt")
+        with open(audio_list, 'w') as f:
+            for path in valid_paths:
+                f.write(f"file '{os.path.abspath(path)}'\n")
+
+        output_path = os.path.join(self.base_path, "output_audio.mp3")
+        cmd = [
+            'ffmpeg', '-y',
+            '-f', 'concat',
+            '-safe', '0',
+            '-i', audio_list,
+            '-vn',  # No video
+            '-c:a', 'mp3',
+            output_path
+        ]
+
+        subprocess.run(cmd, check=True)
+        return output_path
+
+    def _add_bgm_to_audio(
         self,
-        video: CompositeVideoClip,
-        data: Dict[str, Any]
-    ) -> CompositeVideoClip:
-        """
-        Add background music to video.
+        audio_path: str,
+        data: Dict[str, Any],
+        events: List[Dict[str, Any]]
+    ) -> str:
+        """Add background music to audio-only output."""
 
-        Args:
-            video (CompositeVideoClip): Original video
-            data (Dict[str, Any]): Configuration data
-
-        Returns:
-            CompositeVideoClip: Video with background music
-        """
         bgm_data = data.get("bgm")
         if not isinstance(bgm_data, dict):
-            return video
+            return audio_path
 
         bgm_file = bgm_data.get("file")
         if not bgm_file:
-            raise VideoGenerationError("file attribute is missing in bgm")
+            return audio_path
 
-        try:
-            # Try loading from audio folder
-            bgm_paths = [
-                os.path.join(self.base_path, "audio", bgm_file),
-                os.path.join("assets", "audio", bgm_file),
-                os.path.join("assets", bgm_file)
-            ]
+        print("\nAdding background music to audio...")
 
-            # Find first existing path
-            bgm_audio_path = next((path for path in bgm_paths if os.path.exists(path)), None)
+        # Find BGM file
+        bgm_paths = [
+            os.path.join(self.base_path, "audio", bgm_file),
+            os.path.join("assets", "audio", bgm_file),
+            os.path.join("assets", bgm_file)
+        ]
+        bgm_path = next((p for p in bgm_paths if os.path.exists(p)), None)
 
-            if not bgm_audio_path:
-                raise FileNotFoundError(f"Background music file not found: {bgm_file}")
+        if not bgm_path:
+            raise VideoGenerationError(f"BGM file not found: {bgm_file}")
 
-            # Load and process background music
-            bgm_audio = AudioFileClip(bgm_audio_path)
-            bgm_volume = bgm_data.get("volume", 1.0)
+        # Calculate BGM start time
+        bgm_start = 0.0
+        if "start_clip" in bgm_data:
+            clip_index = int(bgm_data["start_clip"])
+            if clip_index < len(events):
+                bgm_start = events[clip_index].get("start", 0.0)
+        elif "start_time" in bgm_data:
+            bgm_start = float(bgm_data["start_time"])
 
-            # Determine start time - error if both fields are present
-            has_start_time = "start_time" in bgm_data
-            has_start_clip = "start_clip" in bgm_data
+        bgm_volume = bgm_data.get("volume", 1.0)
 
-            if has_start_time and has_start_clip:
-                raise VideoGenerationError("Cannot specify both start_time and start_clip in bgm configuration")
-            elif has_start_clip:
-                # Use clip index to find start time
-                clip_index = int(bgm_data["start_clip"])
-                print(f"bgm start from clip {clip_index}")
-                if hasattr(video, 'clips') and clip_index < len(video.clips):
-                    bgm_start = video.clips[clip_index].start
-                else:
-                    raise VideoGenerationError(f"Clip index {clip_index} not found in video")
-            elif has_start_time:
-                # Use time directly
-                bgm_start = float(bgm_data["start_time"])
-            else:
-                # Default to start of video
-                bgm_start = 0.0
+        # Output path for audio with BGM
+        output_with_bgm = audio_path.replace(".mp3", "_with_bgm.mp3")
 
-            print(f"bgm start from {bgm_start} sec")
+        # FFmpeg command to mix audio
+        cmd = [
+            'ffmpeg', '-y',
+            '-i', audio_path,
+            '-i', bgm_path,
+            '-filter_complex',
+            f'[1:a]adelay={int(bgm_start*1000)}|{int(bgm_start*1000)},volume={bgm_volume}[bgm];'
+            f'[0:a][bgm]amix=inputs=2:duration=first[aout]',
+            '-map', '[aout]',
+            '-c:a', 'mp3',
+            output_with_bgm
+        ]
 
-            # Apply volume and start time
-            bgm_audio = bgm_audio.with_effects([afx.MultiplyVolume(bgm_volume)]).with_start(bgm_start)
+        result = subprocess.run(cmd, capture_output=True, text=True)
 
-            # Ensure background music doesn't exceed video duration
-            max_bgm_duration = max(0, video.duration - bgm_start)
-            if max_bgm_duration <= 0:
-                return video  # No room for background music
+        if result.returncode != 0:
+            raise VideoGenerationError(f"BGM addition to audio failed: {result.stderr}")
 
-            bgm_audio = bgm_audio.subclipped(0, min(bgm_audio.duration, max_bgm_duration))
+        # Replace original with BGM version
+        os.replace(output_with_bgm, audio_path)
+        print("Background music added to audio")
 
-            # Add background music to video
-            if video.audio:
-                return video.with_audio(CompositeAudioClip([video.audio, bgm_audio]))
-            else:
-                return video.with_audio(bgm_audio)
+        return audio_path
 
-        except Exception as e:
-            raise VideoGenerationError(f"Failed to add background music: {e}")
 
 def create_symlink(target, link_name):
     try:
@@ -549,31 +696,6 @@ def generate_video_from_json(args) -> str:
     json_file = "clips.json"
     json_path = os.path.join(full_path, json_file)
 
-    # Create video generator
-    generator = VideoGenerator(full_path)
-
-    # Check if generation should be skipped
-    should_skip, existing_output = generator._should_skip_generation(json_path, args)
-
-    if should_skip:
-        print("Project hasn't changed since last generation. Using cached output.")
-        print(f"Use --force to regenerate anyway.")
-        print(f"Input:  {json_path}")
-        print(f"Output: {existing_output} (existing)")
-
-        # Still create symlink if needed
-        if not args.audio_only:
-            output_ln_folder = Path(args.output_folder)
-            try:
-                output_ln_folder.mkdir(parents=True, exist_ok=True)
-                target = Path(existing_output).resolve()
-                link = output_ln_folder / (os.path.basename(full_path) + '.mp4')
-                create_symlink(target, link)
-            except Exception as e:
-                print(f"Warning: Could not create symlink: {e}")
-
-        return existing_output
-
     # Load JSON configuration
     try:
         with open(json_path, 'r', encoding='utf-8') as f:
@@ -582,12 +704,11 @@ def generate_video_from_json(args) -> str:
         print(f"Error loading JSON: {e}")
         raise VideoGenerationError(f"Failed to load configuration: {e}")
 
+    # Create video generator
+    generator = VideoGenerator(full_path)
+
     # Generate video
     output_path = generator.generate_video(data, args)
-
-    # Save cache data
-    project_hash = generator._calculate_project_hash(json_path)
-    generator._save_cache_data(project_hash, output_path)
 
     return output_path
 
@@ -626,7 +747,7 @@ def parse_arguments():
     parser.add_argument(
         "--force",
         action="store_true",
-        help="Force regeneration even if project hasn't changed"
+        help="Force regeneration of all clips even if cached"
     )
     return parser.parse_args()
 
