@@ -19,9 +19,7 @@ def get_sentences_short(english_text):
         response = client.responses.parse(
             model="gpt-5-mini-2025-08-07",
             input=[
-                {"role": "system", "content": f"""User will give a English word and its Chinese translation
-                                                Use the English word in given Chinese meaning to make 3 colloquial, and natural sentences which are no more than 8 words for the first two;
-                                                no more than 16 words for the 3rd and 4th; no more than 24 words for the last 2
+                {"role": "system", "content": f"""User will give a English word or sentence or idiom, make 3 colloquial and natural sentences which are no more than 8 words.
                                                 Also give me Traditional Chinese translation for each sentence.
                                                 return two arrays."""},
                 {"role": "user", "content": f"english:{english_text}"}
@@ -47,8 +45,7 @@ def get_sentences_medium(english_text):
         response = client.responses.parse(
             model="gpt-5-mini-2025-08-07",
             input=[
-                {"role": "system", "content": f"""User will give a English word and its Chinese translation
-                                                Use the English word in given Chinese meaning to make 3 colloquial, and natural sentences which are between 6 to 12 words
+                {"role": "system", "content": f"""User will give a English word and its Chinese translation, make 3 colloquial and natural sentences which are between 6 to 12 words
                                                 Also give me Traditional Chinese translation for each sentence.
                                                 return two arrays."""},
                 {"role": "user", "content": f"english:{english_text}"}
@@ -74,8 +71,7 @@ def get_sentences_long(english_text):
         response = client.responses.parse(
             model="gpt-5-mini-2025-08-07",
             input=[
-                {"role": "system", "content": f"""User will give a English word and its Chinese translation
-                                                Use the English word in given Chinese meaning to make 3 colloquial, and natural sentences which are between 11 and 16 words
+                {"role": "system", "content": f"""User will give a English word and its Chinese translation, make 3 colloquial and natural sentences which are between 12 and 18 words
                                                 Also give me Traditional Chinese translation for each sentence.
                                                 return two arrays."""},
                 {"role": "user", "content": f"english:{english_text}"}
@@ -100,9 +96,8 @@ def get_explain(english_text):
         response = client.responses.parse(
             model="gpt-5-mini-2025-08-07",
             input=[
-                {"role": "system", "content": f"""given a English word and its Chinese translation
-                                                explain the English word in Taiwanese traditional chinese in a colloquial, and natural way.
-                                                Give me 3 explainations. Don't give me example sentence. just explain in 10 to 30 words.
+                {"role": "system", "content": f"""given English, explain in Taiwan traditional chinese in a colloquial, and natural way.
+                                                Give me 3 explainations. Don't give me example sentence.
                                                 return a array"""},
                 {"role": "user", "content": f"English:{english_text}"}
             ],

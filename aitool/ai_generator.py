@@ -20,8 +20,7 @@ def get_sentences_short(english_text, chinese_text):
             model="gpt-5-mini-2025-08-07",
             input=[
                 {"role": "system", "content": f"""User will give a English word and its Chinese translation
-                                                Use the English word in given Chinese meaning to make 3 colloquial, and natural sentences which are no more than 8 words for the first two;
-                                                no more than 16 words for the 3rd and 4th; no more than 24 words for the last 2
+                                                Use the English word in given Chinese meaning to make 3 colloquial, and natural sentences which are no more than 8 words
                                                 Also give me Traditional Chinese translation for each sentence, better use {chinese_text} in translation.
                                                 return two arrays."""},
                 {"role": "user", "content": f"english:{english_text}; chinese:{chinese_text}"}
