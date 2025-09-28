@@ -9,7 +9,8 @@ class AppendCenterModeStrategy(TextSceneStrategy):
         valign: str,
         halign: str,
         v_padding: int,
-        h_padding: int,
+        l_padding: int,
+        r_padding: int,
         para_spacing: int,
         line_spacing: int
     ) -> List[List[Dict[str, Any]]]:
@@ -21,7 +22,8 @@ class AppendCenterModeStrategy(TextSceneStrategy):
             valign (str): Vertical alignment
             halign (str): Horizontal alignment
             v_padding (int): Vertical padding
-            h_padding (int): Horizontal padding
+            l_padding (int): Left padding
+            r_padding (int): Right padding
             para_spacing (int): Space between paragraphs
             line_spacing (int): Space between lines
         Returns:
@@ -33,7 +35,7 @@ class AppendCenterModeStrategy(TextSceneStrategy):
 
         # First pass: handle wrapping, calculate heights and prepare positioning information
         positioned_calculations = [
-            self._prepare_text_entry(entry, halign, screen_width, h_padding)
+            self._prepare_text_entry(entry, halign, screen_width, l_padding, r_padding)
             for entry in text_entries
         ]
 

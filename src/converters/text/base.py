@@ -18,7 +18,8 @@ class TextSceneStrategy(ABC):
         valign: str,
         halign: str,
         v_padding: int,
-        h_padding: int,
+        l_padding: int,
+        r_padding: int,
         para_spacing: int,
         line_spacing: int
     ) -> List[Dict[str, Any]]:
@@ -46,7 +47,8 @@ class TextSceneStrategy(ABC):
         font_path: str,
         screen_width: int,
         halign: str,
-        padding: int,
+        l_padding: int,
+        r_padding: int,
         wrap: bool = True,
         min_font_size: int = 1
     ) -> tuple[int, int, int, str]:
@@ -75,7 +77,7 @@ class TextSceneStrategy(ABC):
         if not font_path:
             raise ValueError("font_path is required. Please provide a valid path to a font file.")
 
-        available_width = screen_width - 2 * padding
+        available_width = screen_width - r_padding - l_padding
         current_font_size = max(font_size, min_font_size)
 
         # Create dummy image for measurement (move outside loop)
@@ -114,9 +116,9 @@ class TextSceneStrategy(ABC):
 
         # Calculate position based on alignment
         if halign == 'left':
-            x_position = padding
+            x_position = l_padding
         elif halign == 'right':
-            x_position = screen_width - padding - text_width
+            x_position = screen_width - r_padding - text_width
         else:  # center
             x_position = (screen_width - text_width) // 2
 
@@ -322,7 +324,8 @@ class TextSceneStrategy(ABC):
         entry: Dict[str, Any],
         halign: str,
         screen_width: int,
-        h_padding: Union[int, float]
+        l_padding: int,
+        r_padding: int,
     ) -> Dict[str, Union[Dict[str, Any], int, float, str]]:
         """
         Prepare a single text entry with positioning calculations.
@@ -338,7 +341,8 @@ class TextSceneStrategy(ABC):
                 - 'halign' (str, optional): Horizontal alignment override for this entry
             halign (str): Default horizontal alignment ('left', 'center', 'right')
             screen_width (int): Available screen width in pixels for positioning
-            h_padding (Union[int, float]): Horizontal padding to apply during calculations
+            l_padding (int): Horizontal left padding to apply during calculations
+            r_padding (int): Horizontal right padding to apply during calculations
 
         Returns:
             Dict[str, Union[Dict[str, Any], int, float, str]]: Dictionary containing:
@@ -367,7 +371,8 @@ class TextSceneStrategy(ABC):
             font['file'],
             screen_width,
             entry_halign,
-            h_padding
+            entry.get('l_padding', l_padding),
+            entry.get('r_padding', r_padding)
         )
 
         return {

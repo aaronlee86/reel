@@ -9,7 +9,8 @@ class AllModeStrategy(TextSceneStrategy):
         valign: str,
         halign: str,
         v_padding: int,
-        h_padding: int,
+        l_padding: int,
+        r_padding: int,
         para_spacing: int,
         line_spacing: int
     ) -> List[Dict[str, Any]]:
@@ -34,7 +35,7 @@ class AllModeStrategy(TextSceneStrategy):
 
         # First pass: handle wrapping, calculate heights and prepare positioning information
         positioned_calculations = [
-            self._prepare_text_entry(entry, halign, screen_width, h_padding)
+            self._prepare_text_entry(entry, halign, screen_width, l_padding, r_padding)
             for entry in text_entries
         ]
 

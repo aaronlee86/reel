@@ -8,6 +8,7 @@ import csv
 import json
 import os
 import sys
+import re
 from typing import Dict, List, Any, Tuple
 
 
@@ -47,7 +48,7 @@ class Script2Scene:
     REQUIRED_CSV_COLUMNS = {'text', 'mode'}
     VALID_MODES = {
         'append_center', 'append_top', 'all', 'all_with_highlight',
-        'video', 'image'
+        'video', 'image', 'free'
     }
     TEXT_MODES = {'append_center', 'append_top', 'all', 'all_with_highlight'}
     VALID_VALIGN = {'top', 'center', 'bottom'}
@@ -102,19 +103,37 @@ class Script2Scene:
 
         if 'v_padding' not in self.config:
             raise Script2SceneError("Config missing required field: v_padding")
-        if 'h_padding' not in self.config:
-            raise Script2SceneError("Config missing required field: h_padding")
 
         try:
             int(self.config['v_padding'])
         except (ValueError, TypeError):
             raise Script2SceneError(f"Invalid v_padding value in config: {self.config['v_padding']}. Must be an integer")
 
-        try:
-            int(self.config['h_padding'])
-        except (ValueError, TypeError):
-            raise Script2SceneError(f"Invalid h_padding value in config: {self.config['h_padding']}. Must be an integer")
+        # Validate padding: either h_padding OR both l_padding and r_padding
+        has_h = 'h_padding' in self.config
+        has_lr = 'l_padding' in self.config and 'r_padding' in self.config
 
+        if has_h and has_lr:
+            raise Script2SceneError("Config cannot contain both h_padding and l_padding/r_padding. Choose one style.")
+
+        if not has_h and not has_lr:
+            raise Script2SceneError("Config must contain either h_padding OR both l_padding and r_padding.")
+
+        if has_h:
+            try:
+                self.config['h_padding'] = int(self.config['h_padding'])
+            except (ValueError, TypeError):
+                raise Script2SceneError(f"Invalid h_padding value: {self.config['h_padding']} (must be integer)")
+
+            # Derive l/r from h_padding
+            self.config['l_padding'] = self.config['r_padding'] = self.config['h_padding']
+
+        elif has_lr:
+            try:
+                self.config['l_padding'] = int(self.config['l_padding'])
+                self.config['r_padding'] = int(self.config['r_padding'])
+            except (ValueError, TypeError):
+                raise Script2SceneError("Invalid l_padding/r_padding value (must be integers)")
 
     def validate_highlight_mode(self, first_row: Dict[str, str]) -> None:
         """
@@ -182,6 +201,67 @@ class Script2Scene:
             return 'bgcolor', background
         else:
             return 'background', background
+
+    def parse_img_tag(self, text: str) -> tuple:
+        """
+        Parse <img> tag from text.
+
+        Args:
+            text: Text that may contain <img w='100' h='200'>filename</img>
+
+        Returns:
+            tuple: (has_img, img_data, remaining_text) where img_data is dict or None
+        """
+        # Pattern that supports w and h in any order, both optional
+        img_pattern = r"<img\s*([^>]*)>([^<]+)</img>"
+        match = re.search(img_pattern, text)
+
+        if match:
+            attrs_str = match.group(1)
+            filename = match.group(2).strip()
+
+            img_data = {'file': filename}
+
+            # Extract width if present
+            width_match = re.search(r"w=['\"](\d+(?:\.\d+)?)['\"]", attrs_str)
+            if width_match:
+                img_data['width'] = int(width_match.group(1))
+
+            # Extract height if present
+            height_match = re.search(r"h=['\"](\d+(?:\.\d+)?)['\"]", attrs_str)
+            if height_match:
+                img_data['height'] = int(height_match.group(1))
+
+            # Remove the img tag from text
+            remaining_text = re.sub(img_pattern, '', text).strip()
+
+            return True, img_data, remaining_text
+
+        return False, None, text
+
+    def parse_position(self, position_str: str) -> tuple:
+        """
+        Parse position string into x,y coordinates.
+
+        Args:
+            position_str: Position string in format "x,y"
+
+        Returns:
+            tuple: (x, y) as floats
+        """
+        if not position_str:
+            raise Script2SceneError("Position is required for free scenes")
+
+        try:
+            parts = position_str.split(',')
+            if len(parts) != 2:
+                raise ValueError("Position must be in format 'x,y'")
+            x = int(parts[0].strip())
+            y = int(parts[1].strip())
+            return x, y
+        except ValueError as e:
+            raise Script2SceneError(f"Invalid position format '{position_str}': {e}")
+
 
     def build_font_config(self, row: Dict[str, str], inherit_from: Dict[str, Any] = None) -> Dict[str, Any]:
         """
@@ -348,16 +428,9 @@ class Script2Scene:
         elif 'v_padding' in self.config:
             scene['v_padding'] = self.config['v_padding']
 
-        # Add h_padding handling
-        # Priority: Row-specific h_padding > Config h_padding (no default fallback)
-        h_padding = first_row.get('h_padding', '').strip()
-        if h_padding:
-            try:
-                scene['h_padding'] = int(h_padding)
-            except ValueError:
-                raise Script2SceneError(f"Invalid h_padding value: {h_padding}. Must be an integer")
-        elif 'h_padding' in self.config:
-            scene['h_padding'] = self.config['h_padding']
+        # Priority: Row-specific l_padding > Config l_padding (no default fallback)
+        scene['l_padding'] = int(first_row.get('l_padding', self.config['l_padding']))
+        scene['r_padding'] = int(first_row.get('r_padding', self.config['r_padding']))
 
         # Add valign handling
         # Priority: Row-specific valign > Config valign (no default fallback)
@@ -523,6 +596,189 @@ class Script2Scene:
 
         return scene
 
+    def create_free_scene(self, rows: List[Dict[str, str]]) -> Dict[str, Any]:
+        """Create a free scene from grouped rows"""
+        first_row = rows[0]
+
+        # Parse background
+        bg_type, bg_value = self.parse_background(first_row.get('background', ''))
+        scene = {
+            'type': 'text',
+            'mode': 'free',
+            'text': [],
+            'image': []
+        }
+
+        if bg_type and bg_value:
+            scene[bg_type] = bg_value
+
+        # Add para_spacing handling
+        # Priority: Row-specific para_spacing > Config para_spacing > Default
+        para_spacing = first_row.get('para_spacing', '').strip()
+        if para_spacing:
+            try:
+                scene['para_spacing'] = int(para_spacing)
+            except ValueError:
+                # If conversion fails, use config's line_spacing
+                raise Script2SceneError(f"Invalid para_spacing value: {para_spacing}. Must be an integer")
+        elif 'para_spacing' in self.config:
+            scene['para_spacing'] = self.config['para_spacing']
+
+        # Add v_padding handling
+        # Priority: Row-specific v_padding > Config v_padding (no default fallback)
+        v_padding = first_row.get('v_padding', '').strip()
+        if v_padding:
+            try:
+                scene['v_padding'] = int(v_padding)
+            except ValueError:
+                raise Script2SceneError(f"Invalid v_padding value: {v_padding}. Must be an integer")
+        elif 'v_padding' in self.config:
+            scene['v_padding'] = self.config['v_padding']
+
+        # Add line_spacing handling
+        # Priority: Row-specific line_spacing > Config line_spacing > Default
+        line_spacing = first_row.get('line_spacing', '').strip()
+        if line_spacing:
+            try:
+                scene['line_spacing'] = int(line_spacing)
+            except ValueError:
+                # If conversion fails, use config's line_spacing
+                raise Script2SceneError(f"Invalid line_spacing value: {line_spacing}. Must be an integer")
+        elif 'line_spacing' in self.config:
+            scene['line_spacing'] = self.config['line_spacing']
+
+        # Build scene-level font/TTS config from first row
+        scene_font_config = self.build_font_config(first_row)
+        scene_tts_configs = self.build_tts_config(first_row)
+
+        # Scene-level paddings
+        l_padding = first_row.get('l_padding', '').strip()
+        if l_padding:
+            try:
+                scene['l_padding'] = int(l_padding)
+            except ValueError:
+                # If conversion fails, use config's line_spacing
+                raise Script2SceneError(f"Invalid l_padding value: {l_padding}. Must be an integer")
+        elif 'l_padding' in self.config:
+            scene['l_padding'] = self.config['l_padding']
+
+        r_padding = first_row.get('r_padding', '').strip()
+        if r_padding:
+            try:
+                scene['r_padding'] = int(r_padding)
+            except ValueError:
+                # If conversion fails, use config's line_spacing
+                raise Script2SceneError(f"Invalid r_padding value: {r_padding}. Must be an integer")
+        elif 'r_padding' in self.config:
+            scene['r_padding'] = self.config['r_padding']
+
+        # Process each row
+        for i, row in enumerate(rows):
+            text_content = row.get('text', '').strip(" \r")
+            if not text_content:
+                continue
+
+            # Check if row contains image tag
+            has_img, img_data, remaining_text = self.parse_img_tag(text_content)
+
+            if has_img:
+                # Parse position (required for free scenes)
+                x, y = self.parse_position(row.get('position', ''))
+
+                # Add to image array
+                img_entry = {
+                    'file': img_data['file'],
+                    'x': x,
+                    'y': y
+                }
+
+                # Only add width/height if specified
+                if 'width' in img_data:
+                    img_entry['width'] = img_data['width']
+                if 'height' in img_data:
+                    img_entry['height'] = img_data['height']
+
+                scene['image'].append(img_entry)
+
+                # If there's remaining text after img tag, add it as text entry
+                if remaining_text:
+                    text_content = remaining_text
+                else:
+                    continue  # Skip text processing if only image
+
+            # Process text entry
+            if text_content or not has_img:
+                if i == 0:
+                    # First row uses scene-level config
+                    text_entry = {
+                        'text': text_content,
+                        'font': scene_font_config,
+                        'tts': scene_tts_configs
+                    }
+                else:
+                    # Subsequent rows inherit from scene config
+                    text_entry = {
+                        'text': text_content,
+                        'font': self.build_font_config(row, inherit_from=scene_font_config),
+                        'tts': self.build_tts_config(row, inherit_from=scene_tts_configs)
+                    }
+
+                # Add optional fields
+                if row.get('alignment', '').strip():
+                    text_entry['halign'] = row['alignment']
+
+                if row.get('dub', '').strip():
+                    text_entry['dub'] = row['dub']
+
+                # Add duration if available
+                if row.get('duration'):
+                    text_entry['duration'] = float(row['duration'])
+
+                # Add l_padding handling
+                if row.get('l_padding'):
+                    text_entry['l_padding'] = int(row['l_padding'])
+
+                # Add r_padding handling
+                if row.get('r_padding'):
+                    text_entry['r_padding'] = int(row['r_padding'])
+
+                # Only add line_spacing if it's not empty
+                if row.get('line_spacing', '').strip():
+                    try:
+                        text_entry['line_spacing'] = int(row['line_spacing'])
+                    except ValueError:
+                        # If conversion fails, use config's line_spacing
+                        raise Script2SceneError(f"Invalid line_spacing value: {line_spacing}. Must be an integer")
+
+                wrap = row.get('wrap', '').strip()
+                if wrap:
+                    text_entry['wrap'] = wrap.lower() in ('true', '1', 'y')
+                elif 'wrap' in self.config:
+                    text_entry['wrap'] = self.config['wrap']
+
+                if row.get('pregap'):
+                    try:
+                        text_entry['pregap'] = float(row['pregap'])
+                    except ValueError:
+                        raise Script2SceneError(f"Invalid pregap value: {row['pregap']}")
+
+                if row.get('postgap'):
+                    try:
+                        text_entry['postgap'] = float(row['postgap'])
+                    except ValueError:
+                        raise Script2SceneError(f"Invalid postgap value: {row['postgap']}")
+
+                scene['text'].append(text_entry)
+                scene['valign'] = 'top'
+
+        # Remove empty arrays
+        if not scene['text']:
+            del scene['text']
+        if not scene['image']:
+            del scene['image']
+
+        return scene
+
     def group_rows_by_mode(self, rows: List[Dict[str, str]]) -> List[Tuple[str, List[Dict[str, str]]]]:
         """Group consecutive rows by mode"""
         if not rows:
@@ -575,6 +831,8 @@ class Script2Scene:
                 scene = self.create_image_scene(group_rows)
             elif mode == 'video':
                 scene = self.create_video_scene(group_rows)
+            elif mode == 'free':
+                scene = self.create_free_scene(group_rows)
             else:
                 raise Script2SceneError(f"Unsupported mode: {mode}")
 

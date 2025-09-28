@@ -36,7 +36,8 @@ class TextSceneConverter(SceneConverter):
         valign = scene.get('valign', 'center')
         halign = scene.get('halign', 'center')
         v_padding = scene.get('v_padding')
-        h_padding = scene.get('h_padding')
+        l_padding = scene.get('l_padding')
+        r_padding = scene.get('r_padding')
         para_spacing = scene.get('para_spacing')
         lin_spacing = scene.get('line_spacing')
 
@@ -80,7 +81,8 @@ class TextSceneConverter(SceneConverter):
             valign=valign,
             halign=halign,
             v_padding=v_padding,
-            h_padding=h_padding,
+            l_padding=l_padding,
+            r_padding=r_padding,
             para_spacing=para_spacing,
             line_spacing=lin_spacing
         )

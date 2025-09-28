@@ -185,7 +185,7 @@ class VideoGenerator:
 
     def _build_text_clip(self, event: Dict[str, Any], size: Tuple[int, int]) -> ImageClip:
         """
-        Create a text clip.
+        Create a text clip with optional images.
 
         Args:
             event (Dict[str, Any]): Clip configuration
@@ -239,6 +239,53 @@ class VideoGenerator:
             size=size,
             background_image=background_image
         )
+
+        # Handle images if present in the event
+        if "image" in event and isinstance(event["image"], list):
+            from PIL import Image
+
+            for img_data in event["image"]:
+                # Get image file path
+                img_file = img_data.get("file")
+                if not img_file:
+                    continue
+
+                # Try assets folder first, then workspace folder
+                img_path = os.path.join("assets", img_file)
+                if not os.path.exists(img_path):
+                    img_path = self._resolve_path(img_file)
+
+                if not os.path.exists(img_path):
+                    raise VideoGenerationError(f"Image file not found: {img_file}")
+
+                # Load and process image
+                overlay_img = Image.open(img_path).convert("RGBA")
+
+                # Get position (default to 0, 0)
+                x = img_data.get("x", 0)
+                y = img_data.get("y", 0)
+
+                # Get size if specified (otherwise use original size)
+                if "width" in img_data or "height" in img_data:
+                    width = img_data.get("width", overlay_img.width)
+                    height = img_data.get("height", overlay_img.height)
+                    overlay_img = overlay_img.resize((width, height), Image.LANCZOS)
+
+                # Get opacity (default to 1.0)
+                opacity = img_data.get("opacity", 1.0)
+                if opacity < 1.0:
+                    # Adjust alpha channel for opacity
+                    alpha = overlay_img.split()[3]
+                    alpha = alpha.point(lambda p: int(p * opacity))
+                    overlay_img.putalpha(alpha)
+
+                # Paste overlay onto the main image
+                # Convert main image to RGBA if needed
+                if img.mode != "RGBA":
+                    img = img.convert("RGBA")
+
+                # Paste with alpha compositing
+                img.paste(overlay_img, (x, y), overlay_img)
 
         # Create clip
         clip = ImageClip(np.array(img))
