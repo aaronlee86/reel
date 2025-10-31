@@ -1,0 +1,20 @@
+field,value,description
+greeting,$(greeting),Simple string placeholder
+user_name,$(user.prompt),Nested object access
+user_email,$(user.answer),Another nested field
+user_primary_contact,$(user.question),Array index access
+user_city,$(user.A),Multi-level nesting
+user_zip,$(user.B),Multi-level nesting
+user_previous_address,$(user.C),Nested array access
+user_language,$(user.D),Deep nested array
+date,$(date),Simple date string
+product_featured,$(products.featured),JSON object field
+product_first_item,$(products.items[0].name),Nested array object access
+product_first_price,$(products.items[0].price),Nested array object access
+product_discount,$(products.discount),Decimal value
+config_app,$(config.app_name),Config value
+config_version,$(config.version),Config value
+config_server,$(config.servers[1]),Array access
+config_db_host,$(config.database.hosts[0]),Nested array
+config_db_role,$(config.database.credentials.roles[2]),Deep nested array
+config_feature,$(config.features.enabled[1]),Nested array in object

@@ -1,0 +1,8 @@
+{
+  "template_csv": "script.csv",
+  "instruction_csv": "instructions.csv",
+  "output_filename": "result.csv",
+  "files_to_copy": [
+    "readme.txt"
+  ]
+}

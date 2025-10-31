@@ -1,0 +1,3 @@
+variable,classname,param1,param2,param3
+q1,generators.loadToeicSql,part=1,level=2,dbPath=../data/toeic.db
+q2,generators.loadToeicSql,part=1,level=2,dbPath=../data/toeic.db

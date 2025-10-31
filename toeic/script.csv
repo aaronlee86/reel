@@ -1,0 +1,47 @@
+"text",position,"dub","wrap","pregap","postgap","mode","background",alignment,"valign",l_padding,r_padding,"v_padding","ttf","font_size","font_color","line_spacing","tts","voice","speed","duration","highlight_color","highlight_bold","highlight_italic"
+"TOEIC Listening Test",,,,"0",,"free","#FFFFFF",center,top,,,100,"PublicSans-Black.ttf","150",,,"silent",,"1",0,,,
+"PART 1",,,,,,,,center,,,,,"PublicSans-Black.ttf","80",#0033FF,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"1",,number 1,,,,,,left,,,,,"DMSans-Bold.ttf","70",,,"eleven",pNInz6obpgDQGcFmaJgB,"1",,,,
+"
+
+",,Look at the picture marked number 1 in your test book.,,,,,,,,,,,,,,,eleven,pNInz6obpgDQGcFmaJgB,1,,,,
+"<img w=""800"" h=""800"">$(q1.img)</img>",,,,,,,,,,,,,,,,,,,,,,,
+"
+",,A.,,,,,,,,,,,"DMSans-Regular.ttf","60",,,"$(q1.tts.engine)","$(q1.tts.voice)","1",,,,
+"
+",,$(q1.A),,,,,,,,,,,,,,,$(q1.tts.engine),$(q1.tts.voice),1,,,,
+"
+",,B.,,,,,,,,,,,,,,,$(q1.tts.engine),$(q1.tts.voice),1,,,,
+"
+",,$(q1.B),,,,,,,,,,,,,,,$(q1.tts.engine),$(q1.tts.voice),1,,,,
+"
+",,C.,,,,,,,,,,,,,,,$(q1.tts.engine),$(q1.tts.voice),1,,,,
+"
+",,$(q1.C),,,,,,,,,,,,,,,$(q1.tts.engine),$(q1.tts.voice),1,,,,
+"
+",,D.,,,,,,,,,,,,,,,$(q1.tts.engine),$(q1.tts.voice),1,,,,
+"
+",,$(q1.D),,,1,,,,,,,,,,,,$(q1.tts.engine),$(q1.tts.voice),1,,,,
+TOEIC Listening Test,,,,0,,free,#FFFFFF,center,top,,,100,PublicSans-Black.ttf,150,,,silent,,1,0,,,
+PART 1,,,,,,,,center,,,,,PublicSans-Black.ttf,80,#0033FF,,silent,,1,0,,,
+2,,number 2,,,,,,left,,,,,DMSans-Bold.ttf,70,,,eleven,pNInz6obpgDQGcFmaJgB,1,,,,
+"
+
+",,Look at the picture marked number 2 in your test book.,,,,,,,,,,,,,,,eleven,pNInz6obpgDQGcFmaJgB,1,,,,
+"
+",,A.,,,,,,,,,,,DMSans-Regular.ttf,60,,,eleven,pNInz6obpgDQGcFmaJgB,1,,,,
+"
+",,$(q2.A),,,,,,,,,,,,,,,eleven,pNInz6obpgDQGcFmaJgB,1.1,,,,
+"
+",,B.,,,,,,,,,,,,,,,eleven,pNInz6obpgDQGcFmaJgB,1.1,,,,
+"
+",,$(q2.B),,,,,,,,,,,,,,,eleven,pNInz6obpgDQGcFmaJgB,1.1,,,,
+"
+",,C.,,,,,,,,,,,,,,,eleven,pNInz6obpgDQGcFmaJgB,1.1,,,,
+"
+",,$(q2.C),,,,,,,,,,,,,,,eleven,pNInz6obpgDQGcFmaJgB,1.1,,,,
+"
+",,D.,,,,,,,,,,,,,,,eleven,pNInz6obpgDQGcFmaJgB,1.1,,,,
+"
+",,$(q2.D),,,,,,,,,,,,,,,eleven,pNInz6obpgDQGcFmaJgB,1.1,,,,
+,,,,,,,,,,,,,,,,,,,,,,,
