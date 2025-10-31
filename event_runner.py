@@ -378,7 +378,7 @@ class VideoGenerator:
         clip.write_videofile(
             clip_path,
             fps=fps,
-            codec="h264_videotoolbox",
+            codec="libx264",
             audio_codec="aac",
             logger=None  # Suppress moviepy progress bars for cleaner output
         )
