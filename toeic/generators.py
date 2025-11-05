@@ -7,12 +7,18 @@ import sqlite3
 import random
 
 class loadToeicSql:
-    def __init__(self, part, level, dbPath, *args):
+    def __init__(self, part, level, dbPath, **args):
         # Connect to database (creates it if it doesn't exist)
-        self.part = part
-        self.level = level
+        self.part = int(part)
+        self.level = int(level)
         self.conn = sqlite3.connect(dbPath)
         self.conn.row_factory = sqlite3.Row
+
+        # parse sex and accent dicts
+        sex, accent = args.get('sex', '{}'), args.get('accent', '{}')
+        dict_sex, dict_accent = eval(sex), eval(accent)
+        self.sex, self.sex_weight = list(dict_sex.keys()), list(dict_sex.values())
+        self.accent, self.accent_weight = list(dict_accent.keys()), list(dict_accent.values())
         
     def run(self):
         cursor = self.conn.cursor()
@@ -32,6 +38,12 @@ class loadToeicSql:
         try:
             # Take accent and sex to add tts.engine and tts.voice
             result['tts'] = {}
+            # if accent or sex is None, randomly choose one from the available options
+            if not result.get('accent'):
+                result['accent'] = random.choices(self.accent, weights=self.accent_weight, k=1)[0]
+            if not result.get('sex'):
+                result['sex'] = random.choices(self.sex, weights=self.sex_weight, k=1)[0]
+            print(f"result accent: {result['accent']}, sex: {result['sex']}")
             result['tts']['engine'], result['tts']['voice'] = getTtsSettings(result['accent'], result['sex'])
         except Exception as e:
             print(f"Error getting TTS settings from {result}: {e}")
