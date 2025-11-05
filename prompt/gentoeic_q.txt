@@ -1,0 +1,30 @@
+I want a python project. now please understand the requirement, and make sure we are on the same page. don't implement now
+
+Requirements Specification
+
+Overview
+Python script that generates TOEIC questions based on input parameters and writes generated questions to an existing SQLite database
+
+Input:
+1. sqlite db path
+2. input to that function
+3. number of records to write to db table name CREATE TABLE "questions" (
+	"id"	INTEGER,
+	"part"	INTEGER,
+	"level"	INTEGER,
+	"accent"	TEXT,
+	"sex"	TEXT,
+	"used"	INTEGER,
+	"question"	TEXT,
+	"prompt"	TEXT,
+	"answer"	TEXT,
+	"A"	TEXT,
+	"B"	TEXT,
+	"C"	TEXT,
+	"D"	TEXT,
+	"img"	TEXT,
+	PRIMARY KEY("id" AUTOINCREMENT)
+);
+
+Command-Line Usage
+    python genToeicQ.py --part=1 --level=2 --count=10 --db=sql.db
