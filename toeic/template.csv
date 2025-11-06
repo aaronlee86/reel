@@ -1,20 +1,98 @@
-field,value,description
-greeting,$(greeting),Simple string placeholder
-user_name,$(user.prompt),Nested object access
-user_email,$(user.answer),Another nested field
-user_primary_contact,$(user.question),Array index access
-user_city,$(user.A),Multi-level nesting
-user_zip,$(user.B),Multi-level nesting
-user_previous_address,$(user.C),Nested array access
-user_language,$(user.D),Deep nested array
-date,$(date),Simple date string
-product_featured,$(products.featured),JSON object field
-product_first_item,$(products.items[0].name),Nested array object access
-product_first_price,$(products.items[0].price),Nested array object access
-product_discount,$(products.discount),Decimal value
-config_app,$(config.app_name),Config value
-config_version,$(config.version),Config value
-config_server,$(config.servers[1]),Array access
-config_db_host,$(config.database.hosts[0]),Nested array
-config_db_role,$(config.database.credentials.roles[2]),Deep nested array
-config_feature,$(config.features.enabled[1]),Nested array in object
+"text","position","dub","wrap","pregap","postgap","mode","background","alignment","valign","l_padding","r_padding","v_padding","ttf","font_size","font_color","line_spacing","tts","voice","speed","duration","highlight_color","highlight_bold","highlight_italic"
+"TOEIC Listening Test",,,,"0",,"free","#FFFFFF","center","top",,,"100","PublicSans-Black.ttf","150",,,"silent",,"1","0",,,
+"PART 1",,,,,,,,"center",,,,,"PublicSans-Black.ttf","80","#0033FF",,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"1",,"number 1",,,,,,"left",,,,,"DMSans-Bold.ttf","70",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"
+
+",,"Look at the picture marked number 1 in your test book.",,,,,,,,,,,,,,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"<img w=""800"" h=""800"">q1.img</img>",,,,,,,,,,,,,,,,,,,,,,,
+"
+",,"A.",,,,,,,,,,,"DMSans-Regular.ttf","60",,,"$(q1.tts.engine)","$(q1.tts.voice)","1",,,,
+"
+",,"$(q1.A)",,,,,,,,,,,,,,,"$(q1.tts.engine)","$(q1.tts.voice)","1",,,,
+"
+",,"B.",,,,,,,,,,,,,,,"$(q1.tts.engine)","$(q1.tts.voice)","1",,,,
+"
+",,"$(q1.B)",,,,,,,,,,,,,,,"$(q1.tts.engine)","$(q1.tts.voice)","1",,,,
+"
+",,"C.",,,,,,,,,,,,,,,"$(q1.tts.engine)","$(q1.tts.voice)","1",,,,
+"
+",,"$(q1.C)",,,,,,,,,,,,,,,"$(q1.tts.engine)","$(q1.tts.voice)","1",,,,
+"
+",,"D.",,,,,,,,,,,,,,,"$(q1.tts.engine)","$(q1.tts.voice)","1",,,,
+"
+",,"$(q1.D)",,,"1",,,,,,,,,,,,"$(q1.tts.engine)","$(q1.tts.voice)","1",,,,
+"TOEIC Listening Test",,,,"0",,"free","#FFFFFF","center","top",,,"100","PublicSans-Black.ttf","150",,,"silent",,"1","0",,,
+"PART 1",,,,,,,,"center",,,,,"PublicSans-Black.ttf","80","#0033FF",,"silent",,"1","0",,,
+"2",,"number 2",,,,,,"left",,,,,"DMSans-Bold.ttf","70",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"
+
+",,"Look at the picture marked number 2 in your test book.",,,,,,,,,,,,,,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"
+",,"A.",,,,,,,,,,,"DMSans-Regular.ttf","60",,,"$(q2.tts.engine)","$(q2.tts.voice)","1",,,,
+"
+",,"$(q2.A)",,,,,,,,,,,,,,,"$(q2.tts.engine)","$(q2.tts.voice)","1",,,,
+"
+",,"B.",,,,,,,,,,,,,,,"$(q2.tts.engine)","$(q2.tts.voice)","1",,,,
+"
+",,"$(q2.B)",,,,,,,,,,,,,,,"$(q2.tts.engine)","$(q2.tts.voice)","1",,,,
+"
+",,"C.",,,,,,,,,,,,,,,"$(q2.tts.engine)","$(q2.tts.voice)","1",,,,
+"
+",,"$(q2.C)",,,,,,,,,,,,,,,"$(q2.tts.engine)","$(q2.tts.voice)","1",,,,
+"
+",,"D.",,,,,,,,,,,,,,,"$(q2.tts.engine)","$(q2.tts.voice)","1",,,,
+"
+",,"$(q2.D)",,,,,,,,,,,,,,,"$(q2.tts.engine)","$(q2.tts.voice)","1",,,,
+"TOEIC Listening Test",,,,,,,,,,,,,,,,,,,,,,,
+"PART 3: Conversations
+ 
+",,,,,,,,,,,,,"PublicSans-Black.ttf","150",,"20","silent",,"1","0",,,
+"Questions 32 through 34 refer to the following conversation",,,,,,,,,,,,,"PublicSans-Black.ttf","80","#0033FF",,"silent",,"1","0",,,
+"$(q32.prompt[])",,,,,,,,,,,,,"DMSans-Bold.ttf","0",,,"$(q32.tts.engine[])","$(q32.tts.voice[])","1",,,,
+"32. $(q32.question[0])",,,,,,,,,,,,,"DMSans-Bold.ttf","0",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"(A) $(q32.A[0])",,,,,,,,,,,,,"SplineSansMono-Bold.ttf","60",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"(B) $(q32.B[0])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(C) $(q32.C[0])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(D) $(q32.D[0])
+ 
+",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"33. $(q32.question[1])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(A) $(q32.A[1])",,,,,,,,,,,,,"SplineSansMono-Bold.ttf","60",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"(B) $(q32.B[1])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(C) $(q32.C[1])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(D) $(q32.D[1])
+ 
+",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"34. $(q32.question[2])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(A) $(q32.A[2])",,,,,,,,,,,,,"SplineSansMono-Bold.ttf","60",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"(B) $(q32.B[2])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(C) $(q32.C[2])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(D) $(q32.D[2])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"TOEIC Listening Test",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"PART 3: Conversations
+ 
+",,,,,,,,,,,,,"PublicSans-Black.ttf","150",,"20","silent",,"1","0",,,
+"Questions 35 through 37 refer to the following conversation",,,,,,,,,,,,,"PublicSans-Black.ttf","80","#0033FF",,"silent",,"1","0",,,
+"$(q35.prompt[])",,,,,,,,,,,,,"DMSans-Bold.ttf","0",,,"$(q35.tts.engine[])","$(q35.tts.voice[])","1",,,,
+"<img w=""800"" h=""800"">cat1.jpg</img>",,,,,,,,,,,,,"DMSans-Bold.ttf","0",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"35. $(q35.question[0])",,,,,,,,,,,,,,,,,,,,,,,
+"(A) $(q35.A[0])",,,,,,,,,,,,,"SplineSansMono-Bold.ttf","60",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"(B) $(q35.B[0])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(C) $(q35.C[0])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(D) $(q35.D[0])
+ 
+",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"36. $(q35.question[1])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(A) $(q35.A[1])",,,,,,,,,,,,,"SplineSansMono-Bold.ttf","60",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"(B) $(q35.B[1])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(C) $(q35.C[1])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(D) $(q35.D[1])
+ 
+",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"37. $(q35.question[2])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(A) $(q35.A[2])",,,,,,,,,,,,,"SplineSansMono-Bold.ttf","60",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"(B) $(q35.B[2])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(C) $(q35.C[2])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(D) $(q35.D[2])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+,,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,

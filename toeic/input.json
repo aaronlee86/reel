@@ -1,5 +1,5 @@
 {
-  "template_csv": "script.csv",
+  "template_csv": "template.csv",
   "instruction_csv": "instructions.csv",
   "output_filename": "result.csv",
   "files_to_copy": [

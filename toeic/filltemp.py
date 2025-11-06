@@ -1,18 +1,28 @@
-#!/usr/bin/env python3
-"""
-CSV Template Processor
-Processes CSV templates with placeholders using dynamically imported classes.
-Supports simple strings, nested JSON objects, and array indexing.
-"""
-
-import sys
 import json
 import csv
+import sys
 import re
 import shutil
 import importlib
 from pathlib import Path
 
+def csv_escape_value(value):
+        """
+        Escape and quote CSV values:
+        - Escape existing quotes by doubling them
+        - Convert to string
+        """
+        # Convert to string
+        str_value = str(value)
+
+        # Check if value contains comma, quote, or newline
+        if '"' in str_value:
+            # Escape quotes by doubling them
+            escaped_value = str_value.replace('"', '""')
+            # Wrap in quotes
+            return f'{escaped_value}'
+
+        return str_value
 
 class TemplateProcessor:
     """Main class for processing CSV templates with dynamic variable replacement."""
@@ -78,14 +88,14 @@ class TemplateProcessor:
                     except (ValueError, ImportError, AttributeError) as e:
                         print(f"Error: Failed to import class '{classname}' at row {row_num}: {e}")
                         sys.exit(1)
-                    
+
                     try:
                         # Instantiate with parameters
                         instance = cls(**kwargs)
                     except Exception as e:
                         print(f"Error: Failed to instantiate class '{classname}' at row {row_num}: {e}")
                         sys.exit(1)
-                    
+
                     try:
                         result = instance.run()
                         # Store variable if result is not None
@@ -95,53 +105,83 @@ class TemplateProcessor:
                         print(f"Error: Failed to run class '{classname}' at row {row_num}: {e}")
                         sys.exit(1)
 
-
-
         except FileNotFoundError:
             print(f"Error: Instruction CSV not found: {instruction_path}")
             sys.exit(1)
 
     def resolve_placeholder(self, var_path):
         """
-        Resolve a placeholder path like 'var.key[0].subkey' to its value.
+        Resolve complex nested placeholders with flexible path traversal.
+
+        Supported path formats:
+        - Simple variable: 'variable_name'
+        - Dictionary key: 'dict_var.key'
+        - List/array index: 'list_var[0]'
+        - Nested dictionary: 'dict_var.nested_key'
+        - Deeply nested: 'dict_var.list_key[2].sub_key'
+        - Array expansion: 'list_var[]'
+
+        Path traversal rules:
+        - Supports unlimited nesting depth
+        - Handles mixed access types (dict, list, nested)
+        - Returns entire list/dict for array expansion
+        - Returns specific index/key value for direct access
+        - Converts complex types to JSON string
+        - Handles type conversion and escaping
+
+        Examples:
+        - 'users' → entire users list/dict
+        - 'users[0]' → first user
+        - 'users[0].name' → name of first user
+        - 'config.database.host' → database hostname
+        - 'array[]' → entire array as JSON string
 
         Args:
-            var_path: String like 'variable', 'var.key', 'var[0]', 'var.key[1].sub'
+            var_path (str): Dot and bracket notation path to resolve
 
         Returns:
-            The resolved value as a string, or None if not found
+            Resolved value as string, or None if path is invalid
         """
-        # Parse the path into tokens (keys and array indices)
-        # Pattern matches: word, .word, [index]
-        tokens = re.findall(r'[^\.\[]+|\[\d+\]', var_path)
+        # Tokenize path, handling nested structures
+        tokens = re.findall(r'[^\.\[]+|\[\d*\]', var_path)
 
         if not tokens:
             return None
 
-        # Start with the base variable
-        base_var = tokens[0]
-        if base_var not in self.variables:
-            return None
+        # Start with base variables dictionary
+        current = self.variables
 
-        current = self.variables[base_var]
-
-        # Navigate through the path
-        for token in tokens[1:]:
+        # Navigate through tokens
+        for i, token in enumerate(tokens):
             if token.startswith('[') and token.endswith(']'):
-                # Array index
+                # Handle array index or expansion
+                index = token[1:-1]
+
+                # If empty brackets, entire array
+                if index == '':
+                    if isinstance(current, (list, dict)):
+                        # Return entire array as JSON string
+                        return json.dumps(current)
+                    return None
+
+                # Numeric index
                 try:
-                    index = int(token[1:-1])
+                    index = int(index)
                     if isinstance(current, (list, tuple)):
-                        if 0 <= index < len(current):
-                            current = current[index]
+                        current = current[index]
+                    elif isinstance(current, dict):
+                        # If it's a dict, treat index as key
+                        keys = list(current.keys())
+                        if 0 <= index < len(keys):
+                            current = current[keys[index]]
                         else:
                             return None
                     else:
                         return None
-                except (ValueError, TypeError):
+                except (ValueError, TypeError, IndexError):
                     return None
             else:
-                # Object key
+                # Nested key access
                 if isinstance(current, dict):
                     if token in current:
                         current = current[token]
@@ -150,40 +190,116 @@ class TemplateProcessor:
                 else:
                     return None
 
-        # Convert final value to string and escape newlines
-        if isinstance(current, (dict, list)):
-            value = json.dumps(current)
-        else:
-            value = str(current)
+        # Final conversion
+        if current is None:
+            return None
 
-        # Escape newlines for CSV compatibility
-        value = value.replace('\n', '\\n')
-        return value
+        # Ensure string conversion
+        if isinstance(current, (dict, list)):
+            # Convert complex types to JSON string
+            return json.dumps(current)
+        elif isinstance(current, bytes):
+            # Handle byte strings
+            return current.decode('utf-8')
+
+        # Convert to string
+        value = str(current)
+        return value.replace('\n', '\\n')
 
     def process_template(self):
-        """Process template CSV and replace placeholders."""
+        """Process template CSV and replace placeholders with multiple array expansions."""
         template_path = Path(self.config['template_csv'])
 
         try:
             with open(template_path, 'r') as f:
                 content = f.read()
 
-            # Find all placeholders
-            placeholders = re.findall(r'\$\(([^)]+)\)', content)
+                # Tracks final content after processing
+                final_content_lines = []
 
-            # Replace each placeholder
-            for placeholder in placeholders:
-                value = self.resolve_placeholder(placeholder)
-                if value is not None:
-                    content = content.replace(f"$({placeholder})", value)
+                # Process each line
+                for line in content.splitlines():
+                    # Find all placeholders
+                    line_placeholders = re.findall(r'\$\(([^)]+)\)', line)
 
-            # Check for unreplaced placeholders
-            unreplaced = re.findall(r'\$\([^)]+\)', content)
-            if unreplaced:
-                print(f"Error: Unreplaced placeholders found: {', '.join(set(unreplaced))}")
-                sys.exit(1)
+                    # Identify array expansion placeholders
+                    array_expansions = [p for p in line_placeholders if p.endswith('[]')]
 
-            return content
+                    if array_expansions:
+                        # Determine max expansion length
+                        expansion_lengths = []
+                        for array_ph in array_expansions:
+                            base_ph = array_ph[:-2]  # Remove '[]'
+                            array_value = self.resolve_placeholder(base_ph)
+
+                            # Try to parse the array value
+                            try:
+                                parsed_array = json.loads(array_value) if isinstance(array_value, str) else array_value
+                            except json.JSONDecodeError:
+                                parsed_array = array_value
+
+                            if isinstance(parsed_array, (list, tuple)):
+                                expansion_lengths.append(len(parsed_array))
+                            else:
+                                expansion_lengths.append(0)
+
+                        # Ensure all arrays are expanded to the same length
+                        max_length = max(expansion_lengths)
+
+                        # Generate expanded lines
+                        expanded_lines = []
+                        for i in range(max_length):
+                            # Create a copy of the original line
+                            expanded_line = line
+
+                            # Replace all array expansion placeholders
+                            for array_ph in array_expansions:
+                                base_ph = array_ph[:-2]  # Remove '[]'
+
+                                # Resolve and replace the specific index
+                                replacement = csv_escape_value(
+                                    self.resolve_placeholder(f"{base_ph}[{i}]")
+                                    if i < expansion_lengths[array_expansions.index(array_ph)]
+                                    else ''
+                                )
+
+                                expanded_line = expanded_line.replace(
+                                    f"$({array_ph})",
+                                    replacement
+                                )
+
+                            # Replace any remaining non-array placeholders
+                            for ph in line_placeholders:
+                                if not ph.endswith('[]'):
+                                    ph_value = self.resolve_placeholder(ph)
+                                    if ph_value is not None:
+                                        expanded_line = expanded_line.replace(
+                                            f"$({ph})",
+                                            csv_escape_value(ph_value)
+                                        )
+
+                            expanded_lines.append(expanded_line)
+
+                        final_content_lines.extend(expanded_lines)
+                    else:
+                        # Process line normally if no array expansions
+                        for ph in line_placeholders:
+                            ph_value = self.resolve_placeholder(ph)
+                            if ph_value is not None:
+                                line = line.replace(
+                                    f"$({ph})",
+                                    csv_escape_value(ph_value)
+                                )
+                        final_content_lines.append(line)
+
+                # Check for unreplaced placeholders
+                unreplaced = re.findall(r'\$\([^)]+\)', '\n'.join(final_content_lines))
+                if unreplaced:
+                    print(f"Error: Unreplaced placeholders found: {', '.join(set(unreplaced))}")
+                    print("Hint: Check variable names and structure")
+                    sys.exit(1)
+
+                return '\n'.join(final_content_lines)
 
         except FileNotFoundError:
             print(f"Error: Template CSV not found: {template_path}")
@@ -253,7 +369,6 @@ class TemplateProcessor:
         self.create_output(processed_content)
 
         print(f"Success! Output created in: {self.output_folder}")
-
 
 def main():
     """Main entry point."""

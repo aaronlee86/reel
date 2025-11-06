@@ -5,6 +5,19 @@ These demonstrate simple string returns and complex JSON returns.
 from datetime import datetime
 import sqlite3
 import random
+import json
+
+def parse_or_string(s):
+    try:
+        value = json.loads(s)
+        # If it's a list, return it directly
+        if isinstance(value, list):
+            return value
+        # Otherwise, convert to string
+        return str(value)
+    except json.JSONDecodeError:
+        # If not valid JSON, return as-is
+        return s
 
 class loadToeicSql:
     def __init__(self, part, level, dbPath, **args):
@@ -19,7 +32,7 @@ class loadToeicSql:
         dict_sex, dict_accent = eval(sex), eval(accent)
         self.sex, self.sex_weight = list(dict_sex.keys()), list(dict_sex.values())
         self.accent, self.accent_weight = list(dict_accent.keys()), list(dict_accent.values())
-        
+
     def run(self):
         cursor = self.conn.cursor()
         query_template = 'SELECT * FROM questions WHERE part = ? AND level = ? AND used = 0'
@@ -35,26 +48,36 @@ class loadToeicSql:
         finally:
             cursor.close()
 
+        # Take accent and sex to add tts.engine and tts.voice
+        result['tts'] = {}
+        # if accent or sex is None, randomly choose one from the available options
+        if not result.get('accent'):
+            result['accent'] = random.choices(self.accent, weights=self.accent_weight, k=1)[0]
+        if not result.get('sex'):
+            result['sex'] = random.choices(self.sex, weights=self.sex_weight, k=1)[0]
+
+        for key in ['prompt','question','A','B','C','D','answer','accent','sex']:
+            if result.get(key):
+                result[key] = parse_or_string(result[key])
+
         try:
-            # Take accent and sex to add tts.engine and tts.voice
-            result['tts'] = {}
-            # if accent or sex is None, randomly choose one from the available options
-            if not result.get('accent'):
-                result['accent'] = random.choices(self.accent, weights=self.accent_weight, k=1)[0]
-            if not result.get('sex'):
-                result['sex'] = random.choices(self.sex, weights=self.sex_weight, k=1)[0]
-            print(f"result accent: {result['accent']}, sex: {result['sex']}")
             result['tts']['engine'], result['tts']['voice'] = getTtsSettings(result['accent'], result['sex'])
+            print(f"voice: {result['tts']['voice']} and type: {type(result['tts']['voice'])}")
         except Exception as e:
-            print(f"Error getting TTS settings from {result}: {e}")
+            print(f"Error getting TTS settings from sex: {result['sex']} and accent: {result['accent']}: {e}")
             return None
+
+
+        # DEBUG: print each element and type of result
+        # for key, value in result.items():
+        #    print(f"{key}: {value} (type: {type(value)})")
 
         # update the question as used
         try:
             update_query = 'UPDATE questions SET used=1 WHERE id=?'
             cursor = self.conn.cursor()
-            cursor.execute(update_query, (result['id'],))
-            self.conn.commit()
+            #cursor.execute(update_query, (result['id'],))
+            #self.conn.commit()
         except Exception as e:
             print(f"Error updating question as used: {e}")
             return None
@@ -62,7 +85,7 @@ class loadToeicSql:
             cursor.close()
 
         return result
-    
+
     # descturctor to close db connection
     def __del__(self):
         if self.conn:
@@ -70,15 +93,22 @@ class loadToeicSql:
             self.conn.close()
 
 
-def getTtsSettings(accent, sex):
+def getTtsSettings(accents, sexes):
     """
-    Look up TTS settings by accent and sex.
-    If multiple matches found, randomly choose one.
-    If not found, raise an exception.
-    
-    Returns: (engine, voice) tuple
+    Look up TTS settings by lists of accents and sexes or single accent and sex.
+
+    Args:
+        accents (list or str): List of accent codes or single accent code
+        sexes (list or str): List of sex identifiers or single sex identifier
+
+    Returns:
+        - If inputs are lists: Tuple of two lists (engines, voices)
+        - If inputs are strings: Tuple of two strings (engine, voice)
+
+    Raises:
+        ValueError: If inputs are of mixed types (one list, one string)
     """
-    
+
     # Mapping table: (accent, sex) -> [(engine, voice), ...]
     tts_mapping = {
         ('am', 'man'): [('google', 'en-US-Neural2-C'), ('aws', 'Matthew')],
@@ -90,24 +120,61 @@ def getTtsSettings(accent, sex):
         ('au', 'man'): [('google', 'en-AU-Neural2-B'), ('aws', 'Russell')],
         ('au', 'woman'): [('google', 'en-AU-Neural2-D'), ('aws', 'Nicole')],
     }
-    
-    # Sanity check
-    if not accent or not sex:
-        raise ValueError(f"Invalid accent or sex: accent={accent}, sex={sex}")
-    
-    # Normalize inputs
-    accent = str(accent).lower().strip()
-    sex = str(sex).lower().strip()
-    
-    # Look up in mapping
-    key = (accent, sex)
-    if key not in tts_mapping:
-        raise KeyError(f"No TTS settings found for accent='{accent}', sex='{sex}'")
-    
-    # Get matching options
-    options = tts_mapping[key]
-    
-    # Randomly choose if multiple matches
-    engine, voice = random.choice(options)
-    
-    return engine, voice
+
+    # Check input types
+    if isinstance(accents, str) and isinstance(sexes, str):
+        # Single string inputs
+        accent = accents.lower().strip()
+        sex = sexes.lower().strip()
+
+        # Sanity check
+        if not accent or not sex:
+            raise ValueError(f"Invalid accent or sex: accent={accent}, sex={sex}")
+
+        # Look up in mapping
+        key = (accent, sex)
+        if key not in tts_mapping:
+            raise KeyError(f"No TTS settings found for accent='{accent}', sex='{sex}'")
+
+        # Randomly choose from options
+        return random.choice(tts_mapping[key])
+
+    elif isinstance(accents, list) and isinstance(sexes, list):
+        # List inputs
+        if not accents or not sexes or len(accents) != len(sexes):
+            raise ValueError("Accents and sexes must be non-empty lists of equal length")
+
+        # Normalize inputs
+        accents = [str(accent).lower().strip() for accent in accents]
+        sexes = [str(sex).lower().strip() for sex in sexes]
+
+        # Result storage
+        engines = []
+        voices = []
+
+        # Process each combination
+        for accent, sex in zip(accents, sexes):
+            # Sanity check
+            if not accent or not sex:
+                raise ValueError(f"Invalid accent or sex: accent={accent}, sex={sex}")
+
+            # Look up in mapping
+            key = (accent, sex)
+            if key not in tts_mapping:
+                raise KeyError(f"No TTS settings found for accent='{accent}', sex='{sex}'")
+
+            # Get matching options
+            options = tts_mapping[key]
+
+            # Randomly choose if multiple matches
+            engine, voice = random.choice(options)
+
+            # Append to result lists
+            engines.append(engine)
+            voices.append(voice)
+
+        return engines, voices
+
+    else:
+        # Mixed input types
+        raise ValueError("Inputs must be either both lists or both strings")
