@@ -106,19 +106,19 @@ def getTtsSettings(accents, sexes):
         - If inputs are strings: Tuple of two strings (engine, voice)
 
     Raises:
-        ValueError: If inputs are of mixed types (one list, one string)
+        ValueError: If inputs are of mixed types
     """
 
     # Mapping table: (accent, sex) -> [(engine, voice), ...]
     tts_mapping = {
-        ('am', 'man'): [('google', 'en-US-Neural2-C'), ('aws', 'Matthew')],
-        ('am', 'woman'): [('google', 'en-US-Neural2-E'), ('aws', 'Joanna')],
-        ('cn', 'man'): [('google', 'zh-CN-Neural2-A'), ('aws', 'Zhiyu')],
-        ('cn', 'woman'): [('google', 'zh-CN-Neural2-C'), ('aws', 'Zhiyu')],
-        ('br', 'man'): [('google', 'pt-BR-Neural2-B'), ('aws', 'Vitoria')],
-        ('br', 'woman'): [('google', 'pt-BR-Neural2-A'), ('aws', 'Vitoria')],
-        ('au', 'man'): [('google', 'en-AU-Neural2-B'), ('aws', 'Russell')],
-        ('au', 'woman'): [('google', 'en-AU-Neural2-D'), ('aws', 'Nicole')],
+        ('am', 'man'): [('google', 'am-man1'), ('aws', 'am-man2')],
+        ('am', 'woman'): [('google', 'am-woman1'), ('aws', 'am-woman2')],
+        ('cn', 'man'): [('google', 'cn-man1'), ('aws', 'cn-man2')],
+        ('cn', 'woman'): [('google', 'cn-woman1'), ('aws', 'cn-woman2')],
+        ('br', 'man'): [('google', 'br-man1'), ('aws', 'br-man2')],
+        ('br', 'woman'): [('google', 'br-woman1'), ('aws', 'br-woman2')],
+        ('au', 'man'): [('google', 'au-man1'), ('aws', 'au-man2')],
+        ('au', 'woman'): [('google', 'au-woman1'), ('aws', 'au-woman2')],
     }
 
     # Check input types
@@ -152,6 +152,9 @@ def getTtsSettings(accents, sexes):
         engines = []
         voices = []
 
+        # Track unique combinations to ensure consistent engine/voice
+        unique_combinations = {}
+
         # Process each combination
         for accent, sex in zip(accents, sexes):
             # Sanity check
@@ -163,15 +166,21 @@ def getTtsSettings(accents, sexes):
             if key not in tts_mapping:
                 raise KeyError(f"No TTS settings found for accent='{accent}', sex='{sex}'")
 
-            # Get matching options
-            options = tts_mapping[key]
+            # Check if this combination has been seen before
+            if key in unique_combinations:
+                # Use previously selected engine and voice
+                engines.append(unique_combinations[key][0])
+                voices.append(unique_combinations[key][1])
+            else:
+                # Get matching options and randomly choose
+                options = tts_mapping[key]
+                engine, voice = random.choice(options)
 
-            # Randomly choose if multiple matches
-            engine, voice = random.choice(options)
+                # Store for future consistent selection
+                unique_combinations[key] = (engine, voice)
 
-            # Append to result lists
-            engines.append(engine)
-            voices.append(voice)
+                engines.append(engine)
+                voices.append(voice)
 
         return engines, voices
 
