@@ -95,4 +95,54 @@
 "(B) $(q35.B[2])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
 "(C) $(q35.C[2])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
 "(D) $(q35.D[2])",,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
-,,,,,,,,,,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"TOEIC Listening Test",,,,"0",,"free","#FFFFFF","center","top","200",,"200","PublicSans-Black.ttf","150",,"20","silent",,"1","0",,,
+"PART 4
+ 
+",,,,,,,,"center",,,,,"PublicSans-Black.ttf","80","#0033FF",,"silent",,"1","0",,,
+"Questions 71 through 73 refer to the following $(q71.type)",,,,,,,,"left",,,,,"DMSans-Bold.ttf","0",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"$(q71.prompt)",,,,,,,,,,,,,"DMSans-Bold.ttf","0",,,"$(q71.tts.voice)","$(q71.tts.voice)","1",,,,
+"71. $(q71.question[0])",,,,,"8",,,"left",,,,,"SplineSansMono-Bold.ttf","60",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"(A) $(q71.A[0])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(B) $(q71.B[0])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(C) $(q71.C[0])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(D) $(q71.D[0])
+ 
+",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"72. $(q71.question[1])",,,,,"8",,,"left",,,,,"SplineSansMono-Bold.ttf","60",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"(A) $(q71.A[1])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(B) $(q71.B[1])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(C) $(q71.C[1])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(D) $(q71.D[1])
+ 
+",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"73. $(q71.question[2])",,,,,"8",,,"left",,,,,"SplineSansMono-Bold.ttf","60",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"(A) $(q71.A[2])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(B) $(q71.B[2])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(C) $(q71.C[2])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(D) $(q71.D[2])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"TOEIC Listening Test",,,,"0",,"free","#FFFFFF","center","top","200",,"200","PublicSans-Black.ttf","150",,"20","silent",,"1","0",,,
+"PART 4
+ 
+",,,,,,,,"center",,,,,"PublicSans-Black.ttf","80","#0033FF",,"silent",,"1","0",,,
+"Questions 74 through 76 refer to the following $(q74.type)",,,,,,,,"left",,,,,"DMSans-Bold.ttf","0",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"$(q74.prompt)",,,,,,,,,,,,,"DMSans-Bold.ttf","0",,,"$(q74.tts.engine)","$(q74.tts.voice)","1",,,,
+"<img w=""800"" h=""800"">cat1.jpg</img>","2150,900",,,,,,,,,,,,,,,,,,,,,,
+"74. $(q74.question[0])",,,,,"8",,,"left",,,,,"SplineSansMono-Bold.ttf","60",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"(A) $(q74.A[0])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(B) $(q74.B[0])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(C) $(q74.C[0])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(D) $(q74.D[0])
+ 
+",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"75. $(q74.question[1])",,,,,"8",,,"left",,,,,"SplineSansMono-Bold.ttf","60",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"(A) $(q74.A[1])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(B) $(q74.B[1])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(C) $(q74.C[1])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(D) $(q74.D[1])
+ 
+",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"76. $(q74.question[2])",,,,,"8",,,"left",,,,,"SplineSansMono-Bold.ttf","60",,,"eleven","pNInz6obpgDQGcFmaJgB","1",,,,
+"(A) $(q74.A[2])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(B) $(q74.B[2])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(C) $(q74.C[2])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,
+"(D) $(q74.D[2])",,,,,,,,"left",,,,,"SplineSansMono-Regular.ttf","60",,,"silent",,"1","0",,,

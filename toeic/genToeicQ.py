@@ -26,6 +26,9 @@ def setup_logging() -> None:
     logger = logging.getLogger()
     logger.setLevel(log_level)
 
+    # Remove any existing handlers
+    logger.handlers.clear()
+
     # Console handler
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(log_level)
@@ -77,7 +80,7 @@ def _generate_part1_questions(level, count):
     except Exception as e:
         logging.error(f"Error: {e}")
         return []
-    
+
 def _generate_part2_questions(level, count):
     """Translate Chinese to colloquial American English"""
     class Result(BaseModel):
@@ -146,7 +149,7 @@ def _generate_part3_questions(level, count):
                  Speakers of same sex must have different accent to differentiate.
                  The conversation should be 4–6 exchanges if 2 speakers; 6–8 exchanges if 3 speakers.
                  realistic and relevant to business contexts.
-                 In returned conversation array, don't need name or sex, only script. 
+                 In returned conversation array, don't need name or sex, only script.
                  The conversation may or may not refer to a chart or visual; if it does, also create the AI prompt to generate the reference (Chart or visual).
                  In questions and options, if mentioning any speaker, speicify the gender (the man, men, woman, or women) but not accent.
                  return arrays"""},
@@ -166,13 +169,14 @@ def _generate_part3_questions(level, count):
     except Exception as e:
         logging.error(f"Error: {e}")
         return []
-    
+
 def _generate_part4_questions(level, count):
     """Translate Chinese to colloquial American English"""
     class Result(BaseModel):
         reference_prompt: list[str]
         talk: list[str]
         question_1: list[str]
+        type: list[str]
         A1: list[str]
         B1: list[str]
         C1: list[str]
@@ -195,9 +199,10 @@ def _generate_part4_questions(level, count):
         response = client.responses.parse(
             model=ChatGPT_MODEL_VER,
             input=[
-                {"role": "system", "content": f"""Create mock TOEIC listening Part 4 questions: a monologue/talk (6-12 sentences) with 3 follow-up questions. 
+                {"role": "system", "content": f"""Create mock TOEIC listening Part 4 questions: a monologue/talk (6-12 sentences) with 3 follow-up questions.
                                                     May include a visual reference (chart/table/schedule).
                                                     If it does, also create the AI prompt to generate the visual reference; if not, return empty string for the prompt.
+                                                    Also return type of the talk (talk, announcement, advertisement, radio advertisement, news report, broadcast, tour, excerpt from a meeting, or message) in 'type' array.
                                                     return arrays"""},
                 {"role": "user", "content": f"Generate {count} non-repetetive questions. Difficulty level: {level}/5. Return JSON arrays."}
             ],
@@ -216,21 +221,21 @@ def _generate_part4_questions(level, count):
     except Exception as e:
         logging.error(f"Error: {e}")
         return []
-    
+
 
 class ToeicQuestionGenerator:
     """Generates TOEIC questions based on specified parameters."""
-    
+
     def __init__(self, part: int, level: int):
         self.part = part
         self.level = level
-    
+
     def generate_questions(self, count: int) -> List[Dict]:
         """Generate TOEIC questions."""
         # check part
         if self.part not in [1, 2, 3, 4]:
             raise ValueError("Invalid part number. Must be 1, 2, 3, or 4.")
-        
+
         if self.part == 1:
             result = _generate_part1_questions(self.level, count)
             for q in result:
@@ -242,7 +247,7 @@ class ToeicQuestionGenerator:
                 q['C'] = q.pop('C')
                 q['D'] = q.pop('D')
                 q['answer'] = q.pop('answer')
-                
+
         elif self.part == 2:
             result = _generate_part2_questions(self.level, count)
             for q in result:
@@ -252,7 +257,7 @@ class ToeicQuestionGenerator:
                 q['B'] = q.pop('B')
                 q['C'] = q.pop('C')
                 q['answer'] = q.pop('answer')
-            
+
         elif self.part == 3:
             result = _generate_part3_questions(self.level, count)
             for q in result:
@@ -286,35 +291,36 @@ class ToeicQuestionGenerator:
 
 class DatabaseManager:
     """Manages SQLite database operations."""
-    
+
     def __init__(self, db_path: str):
         """Initialize the database manager."""
         try:
             self.connection = sqlite3.connect(db_path)
             self.connection.row_factory = sqlite3.Row
-            logging.info(f"Connected to database: {db_path}")
+            logging.debug(f"Connected to database: {db_path}")
         except sqlite3.Error as e:
             logging.error(f"Failed to connect to database: {e}")
             raise sqlite3.Error(f"Failed to connect to database: {e}")
-    
+
     def insert_questions(self, part, level, questions: List[Dict]) -> int:
         """Insert questions into the database."""
         if not questions:
             logging.warning("No questions to insert")
             return 0
-        
+
         cursor = self.connection.cursor()
         inserted_count = 0
-        
+
         try:
             for question in questions:
                 logging.debug(f"Inserting question: {question}")
+                logging.debug(f"Types and value: " + ", ".join([f"{k}:{v}:{type(v)}" for k,v in question.items()]))
 
                 cursor.execute(
                     """
-                    INSERT INTO questions 
-                    (part, level, accent, sex, used, question, prompt, answer, A, B, C, D, img_prompt)
-                    VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?)
+                    INSERT INTO questions
+                    (part, level, accent, sex, question, prompt, answer, A, B, C, D, img_prompt, type)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         question.get("part"),
@@ -328,11 +334,12 @@ class DatabaseManager:
                         question.get("B"),
                         question.get("C"),
                         question.get("D"),
-                        question.get("img_prompt")
+                        question.get("img_prompt"),
+                        question.get("type")
                     )
                 )
                 inserted_count += 1
-            
+
             self.connection.commit()
             logging.info(f"Successfully committed {inserted_count} questions to database")
         except sqlite3.Error as e:
@@ -341,9 +348,9 @@ class DatabaseManager:
             raise sqlite3.Error(f"Failed to insert questions: {e}")
         finally:
             cursor.close()
-        
+
         return inserted_count
-    
+
     def close(self) -> None:
         """Close the database connection."""
         if self.connection:
@@ -356,12 +363,12 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Generate TOEIC questions and write to SQLite database"
     )
-    
+
     parser.add_argument("--part", type=int, required=True, help="TOEIC part number")
     parser.add_argument("--level", type=int, required=True, help="Difficulty level")
     parser.add_argument("--count", type=int, required=True, help="Number of questions to generate")
     parser.add_argument("--db", type=str, required=True, help="SQLite database file path")
-    
+
     return parser.parse_args()
 
 
@@ -395,35 +402,35 @@ def main():
     if not validate_arguments(args):
         logging.critical("Argument validation failed")
         sys.exit(1)
-    
+
     try:
         db_manager = DatabaseManager(args.db)
         generator = ToeicQuestionGenerator(
             part=args.part,
             level=args.level
         )
-        
+
         logging.info(f"Generating {args.count} TOEIC questions...")
         logging.info(f"  Part: {args.part}, Level: {args.level}")
-        
+
         questions = generator.generate_questions(count=args.count)
-        
+
         if not questions:
             logging.error("No questions were generated")
             sys.exit(1)
-        
+
         logging.info(f"Generated {len(questions)} questions successfully")
         logging.info("Writing to database...")
-        
+
         inserted_count = db_manager.insert_questions(args.part, args.level, questions)
         logging.info(f"Successfully inserted {inserted_count} questions into database")
         logging.info(f"Database: {args.db}")
         logging.info("=" * 80)
         logging.info("TOEIC Question Generator Completed Successfully")
         logging.info("=" * 80)
-        
+
         db_manager.close()
-    
+
     except FileNotFoundError as e:
         logging.error(f"Database file not found - {e}")
         sys.exit(1)
