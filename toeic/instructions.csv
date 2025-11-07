@@ -1,6 +1,9 @@
 variable,classname,param1,param2,param3,param4,param5
 q1,generators.loadToeicSql,part=1,level=2,dbPath=../data/toeic.db,"sex={'man':1, 'woman':1}","accent={'am':1,'br':1, 'au':1, 'cn':1}"
 q2,generators.loadToeicSql,part=1,level=3,dbPath=../data/toeic.db,"sex={'man':1, 'woman':1}","accent={'am':1,'br':1, 'au':1, 'cn':1}"
+q7,generators.loadToeicSql,part=2,level=1,dbPath=../data/toeic.db,"sex={'man':1, 'woman':1}","accent={'am':1,'br':1, 'au':1, 'cn':1}"
+q8,generators.loadToeicSql,part=2,level=3,dbPath=../data/toeic.db,"sex={'man':1, 'woman':1}","accent={'am':1,'br':1, 'au':1, 'cn':1}"
+q9,generators.loadToeicSql,part=2,level=5,dbPath=../data/toeic.db,"sex={'man':1, 'woman':1}","accent={'am':1,'br':1, 'au':1, 'cn':1}"
 q32,generators.loadToeicSql,part=3,level=2,dbPath=../data/toeic.db,,
 q35,generators.loadToeicSql,part=3,level=4,dbPath=../data/toeic.db,,
 q71,generators.loadToeicSql,part=4,level=3,dbPath=../data/toeic.db,"sex={'man':1, 'woman':1}","accent={'am':1,'br':1, 'au':1, 'cn':1}"

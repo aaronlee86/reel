@@ -52,9 +52,22 @@ class loadToeicSql:
         result['tts'] = {}
         # if accent or sex is None, randomly choose one from the available options
         if not result.get('accent'):
-            result['accent'] = random.choices(self.accent, weights=self.accent_weight, k=1)[0]
+            if self.part == 2:
+                # special case for part 2: two people with different accents
+                first_accent = random.choices(self.accent, weights=self.accent_weight, k=1)[0]
+                remaining_accents = [a for a in self.accent if a != first_accent]
+                second_accent = random.choices(remaining_accents, weights=[self.accent_weight[self.accent.index(a)] for a in remaining_accents], k=1)[0]
+                result['accent'] = json.dumps([first_accent, second_accent])
+            else:
+                result['accent'] = random.choices(self.accent, weights=self.accent_weight, k=1)[0]
         if not result.get('sex'):
-            result['sex'] = random.choices(self.sex, weights=self.sex_weight, k=1)[0]
+            if self.part == 2:
+                # special case for part 2: two people with opposite sexes
+                first_speaker = random.choices(self.sex, weights=self.sex_weight, k=1)[0]
+                second_speaker = 'woman' if first_speaker == 'man' else 'man'
+                result['sex'] = json.dumps([first_speaker, second_speaker])
+            else:
+                result['sex'] = random.choices(self.sex, weights=self.sex_weight, k=1)[0]
 
         for key in ['prompt','question','A','B','C','D','answer','accent','sex']:
             if result.get(key):
