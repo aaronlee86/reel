@@ -47,7 +47,9 @@ logging.info("done")
 
 ChatGPT_MODEL_VER = "gpt-5-mini-2025-08-07"
 
-def _generate_part1_questions(level, count):
+
+
+def _generate_part1_questions(level, count, existing=None):
     """Translate Chinese to colloquial American English"""
     class Result(BaseModel):
         picture_prompt: list[str]
@@ -62,10 +64,11 @@ def _generate_part1_questions(level, count):
             model=ChatGPT_MODEL_VER,
             input=[
                 {"role": "system", "content": f"""Create mock TOEIC listening Part 1 questions: a picture and 4 statements.
-                 Create the AI prompt to generate the picture as well.
-                 also return a brief summary of the talk within 20 words in 'summary' array.
+                 Create the AI prompt to generate the picture as well. Randomize correct answer letters
                  return arrays"""},
-                {"role": "user", "content": f"Generate {count} non-repetetive questions. Difficulty level: {level}/5. Return JSON arrays."}
+                {"role": "user", "content": f"""Generate {count} non-repetetive questions.
+                 Avoid similar question from: {existing if existing else 'none'}.
+                 Difficulty level: {level}/3. Return JSON arrays."""}
             ],
             text_format=Result
         )
@@ -82,7 +85,7 @@ def _generate_part1_questions(level, count):
         logging.error(f"Error: {e}")
         return []
 
-def _generate_part2_questions(level, count):
+def _generate_part2_questions(level, count, existing=None):
     """Translate Chinese to colloquial American English"""
     class Result(BaseModel):
         question: list[str]
@@ -96,8 +99,11 @@ def _generate_part2_questions(level, count):
             model=ChatGPT_MODEL_VER,
             input=[
                 {"role": "system", "content": f"""Create mock TOEIC listening Part 2 questions: a question or statement and 3 responses.
+                 Randomize correct answer letters
                  return arrays"""},
-                {"role": "user", "content": f"Generate {count} non-repetetive questions. Difficulty level: {level}/5. Return JSON arrays."}
+                {"role": "user", "content": f"""Generate {count} non-repetetive questions.
+                 Avoid similar question from: {existing if existing else 'none'}.
+                 Difficulty level: {level}/3. Return JSON arrays."""}
             ],
             text_format=Result
         )
@@ -114,7 +120,7 @@ def _generate_part2_questions(level, count):
         logging.error(f"Error: {e}")
         return []
 
-def _generate_part3_questions(level, count):
+def _generate_part3_questions(level, count, existing=None):
     """Translate Chinese to colloquial American English"""
     class Result(BaseModel):
         reference_prompt: list[str]
@@ -153,8 +159,11 @@ def _generate_part3_questions(level, count):
                  The conversation may or may not refer to a chart or visual; if it does, also create the AI prompt to generate the reference (Chart or visual); if no reference, return empty string for the prompt.
                  In questions and options, if mentioning any speaker, speicify the gender (the man, men, woman, or women) but not accent.
                  A brief summary of the conversation within 20 words in 'summary' array.
+                 Randomize correct answer letters
                  return arrays"""},
-                {"role": "user", "content": f"Generate {count} non-repetetive questions. Difficulty level: {level}/5. Return JSON arrays."}
+                {"role": "user", "content": f"""Generate {count} non-repetetive questions.
+                 Avoid similar question from: {existing if existing else 'none'}.
+                 Difficulty level: {level}/3. Return JSON arrays."""}
             ],
             text_format=Result
         )
@@ -171,7 +180,7 @@ def _generate_part3_questions(level, count):
         logging.error(f"Error: {e}")
         return []
 
-def _generate_part4_questions(level, count):
+def _generate_part4_questions(level, count, existing=None):
     """Translate Chinese to colloquial American English"""
     class Result(BaseModel):
         reference_prompt: list[str]
@@ -205,9 +214,13 @@ def _generate_part4_questions(level, count):
                                                     May include a visual reference (chart/table/schedule).
                                                     If it does, also create the AI prompt to generate the visual reference; if not, return empty string for the prompt.
                                                     Also return type of the talk (talk, announcement, advertisement, radio advertisement, news report, broadcast, tour, excerpt from a meeting, or message) in 'type' array.
+                                                    Randomize correct answer letters
                                                     also return a brief summary of the talk within 20 words in 'summary' array.
                                                     return arrays"""},
-                {"role": "user", "content": f"Generate {count} non-repetetive questions. Difficulty level: {level}/5. Return JSON arrays."}
+                {"role": "user", "content": f"""Generate {count} non-repetetive questions.
+                 Avoid similar question from: {existing if existing else 'none'}.
+                 Difficulty level: {level}/3. Return JSON arrays."""
+                 }
             ],
             text_format=Result,
             temperature=1
@@ -233,14 +246,15 @@ class ToeicQuestionGenerator:
         self.part = part
         self.level = level
 
-    def generate_questions(self, count: int) -> List[Dict]:
+    def generate_questions(self, count: int, existing) -> List[Dict]:
         """Generate TOEIC questions."""
+        print(f"existing questions: {existing}")
         # check part
         if self.part not in [1, 2, 3, 4]:
             raise ValueError("Invalid part number. Must be 1, 2, 3, or 4.")
 
         if self.part == 1:
-            result = _generate_part1_questions(self.level, count)
+            result = _generate_part1_questions(self.level, count, existing=existing)
             for q in result:
                 q['img_prompt'] = q.pop('picture_prompt')
                 q['part'] = 1
@@ -277,7 +291,7 @@ class ToeicQuestionGenerator:
                 q['sex'] = json.dumps(q.pop('conv_sex'))
                 q['accent'] = json.dumps(q.pop('conv_accent'))
         elif self.part == 4:
-            result = _generate_part4_questions(self.level, count)
+            result = _generate_part4_questions(self.level, count, existing=existing)
             for q in result:
                 q['img_prompt'] = q.pop('reference_prompt')
                 q['prompt'] = json.dumps(q.pop('talk'))
@@ -355,6 +369,37 @@ class DatabaseManager:
 
         return inserted_count
 
+    def load_questions_from_db(self, part: int, level: int) -> List[str]:
+        """Load existing questions from the database for a specific part."""
+        existing_questions = []
+
+        cursor = self.connection.cursor()
+
+        if part not in [1, 2, 3, 4]:
+            logging.error("Invalid part number. Must be 1, 2, 3, or 4.")
+            return existing_questions
+
+        query = "SELECT * FROM questions WHERE part = ? AND level = ? ORDER BY id DESC LIMIT 100"
+
+        try:
+            cursor.execute(query, (part, level,))
+            rows = cursor.fetchall()
+            result = [dict(row) for row in rows]
+        except sqlite3.Error as e:
+            logging.error(f"Error loading questions from database: {e}")
+
+        if part == 1:
+            for q in result:
+                existing_questions.append(q[q['answer']])
+        elif part == 2:
+            for q in result:
+                existing_questions.append(q['question'])
+        else: # part 3 and 4
+            for q in result:
+                existing_questions.append(q['summary'])
+
+        return existing_questions
+
     def close(self) -> None:
         """Close the database connection."""
         if self.connection:
@@ -417,7 +462,9 @@ def main():
         logging.info(f"Generating {args.count} TOEIC questions...")
         logging.info(f"  Part: {args.part}, Level: {args.level}")
 
-        questions = generator.generate_questions(count=args.count)
+        existing_questions = db_manager.load_questions_from_db(part=args.part, level=args.level)
+
+        questions = generator.generate_questions(count=args.count, existing=existing_questions)
 
         if not questions:
             logging.error("No questions were generated")
