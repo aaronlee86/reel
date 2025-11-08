@@ -63,6 +63,7 @@ def _generate_part1_questions(level, count):
             input=[
                 {"role": "system", "content": f"""Create mock TOEIC listening Part 1 questions: a picture and 4 statements.
                  Create the AI prompt to generate the picture as well.
+                 also return a brief summary of the talk within 20 words in 'summary' array.
                  return arrays"""},
                 {"role": "user", "content": f"Generate {count} non-repetetive questions. Difficulty level: {level}/5. Return JSON arrays."}
             ],
@@ -117,9 +118,9 @@ def _generate_part3_questions(level, count):
     """Translate Chinese to colloquial American English"""
     class Result(BaseModel):
         reference_prompt: list[str]
-        conversation: list[list[str]]
-        conversation_sex: list[list[str]]
-        conversation_accent: list[list[str]]
+        conv: list[list[str]]
+        conv_sex: list[list[str]]
+        conv_accent: list[list[str]]
         question_1: list[str]
         A1: list[str]
         B1: list[str]
@@ -138,20 +139,20 @@ def _generate_part3_questions(level, count):
         C3: list[str]
         D3: list[str]
         answer3: list[str]
+        summary: list[str]
 
     try:
         response = client.responses.parse(
             model=ChatGPT_MODEL_VER,
             input=[
-                {"role": "system", "content": f"""Create mock TOEIC listening Part 3 questions: conversations between 2-3 speakers
-                 (mix of genders; 8% chance of same gender with different accents) with 3 followed-up questions each.
-                 Speaker's sex (man or woman) in conversation_sex for each sentence. Speaker's accent (Am,Cn,Br,or Au) in conversaction_accent for each sentence.
+                {"role": "system", "content": f"""Create mock TOEIC listening Part 3 questions: conversations between 2-3 speakers (mix of genders) with 3 followed-up questions each.
+                 Speaker's sex (man or woman) in conv_sex for each sentence. Speaker's accent (Am,Cn,Br,or Au) in conv_accent for each sentence.
                  Speakers of same sex must have different accent to differentiate.
                  The conversation should be 4–6 exchanges if 2 speakers; 6–8 exchanges if 3 speakers.
-                 realistic and relevant to business contexts.
-                 In returned conversation array, don't need name or sex, only script.
-                 The conversation may or may not refer to a chart or visual; if it does, also create the AI prompt to generate the reference (Chart or visual).
+                 In returned conv array, don't need name or sex, only script.
+                 The conversation may or may not refer to a chart or visual; if it does, also create the AI prompt to generate the reference (Chart or visual); if no reference, return empty string for the prompt.
                  In questions and options, if mentioning any speaker, speicify the gender (the man, men, woman, or women) but not accent.
+                 A brief summary of the conversation within 20 words in 'summary' array.
                  return arrays"""},
                 {"role": "user", "content": f"Generate {count} non-repetetive questions. Difficulty level: {level}/5. Return JSON arrays."}
             ],
@@ -194,6 +195,7 @@ def _generate_part4_questions(level, count):
         C3: list[str]
         D3: list[str]
         answer3: list[str]
+        summary: list[str]
 
     try:
         response = client.responses.parse(
@@ -203,6 +205,7 @@ def _generate_part4_questions(level, count):
                                                     May include a visual reference (chart/table/schedule).
                                                     If it does, also create the AI prompt to generate the visual reference; if not, return empty string for the prompt.
                                                     Also return type of the talk (talk, announcement, advertisement, radio advertisement, news report, broadcast, tour, excerpt from a meeting, or message) in 'type' array.
+                                                    also return a brief summary of the talk within 20 words in 'summary' array.
                                                     return arrays"""},
                 {"role": "user", "content": f"Generate {count} non-repetetive questions. Difficulty level: {level}/5. Return JSON arrays."}
             ],
@@ -262,7 +265,7 @@ class ToeicQuestionGenerator:
             result = _generate_part3_questions(self.level, count)
             for q in result:
                 q['img_prompt'] = q.pop('reference_prompt')
-                q['prompt'] = json.dumps(q.pop('conversation'))
+                q['prompt'] = json.dumps(q.pop('conv'))
                 q['part'] = 3
                 q["level"] = self.level
                 q['A'] = json.dumps([q.pop('A1'), q.pop('A2'), q.pop('A3')])
@@ -271,8 +274,8 @@ class ToeicQuestionGenerator:
                 q['D'] = json.dumps([q.pop('D1'), q.pop('D2'), q.pop('D3')])
                 q['answer'] = json.dumps([q.pop('answer1'), q.pop('answer2'), q.pop('answer3')])
                 q['question'] = json.dumps([q.pop('question_1'), q.pop('question_2'), q.pop('question_3')])
-                q['sex'] = json.dumps(q.pop('conversation_sex'))
-                q['accent'] = json.dumps(q.pop('conversation_accent'))
+                q['sex'] = json.dumps(q.pop('conv_sex'))
+                q['accent'] = json.dumps(q.pop('conv_accent'))
         elif self.part == 4:
             result = _generate_part4_questions(self.level, count)
             for q in result:
@@ -319,8 +322,8 @@ class DatabaseManager:
                 cursor.execute(
                     """
                     INSERT INTO questions
-                    (part, level, accent, sex, question, prompt, answer, A, B, C, D, img_prompt, type)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    (part, level, accent, sex, question, prompt, answer, A, B, C, D, img_prompt, type, summary)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         question.get("part"),
@@ -335,7 +338,8 @@ class DatabaseManager:
                         question.get("C"),
                         question.get("D"),
                         question.get("img_prompt"),
-                        question.get("type")
+                        question.get("type"),
+                        question.get("summary")
                     )
                 )
                 inserted_count += 1
