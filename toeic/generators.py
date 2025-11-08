@@ -20,12 +20,14 @@ def parse_or_string(s):
         return s
 
 class loadToeicSql:
-    def __init__(self, part, level, dbPath, **args):
+    def __init__(self, xid, qno, part, level, dbPath, **args):
         # Connect to database (creates it if it doesn't exist)
         self.part = int(part)
         self.level = int(level)
         self.conn = sqlite3.connect(dbPath)
         self.conn.row_factory = sqlite3.Row
+        self.xid = xid
+        self.qno = qno
 
         # parse sex and accent dicts
         sex, accent = args.get('sex', '{}'), args.get('accent', '{}')
@@ -35,7 +37,7 @@ class loadToeicSql:
 
     def run(self):
         cursor = self.conn.cursor()
-        query_template = 'SELECT * FROM questions WHERE part = ? AND level = ? AND used_xid = 0'
+        query_template = 'SELECT * FROM questions WHERE part = ? AND level = ? AND used_xid IS NULL'
         params = (self.part, self.level)
         try:
             # apply values to query
@@ -87,10 +89,10 @@ class loadToeicSql:
 
         # update the question as used
         try:
-            update_query = 'UPDATE questions SET used=1 WHERE id=?'
+            update_query = 'UPDATE questions SET used_xid = ?, used_qno = ? WHERE id=?'
             cursor = self.conn.cursor()
-            #cursor.execute(update_query, (result['id'],))
-            #self.conn.commit()
+            cursor.execute(update_query, (self.xid, self.qno, result['id'],))
+            self.conn.commit()
         except Exception as e:
             print(f"Error updating question as used: {e}")
             return None

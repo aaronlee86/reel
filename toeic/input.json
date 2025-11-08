@@ -2,6 +2,7 @@
   "template_csv": "template.csv",
   "instruction_csv": "instructions.csv",
   "output_filename": "result.csv",
+  "database_path": "../data/toeic.db",
   "files_to_copy": [
     "readme.txt"
   ]

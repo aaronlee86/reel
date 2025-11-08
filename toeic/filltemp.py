@@ -4,6 +4,8 @@ import sys
 import re
 import shutil
 import importlib
+import sqlite3
+import os
 from pathlib import Path
 
 def csv_escape_value(value):
@@ -32,6 +34,90 @@ class TemplateProcessor:
         self.output_folder = Path(output_folder)
         self.variables = {}
         self.config = None
+        self.created_output_folder = False
+        self.created_files = []
+        self.db_backup = None  # In-memory database backup
+        self.db_path = None  # Original database path
+
+    def rollback(self):
+        """Rollback any changes made during processing."""
+        print("Rolling back changes...")
+
+        # Restore database from memory backup if available
+        if self.db_backup and self.db_path:
+            try:
+                print(f"Restoring database from memory backup: {self.db_path}")
+
+                # Connect to the original database
+                disk_conn = sqlite3.connect(self.db_path)
+
+                # Restore from memory backup
+                self.db_backup.backup(disk_conn)
+
+                disk_conn.close()
+                self.db_backup.close()
+
+                print(f"Database restored: {self.db_path}")
+            except Exception as e:
+                print(f"Warning: Failed to restore database: {e}")
+
+        # Remove created files
+        for file_path in reversed(self.created_files):
+            try:
+                if file_path.exists():
+                    file_path.unlink()
+                    print(f"Removed file: {file_path}")
+            except Exception as e:
+                print(f"Warning: Failed to remove file {file_path}: {e}")
+
+        # Remove output folder if we created it
+        if self.created_output_folder and self.output_folder.exists():
+            try:
+                shutil.rmtree(self.output_folder)
+                print(f"Removed output folder: {self.output_folder}")
+            except Exception as e:
+                print(f"Warning: Failed to remove output folder: {e}")
+
+        print("Rollback complete.")
+
+    def backup(self):
+        """Create backup of SQLite database to memory before processing."""
+        print("Creating database backup...")
+
+        # Get database path from config
+        db_path = self.config.get('database_path')
+
+        if not db_path:
+            print("No database path specified in config. Skipping backup.")
+            return
+
+        self.db_path = Path(db_path)
+
+        # Check if database file exists
+        if not self.db_path.exists():
+            print(f"Warning: Database file not found: {self.db_path}")
+            print("Skipping backup.")
+            return
+
+        try:
+            # Connect to the disk database
+            print(f"Backing up database: {self.db_path}")
+            disk_conn = sqlite3.connect(str(self.db_path))
+
+            # Create an in-memory database
+            self.db_backup = sqlite3.connect(':memory:')
+
+            # Backup disk database to memory
+            disk_conn.backup(self.db_backup)
+
+            # Close disk connection (keep memory connection open)
+            disk_conn.close()
+
+            print(f"Database backed up to memory successfully.")
+
+        except Exception as e:
+            print(f"Error: Failed to backup database: {e}")
+            raise
 
     def load_config(self):
         """Load configuration from JSON file."""
@@ -40,7 +126,7 @@ class TemplateProcessor:
                 self.config = json.load(f)
 
             # Validate required fields
-            required_fields = ['template_csv', 'instruction_csv', 'output_filename']
+            required_fields = ['template_csv', 'instruction_csv', 'output_filename', 'database_path']
             for field in required_fields:
                 if field not in self.config:
                     raise ValueError(f"Missing required field in config: {field}")
@@ -87,14 +173,20 @@ class TemplateProcessor:
                         cls = getattr(module, class_name)
                     except (ValueError, ImportError, AttributeError) as e:
                         print(f"Error: Failed to import class '{classname}' at row {row_num}: {e}")
-                        sys.exit(1)
+                        raise
+
+                    try:
+                        # get qno (question number) parameter from variable name if exists
+                        qno = int(variable_name[1:])
+                    except ValueError:
+                        qno = None
 
                     try:
                         # Instantiate with parameters
-                        instance = cls(**kwargs)
+                        instance = cls(dbPath=self.db_path, xid=os.path.basename(self.output_folder), qno=qno, **kwargs)
                     except Exception as e:
                         print(f"Error: Failed to instantiate class '{classname}' at row {row_num}: {e}")
-                        sys.exit(1)
+                        raise
 
                     try:
                         result = instance.run()
@@ -103,11 +195,11 @@ class TemplateProcessor:
                             self.variables[variable_name] = result
                     except Exception as e:
                         print(f"Error: Failed to run class '{classname}' at row {row_num}: {e}")
-                        sys.exit(1)
+                        raise
 
         except FileNotFoundError:
             print(f"Error: Instruction CSV not found: {instruction_path}")
-            sys.exit(1)
+            raise
 
     def resolve_placeholder(self, var_path):
         """
@@ -297,36 +389,38 @@ class TemplateProcessor:
                 if unreplaced:
                     print(f"Error: Unreplaced placeholders found: {', '.join(set(unreplaced))}")
                     print("Hint: Check variable names and structure")
-                    sys.exit(1)
+                    raise ValueError(f"Unreplaced placeholders: {', '.join(set(unreplaced))}")
 
                 return '\n'.join(final_content_lines)
 
         except FileNotFoundError:
             print(f"Error: Template CSV not found: {template_path}")
-            sys.exit(1)
+            raise
 
     def create_output(self, processed_content):
         """Create output folder and write results."""
         # Check if output folder exists
         if self.output_folder.exists():
             print(f"Error: Output folder already exists: {self.output_folder}")
-            sys.exit(1)
+            raise FileExistsError(f"Output folder already exists: {self.output_folder}")
 
         # Create output folder
         try:
             self.output_folder.mkdir(parents=True)
+            self.created_output_folder = True
         except Exception as e:
             print(f"Error: Failed to create output folder: {e}")
-            sys.exit(1)
+            raise
 
         # Write processed CSV
         output_file = self.output_folder / self.config['output_filename']
         try:
             with open(output_file, 'w') as f:
                 f.write(processed_content)
+            self.created_files.append(output_file)
         except Exception as e:
             print(f"Error: Failed to write output file: {e}")
-            sys.exit(1)
+            raise
 
         # Copy additional files
         files_to_copy = self.config.get('files_to_copy', [])
@@ -343,32 +437,43 @@ class TemplateProcessor:
             try:
                 if not src.exists():
                     print(f"Error: File to copy not found: {src}")
-                    sys.exit(1)
+                    raise FileNotFoundError(f"File to copy not found: {src}")
 
                 # Create parent directories if needed
                 dst.parent.mkdir(parents=True, exist_ok=True)
 
                 shutil.copy2(src, dst)
+                self.created_files.append(dst)
                 print(f"Copied: {src} -> {dst}")
             except Exception as e:
                 print(f"Error: Failed to copy file '{src}': {e}")
-                sys.exit(1)
+                raise
 
     def run(self):
-        """Execute the complete processing pipeline."""
-        print("Loading configuration...")
-        self.load_config()
+        """Execute the complete processing pipeline with rollback on error."""
+        try:
+            print("Loading configuration...")
+            self.load_config()
 
-        print("Processing instructions...")
-        self.process_instructions()
+            print("Creating backup...")
+            self.backup()
 
-        print("Processing template...")
-        processed_content = self.process_template()
+            print("Processing instructions...")
+            self.process_instructions()
 
-        print("Creating output...")
-        self.create_output(processed_content)
+            print("Processing template...")
+            processed_content = self.process_template()
 
-        print(f"Success! Output created in: {self.output_folder}")
+            print("Creating output...")
+            self.create_output(processed_content)
+
+            print(f"Success! Output created in: {self.output_folder}")
+
+        except Exception as e:
+            # Rollback on any error
+            self.rollback()
+            print(f"\nFatal error: {e}")
+            sys.exit(1)
 
 def main():
     """Main entry point."""
