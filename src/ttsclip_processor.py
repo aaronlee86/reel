@@ -116,9 +116,18 @@ class JSONTransformer:
                 # Determine duration based on type
                 if event['type'] == 'video':
                     # Use video_folder to locate video file
-                    video_path = os.path.join(workspace_dir, video_folder, event['file'])
-                    if not os.path.exists(video_path):
-                        video_path = os.path.join(video_folder, event['file'])
+                    # Potential video file locations in order of preference
+                    video_paths = [
+                        os.path.join(workspace_dir, video_folder, event['file']),  # 1st: workspace/project/video/
+                        os.path.join(workspace_dir, event['file']),                # 2nd: workspace/project/
+                        os.path.join('assets', 'video', event['file']),            # 3rd: assets/video/
+                        os.path.join('assets', event['file'])                      # 4th: assets/
+                    ]
+
+                    # Find the first existing path
+                    video_path = next((path for path in video_paths if os.path.exists(path)), None)
+                    if not video_path:
+                        raise FileNotFoundError(f"Video file not found: {event['file']}")
 
                     total_duration = MediaDurationExtractor.get_media_duration(video_path)
                 elif event['type'] in ['image', 'text']:

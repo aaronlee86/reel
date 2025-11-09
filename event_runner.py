@@ -321,14 +321,22 @@ class VideoGenerator:
             raise VideoGenerationError("File is required for video clips")
 
         video_file = event["file"]
-        # Construct full video path
-        full_video_path = os.path.join(self.base_path, "video", video_file)
 
-        if not os.path.exists(full_video_path):
-            raise VideoGenerationError(f"video file not exist: {full_video_path}")
+        # Potential video file paths to check
+        video_paths = [
+            os.path.join(self.base_path, "video", video_file),  # First, check project video directory
+            os.path.join("assets", "video", video_file),        # Then, check assets/video
+            os.path.join("assets", video_file)                  # Finally, check assets directly
+        ]
 
-        # Create video clip
-        clip = VideoFileClip(full_video_path)
+        # Find the first existing path
+        full_video_path = next((path for path in video_paths if os.path.exists(path)), None)
+        print(f"Looking for video file: {video_file}, found: {full_video_path}")
+        if not full_video_path:
+            raise VideoGenerationError(f"Video file not found: {video_file}")
+
+        # Create video clip and resize to match target size
+        clip = VideoFileClip(full_video_path).resized(size)
 
         # Trim clip if duration specified
         if total_duration := event.get("total_duration"):
