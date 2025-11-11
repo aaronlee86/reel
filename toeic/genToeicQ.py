@@ -59,6 +59,7 @@ def _generate_part1_questions(level, count, existing=None):
         D: list[str]
         answer: list[str]
         explanation: list[str]
+        topic: list[str]
 
     try:
         response = client.responses.parse(
@@ -67,6 +68,7 @@ def _generate_part1_questions(level, count, existing=None):
                 {"role": "system", "content": f"""Create mock TOEIC listening Part 1 questions: a picture and 4 statements.
                  Create the AI prompt to generate the picture as well. Randomize correct answer letters.
                  For each question, provide a clear explanation (2-3 sentences) of why the correct answer is right and why the other options are wrong.
+                 Also assign a topic/category for each question (e.g., 'office', 'transportation', 'dining', 'outdoor activities', 'construction', 'shopping', 'healthcare', etc.).
                  Return arrays"""},
                 {"role": "user", "content": f"""Generate {count} non-repetetive questions.
                  Avoid similar question from: {existing if existing else 'none'}.
@@ -96,6 +98,7 @@ def _generate_part2_questions(level, count, existing=None):
         C: list[str]
         answer: list[str]
         explanation: list[str]
+        topic: list[str]
 
     try:
         response = client.responses.parse(
@@ -104,6 +107,7 @@ def _generate_part2_questions(level, count, existing=None):
                 {"role": "system", "content": f"""Create mock TOEIC listening Part 2 questions: a question or statement and 3 responses.
                  Randomize correct answer letters.
                  For each question, provide a clear explanation (2-3 sentences) of why the correct answer is the most appropriate response and why the other options are less suitable.
+                 Also assign a topic/category for each question (e.g., 'business meeting', 'phone conversation', 'scheduling', 'requests', 'offers', 'opinions', 'daily routine', etc.).
                  Return arrays"""},
                 {"role": "user", "content": f"""Generate {count} non-repetetive questions.
                  Avoid similar question from: {existing if existing else 'none'}.
@@ -153,6 +157,7 @@ def _generate_part3_questions(level, count, existing=None):
         answer3: list[str]
         explanation3: list[str]
         summary: list[str]
+        topic: list[str]
 
     try:
         response = client.responses.parse(
@@ -166,6 +171,7 @@ def _generate_part3_questions(level, count, existing=None):
                  The conversation may or may not refer to a chart or visual; if it does, also create the AI prompt to generate the reference (Chart or visual); if no reference, return empty string for the prompt.
                  In questions and options, if mentioning any speaker, speicify the gender (the man, men, woman, or women) but not accent.
                  For each of the 3 questions, provide a clear explanation (2-3 sentences) in explanation1, explanation2, and explanation3 fields of why the correct answer is right based on the conversation.
+                 Also assign a topic/category for each conversation (e.g., 'travel planning', 'project discussion', 'customer service', 'job interview', 'office supplies', 'event planning', etc.).
                  A brief summary of the conversation within 20 words in 'summary' array.
                  Randomize correct answer letters.
                  Return arrays"""},
@@ -216,6 +222,7 @@ def _generate_part4_questions(level, count, existing=None):
         answer3: list[str]
         explanation3: list[str]
         summary: list[str]
+        topic: list[str]
 
     try:
         response = client.responses.parse(
@@ -227,6 +234,7 @@ def _generate_part4_questions(level, count, existing=None):
                                                     Also return type of the talk (talk, announcement, advertisement, radio advertisement, news report, broadcast, tour, excerpt from a meeting, or message) in 'type' array.
                                                     For each of the 3 questions, provide a clear explanation (2-3 sentences) in explanation1, explanation2, and explanation3 fields of why the correct answer is right based on the talk.
                                                     Randomize correct answer letters.
+                                                    Also assign a topic/category for each talk (e.g., 'product launch', 'weather forecast', 'museum tour', 'company policy', 'special offer', 'event announcement', etc.).
                                                     Also return a brief summary of the talk within 20 words in 'summary' array.
                                                     Return arrays"""},
                 {"role": "user", "content": f"""Generate {count} non-repetetive questions.
@@ -352,8 +360,8 @@ class DatabaseManager:
                 cursor.execute(
                     """
                     INSERT INTO questions
-                    (part, level, accent, sex, question, prompt, answer, A, B, C, D, img_prompt, type, summary, explanation)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    (part, level, accent, sex, question, prompt, answer, A, B, C, D, img_prompt, type, summary, explanation, topic)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         question.get("part"),
@@ -370,7 +378,8 @@ class DatabaseManager:
                         question.get("img_prompt"),
                         question.get("type"),
                         question.get("summary"),
-                        question.get("explanation")
+                        question.get("explanation"),
+                        question.get("topic")
                     )
                 )
                 inserted_count += 1
