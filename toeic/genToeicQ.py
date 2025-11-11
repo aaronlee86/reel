@@ -50,7 +50,7 @@ ChatGPT_MODEL_VER = "gpt-5-mini-2025-08-07"
 
 
 def _generate_part1_questions(level, count, existing=None):
-    """Translate Chinese to colloquial American English"""
+    """Generate Part 1 questions with explanations"""
     class Result(BaseModel):
         picture_prompt: list[str]
         A: list[str]
@@ -58,14 +58,16 @@ def _generate_part1_questions(level, count, existing=None):
         C: list[str]
         D: list[str]
         answer: list[str]
+        explanation: list[str]
 
     try:
         response = client.responses.parse(
             model=ChatGPT_MODEL_VER,
             input=[
                 {"role": "system", "content": f"""Create mock TOEIC listening Part 1 questions: a picture and 4 statements.
-                 Create the AI prompt to generate the picture as well. Randomize correct answer letters
-                 return arrays"""},
+                 Create the AI prompt to generate the picture as well. Randomize correct answer letters.
+                 For each question, provide a clear explanation (2-3 sentences) of why the correct answer is right and why the other options are wrong.
+                 Return arrays"""},
                 {"role": "user", "content": f"""Generate {count} non-repetetive questions.
                  Avoid similar question from: {existing if existing else 'none'}.
                  Difficulty level: {level}/3. Return JSON arrays."""}
@@ -86,21 +88,23 @@ def _generate_part1_questions(level, count, existing=None):
         return []
 
 def _generate_part2_questions(level, count, existing=None):
-    """Translate Chinese to colloquial American English"""
+    """Generate Part 2 questions with explanations"""
     class Result(BaseModel):
         question: list[str]
         A: list[str]
         B: list[str]
         C: list[str]
         answer: list[str]
+        explanation: list[str]
 
     try:
         response = client.responses.parse(
             model=ChatGPT_MODEL_VER,
             input=[
                 {"role": "system", "content": f"""Create mock TOEIC listening Part 2 questions: a question or statement and 3 responses.
-                 Randomize correct answer letters
-                 return arrays"""},
+                 Randomize correct answer letters.
+                 For each question, provide a clear explanation (2-3 sentences) of why the correct answer is the most appropriate response and why the other options are less suitable.
+                 Return arrays"""},
                 {"role": "user", "content": f"""Generate {count} non-repetetive questions.
                  Avoid similar question from: {existing if existing else 'none'}.
                  Difficulty level: {level}/3. Return JSON arrays."""}
@@ -121,7 +125,7 @@ def _generate_part2_questions(level, count, existing=None):
         return []
 
 def _generate_part3_questions(level, count, existing=None):
-    """Translate Chinese to colloquial American English"""
+    """Generate Part 3 questions with explanations"""
     class Result(BaseModel):
         reference_prompt: list[str]
         conv: list[list[str]]
@@ -133,18 +137,21 @@ def _generate_part3_questions(level, count, existing=None):
         C1: list[str]
         D1: list[str]
         answer1: list[str]
+        explanation1: list[str]
         question_2: list[str]
         A2: list[str]
         B2: list[str]
         C2: list[str]
         D2: list[str]
         answer2: list[str]
+        explanation2: list[str]
         question_3: list[str]
         A3: list[str]
         B3: list[str]
         C3: list[str]
         D3: list[str]
         answer3: list[str]
+        explanation3: list[str]
         summary: list[str]
 
     try:
@@ -158,9 +165,10 @@ def _generate_part3_questions(level, count, existing=None):
                  In returned conv array, don't need name or sex, only script.
                  The conversation may or may not refer to a chart or visual; if it does, also create the AI prompt to generate the reference (Chart or visual); if no reference, return empty string for the prompt.
                  In questions and options, if mentioning any speaker, speicify the gender (the man, men, woman, or women) but not accent.
+                 For each of the 3 questions, provide a clear explanation (2-3 sentences) in explanation1, explanation2, and explanation3 fields of why the correct answer is right based on the conversation.
                  A brief summary of the conversation within 20 words in 'summary' array.
-                 Randomize correct answer letters
-                 return arrays"""},
+                 Randomize correct answer letters.
+                 Return arrays"""},
                 {"role": "user", "content": f"""Generate {count} non-repetetive questions.
                  Avoid similar question from: {existing if existing else 'none'}.
                  Difficulty level: {level}/3. Return JSON arrays."""}
@@ -181,7 +189,7 @@ def _generate_part3_questions(level, count, existing=None):
         return []
 
 def _generate_part4_questions(level, count, existing=None):
-    """Translate Chinese to colloquial American English"""
+    """Generate Part 4 questions with explanations"""
     class Result(BaseModel):
         reference_prompt: list[str]
         talk: list[str]
@@ -192,18 +200,21 @@ def _generate_part4_questions(level, count, existing=None):
         C1: list[str]
         D1: list[str]
         answer1: list[str]
+        explanation1: list[str]
         question_2: list[str]
         A2: list[str]
         B2: list[str]
         C2: list[str]
         D2: list[str]
         answer2: list[str]
+        explanation2: list[str]
         question_3: list[str]
         A3: list[str]
         B3: list[str]
         C3: list[str]
         D3: list[str]
         answer3: list[str]
+        explanation3: list[str]
         summary: list[str]
 
     try:
@@ -214,9 +225,10 @@ def _generate_part4_questions(level, count, existing=None):
                                                     May include a visual reference (chart/table/schedule).
                                                     If it does, also create the AI prompt to generate the visual reference; if not, return empty string for the prompt.
                                                     Also return type of the talk (talk, announcement, advertisement, radio advertisement, news report, broadcast, tour, excerpt from a meeting, or message) in 'type' array.
-                                                    Randomize correct answer letters
-                                                    also return a brief summary of the talk within 20 words in 'summary' array.
-                                                    return arrays"""},
+                                                    For each of the 3 questions, provide a clear explanation (2-3 sentences) in explanation1, explanation2, and explanation3 fields of why the correct answer is right based on the talk.
+                                                    Randomize correct answer letters.
+                                                    Also return a brief summary of the talk within 20 words in 'summary' array.
+                                                    Return arrays"""},
                 {"role": "user", "content": f"""Generate {count} non-repetetive questions.
                  Avoid similar question from: {existing if existing else 'none'}.
                  Difficulty level: {level}/3. Return JSON arrays."""
@@ -264,9 +276,10 @@ class ToeicQuestionGenerator:
                 q['C'] = q.pop('C')
                 q['D'] = q.pop('D')
                 q['answer'] = q.pop('answer')
+                q['explanation'] = q.pop('explanation')
 
         elif self.part == 2:
-            result = _generate_part2_questions(self.level, count)
+            result = _generate_part2_questions(self.level, count, existing=existing)
             for q in result:
                 q['part'] = 2
                 q["level"] = self.level
@@ -274,9 +287,10 @@ class ToeicQuestionGenerator:
                 q['B'] = q.pop('B')
                 q['C'] = q.pop('C')
                 q['answer'] = q.pop('answer')
+                q['explanation'] = q.pop('explanation')
 
         elif self.part == 3:
-            result = _generate_part3_questions(self.level, count)
+            result = _generate_part3_questions(self.level, count, existing=existing)
             for q in result:
                 q['img_prompt'] = q.pop('reference_prompt')
                 q['prompt'] = json.dumps(q.pop('conv'))
@@ -288,6 +302,7 @@ class ToeicQuestionGenerator:
                 q['D'] = json.dumps([q.pop('D1'), q.pop('D2'), q.pop('D3')])
                 q['answer'] = json.dumps([q.pop('answer1'), q.pop('answer2'), q.pop('answer3')])
                 q['question'] = json.dumps([q.pop('question_1'), q.pop('question_2'), q.pop('question_3')])
+                q['explanation'] = json.dumps([q.pop('explanation1'), q.pop('explanation2'), q.pop('explanation3')])
                 q['sex'] = json.dumps(q.pop('conv_sex'))
                 q['accent'] = json.dumps(q.pop('conv_accent'))
         elif self.part == 4:
@@ -303,6 +318,7 @@ class ToeicQuestionGenerator:
                 q['D'] = json.dumps([q.pop('D1'), q.pop('D2'), q.pop('D3')])
                 q['answer'] = json.dumps([q.pop('answer1'), q.pop('answer2'), q.pop('answer3')])
                 q['question'] = json.dumps([q.pop('question_1'), q.pop('question_2'), q.pop('question_3')])
+                q['explanation'] = json.dumps([q.pop('explanation1'), q.pop('explanation2'), q.pop('explanation3')])
 
         return result
 
@@ -336,8 +352,8 @@ class DatabaseManager:
                 cursor.execute(
                     """
                     INSERT INTO questions
-                    (part, level, accent, sex, question, prompt, answer, A, B, C, D, img_prompt, type, summary)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    (part, level, accent, sex, question, prompt, answer, A, B, C, D, img_prompt, type, summary, explanation)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         question.get("part"),
@@ -353,7 +369,8 @@ class DatabaseManager:
                         question.get("D"),
                         question.get("img_prompt"),
                         question.get("type"),
-                        question.get("summary")
+                        question.get("summary"),
+                        question.get("explanation")
                     )
                 )
                 inserted_count += 1
