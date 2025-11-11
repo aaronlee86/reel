@@ -50,6 +50,10 @@ class TextSceneConverter(SceneConverter):
            raise ValueError(f"Invalid valign value: {valign}. Must be 'top', 'center', or 'bottom'.")
 
         # Validate text configuration
+
+        # Create a new list to store valid entries
+        valid_text_entries = []
+
         for entry in text_entries:
             # Validate font configuration
             if 'font' not in entry:
@@ -60,6 +64,11 @@ class TextSceneConverter(SceneConverter):
                 raise ValueError("Font file is required")
             if 'size' not in font:
                 raise ValueError("Font size is required")
+
+            # Remove entry if font size is <= 0
+            if font['size'] <= 0:
+                continue  # Skip this entry
+
             if 'color' not in font:
                 raise ValueError("Font color is required")
 
@@ -71,12 +80,15 @@ class TextSceneConverter(SceneConverter):
 
             font['file'] = font_path
 
+            # Add valid entry to the list
+            valid_text_entries.append(entry)
+
         # Get the appropriate strategy
         strategy = TextSceneStrategyFactory.get_strategy(mode)
 
         # Calculate text positions using the strategy's method
         positioned_sentences = strategy.calculate_text_positions(
-            text_entries,
+            valid_text_entries,
             self.screen_size,
             valign=valign,
             halign=halign,
