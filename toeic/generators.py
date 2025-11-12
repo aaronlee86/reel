@@ -37,15 +37,40 @@ class loadToeicSql:
 
     def run(self):
         cursor = self.conn.cursor()
-        query_template = 'SELECT * FROM questions WHERE part = ? AND level = ? AND valid = 1 AND used_xid IS NULL'
-        params = (self.part, self.level)
+
+        # First, check if a question already exists for this xid and qno
+        check_query = 'SELECT * FROM questions WHERE used_xid = ? AND used_qno = ?'
+        check_params = (self.xid, self.qno)
+
         try:
-            # apply values to query
-            cursor.execute(query_template, params)
-            result = dict(cursor.fetchone())  # Get one row
+            cursor.execute(check_query, check_params)
+            existing_result = cursor.fetchone()
+
+            if existing_result:
+                # Question already exists for this xid/qno, return it
+                print(f"Found existing question for xid={self.xid}, qno={self.qno}")
+                result = dict(existing_result)
+            else:
+                # No existing question, fetch a new unused one randomly
+                query_template = 'SELECT * FROM questions WHERE part = ? AND level = ? AND valid = 1 AND used_xid IS NULL ORDER BY RANDOM() LIMIT 1'
+                params = (self.part, self.level)
+                cursor.execute(query_template, params)
+                fetched_result = cursor.fetchone()
+
+                if not fetched_result:
+                    final_query = query_template.replace('?', '{}').format(*params)
+                    print(f"No matching found: {final_query}")
+                    return None
+
+                result = dict(fetched_result)
+
+                # Mark the new question as used
+                update_query = 'UPDATE questions SET used_xid = ?, used_qno = ? WHERE id=?'
+                cursor.execute(update_query, (self.xid, self.qno, result['id']))
+                self.conn.commit()
+
         except Exception as e:
-            final_query = query_template.replace('?', '{}').format(*params)
-            print(f"No matching found: {final_query}")
+            print(f"Error in query execution: {e}")
             return None
         finally:
             cursor.close()
@@ -81,23 +106,6 @@ class loadToeicSql:
         except Exception as e:
             print(f"Error getting TTS settings from sex: {result['sex']} and accent: {result['accent']}: {e}")
             return None
-
-
-        # DEBUG: print each element and type of result
-        # for key, value in result.items():
-        #    print(f"{key}: {value} (type: {type(value)})")
-
-        # update the question as used
-        try:
-            update_query = 'UPDATE questions SET used_xid = ?, used_qno = ? WHERE id=?'
-            cursor = self.conn.cursor()
-            cursor.execute(update_query, (self.xid, self.qno, result['id'],))
-            self.conn.commit()
-        except Exception as e:
-            print(f"Error updating question as used: {e}")
-            return None
-        finally:
-            cursor.close()
 
         return result
 
