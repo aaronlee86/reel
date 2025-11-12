@@ -48,6 +48,33 @@ logging.info("done")
 ChatGPT_MODEL_VER = "gpt-5-mini-2025-08-07"
 
 
+def validate_question(question_data: Dict, part: int) -> int:
+    """
+    Validate if the answer in the question is actually correct.
+    Returns 1 if valid, 0 if invalid.
+    """
+    if part == 1:
+        correct_answer = question_data.get('answer')
+        options = ['A', 'B', 'C', 'D']
+        if correct_answer in options:
+            return 1
+    elif part == 2:
+        correct_answer = question_data.get('answer')
+        options = ['A', 'B', 'C']
+        if correct_answer in options:
+            return 1
+    elif part in [3, 4]:
+        options = ['A', 'B', 'C', 'D']
+        try:
+            answers = json.loads(question_data.get('answer', '[]'))
+            # if answers is a list of length 3 and all answers are in options, return 1
+            if (isinstance(answers, list) and len(answers) == 3 and
+                all(ans in options for ans in answers)):
+                return 1
+        except json.JSONDecodeError:
+            return 0
+    return 0  # Default to invalid if validation fails
+
 
 def _generate_part1_questions(level, count, existing=None):
     """Generate Part 1 questions with explanations"""
@@ -285,6 +312,7 @@ class ToeicQuestionGenerator:
                 q['D'] = q.pop('D')
                 q['answer'] = q.pop('answer')
                 q['explanation'] = q.pop('explanation')
+                q['valid'] = validate_question(q, self.part)
 
         elif self.part == 2:
             result = _generate_part2_questions(self.level, count, existing=existing)
@@ -296,6 +324,7 @@ class ToeicQuestionGenerator:
                 q['C'] = q.pop('C')
                 q['answer'] = q.pop('answer')
                 q['explanation'] = q.pop('explanation')
+                q['valid'] = validate_question(q, self.part)
 
         elif self.part == 3:
             result = _generate_part3_questions(self.level, count, existing=existing)
@@ -313,6 +342,8 @@ class ToeicQuestionGenerator:
                 q['explanation'] = json.dumps([q.pop('explanation1'), q.pop('explanation2'), q.pop('explanation3')])
                 q['sex'] = json.dumps(q.pop('conv_sex'))
                 q['accent'] = json.dumps(q.pop('conv_accent'))
+                q['valid'] = validate_question(q, self.part)
+
         elif self.part == 4:
             result = _generate_part4_questions(self.level, count, existing=existing)
             for q in result:
@@ -327,6 +358,7 @@ class ToeicQuestionGenerator:
                 q['answer'] = json.dumps([q.pop('answer1'), q.pop('answer2'), q.pop('answer3')])
                 q['question'] = json.dumps([q.pop('question_1'), q.pop('question_2'), q.pop('question_3')])
                 q['explanation'] = json.dumps([q.pop('explanation1'), q.pop('explanation2'), q.pop('explanation3')])
+                q['valid'] = validate_question(q, self.part)
 
         return result
 
@@ -360,8 +392,8 @@ class DatabaseManager:
                 cursor.execute(
                     """
                     INSERT INTO questions
-                    (part, level, accent, sex, question, prompt, answer, A, B, C, D, img_prompt, type, summary, explanation, topic)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    (part, level, accent, sex, question, prompt, answer, A, B, C, D, img_prompt, type, summary, explanation, topic, valid)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         question.get("part"),
@@ -379,7 +411,8 @@ class DatabaseManager:
                         question.get("type"),
                         question.get("summary"),
                         question.get("explanation"),
-                        question.get("topic")
+                        question.get("topic"),
+                        question.get("valid")
                     )
                 )
                 inserted_count += 1
@@ -405,7 +438,7 @@ class DatabaseManager:
             logging.error("Invalid part number. Must be 1, 2, 3, or 4.")
             return existing_questions
 
-        query = "SELECT * FROM questions WHERE part = ? AND level = ? ORDER BY id DESC LIMIT 100"
+        query = "SELECT * FROM questions WHERE part = ? AND level = ? AND valid = 1 ORDER BY id DESC LIMIT 100"
 
         try:
             cursor.execute(query, (part, level,))
@@ -497,6 +530,12 @@ def main():
             sys.exit(1)
 
         logging.info(f"Generated {len(questions)} questions successfully")
+
+        # Log validation summary
+        valid_count = sum(1 for q in questions if q.get('valid', 0) == 1)
+        invalid_count = len(questions) - valid_count
+        logging.info(f"Validation summary: {valid_count} valid, {invalid_count} invalid")
+
         logging.info("Writing to database...")
 
         inserted_count = db_manager.insert_questions(args.part, args.level, questions)

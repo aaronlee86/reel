@@ -37,7 +37,7 @@ class loadToeicSql:
 
     def run(self):
         cursor = self.conn.cursor()
-        query_template = 'SELECT * FROM questions WHERE part = ? AND level = ? AND used_xid IS NULL'
+        query_template = 'SELECT * FROM questions WHERE part = ? AND level = ? AND valid = 1 AND used_xid IS NULL'
         params = (self.part, self.level)
         try:
             # apply values to query
