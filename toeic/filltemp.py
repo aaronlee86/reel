@@ -6,7 +6,9 @@ import shutil
 import importlib
 import sqlite3
 import os
+import argparse
 from pathlib import Path
+from datetime import datetime
 
 def csv_escape_value(value):
         """
@@ -29,13 +31,15 @@ def csv_escape_value(value):
 class TemplateProcessor:
     """Main class for processing CSV templates with dynamic variable replacement."""
 
-    def __init__(self, config_path, output_folder):
+    def __init__(self, config_path, output_folder, overwrite=False):
         self.config_path = Path(config_path)
         self.output_folder = Path(output_folder)
+        self.overwrite = overwrite
         self.variables = {}
         self.config = None
         self.created_output_folder = False
         self.created_files = []
+        self.backup_files = []  # Track backed up files for rollback
         self.db_backup = None  # In-memory database backup
         self.db_path = None  # Original database path
 
@@ -60,6 +64,15 @@ class TemplateProcessor:
                 print(f"Database restored: {self.db_path}")
             except Exception as e:
                 print(f"Warning: Failed to restore database: {e}")
+
+        # Restore backed up files
+        for backup_path, original_path in reversed(self.backup_files):
+            try:
+                if backup_path.exists():
+                    shutil.move(str(backup_path), str(original_path))
+                    print(f"Restored backup: {original_path}")
+            except Exception as e:
+                print(f"Warning: Failed to restore backup {backup_path}: {e}")
 
         # Remove created files
         for file_path in reversed(self.created_files):
@@ -117,6 +130,37 @@ class TemplateProcessor:
 
         except Exception as e:
             print(f"Error: Failed to backup database: {e}")
+            raise
+
+    def backup_file(self, file_path):
+        """
+        Create a timestamped backup of a file.
+
+        Args:
+            file_path: Path to the file to backup
+
+        Returns:
+            Path to the backup file
+        """
+        file_path = Path(file_path)
+
+        if not file_path.exists():
+            return None
+
+        # Generate timestamp
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        # Create backup filename with timestamp
+        backup_name = f"{file_path.stem}_{timestamp}{file_path.suffix}"
+        backup_path = file_path.parent / backup_name
+
+        try:
+            shutil.copy2(file_path, backup_path)
+            print(f"Backed up: {file_path} -> {backup_path}")
+            self.backup_files.append((backup_path, file_path))
+            return backup_path
+        except Exception as e:
+            print(f"Warning: Failed to backup file {file_path}: {e}")
             raise
 
     def load_config(self):
@@ -401,23 +445,31 @@ class TemplateProcessor:
         """Create output folder and write results."""
         # Check if output folder exists
         if self.output_folder.exists():
-            print(f"Error: Output folder already exists: {self.output_folder}")
-            raise FileExistsError(f"Output folder already exists: {self.output_folder}")
+            if not self.overwrite:
+                print(f"Error: Output folder already exists: {self.output_folder}")
+                raise FileExistsError(f"Output folder already exists: {self.output_folder}")
+            else:
+                print(f"Warning: Output folder exists, will overwrite files: {self.output_folder}")
+        else:
+            # Create output folder
+            try:
+                self.output_folder.mkdir(parents=True)
+                self.created_output_folder = True
+            except Exception as e:
+                print(f"Error: Failed to create output folder: {e}")
+                raise
 
-        # Create output folder
-        try:
-            self.output_folder.mkdir(parents=True)
-            self.created_output_folder = True
-        except Exception as e:
-            print(f"Error: Failed to create output folder: {e}")
-            raise
-
-        # Write processed CSV
+        # Write processed CSV (with backup if overwriting)
         output_file = self.output_folder / self.config['output_filename']
         try:
+            # Backup existing file if it exists and we're overwriting
+            if output_file.exists() and self.overwrite:
+                self.backup_file(output_file)
+
             with open(output_file, 'w') as f:
                 f.write(processed_content)
             self.created_files.append(output_file)
+            print(f"Written: {output_file}")
         except Exception as e:
             print(f"Error: Failed to write output file: {e}")
             raise
@@ -441,6 +493,10 @@ class TemplateProcessor:
 
                 # Create parent directories if needed
                 dst.parent.mkdir(parents=True, exist_ok=True)
+
+                # Backup existing file if it exists and we're overwriting
+                if dst.exists() and self.overwrite:
+                    self.backup_file(dst)
 
                 shutil.copy2(src, dst)
                 self.created_files.append(dst)
@@ -477,14 +533,22 @@ class TemplateProcessor:
 
 def main():
     """Main entry point."""
-    if len(sys.argv) != 3:
-        print("Usage: python filltemp.py input.json output_folder")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description='Process CSV templates with dynamic variable replacement.',
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
 
-    config_path = sys.argv[1]
-    output_folder = sys.argv[2]
+    parser.add_argument('config_path',
+                        help='Path to the JSON configuration file')
+    parser.add_argument('output_folder',
+                        help='Path to the output folder')
+    parser.add_argument('--overwrite',
+                        action='store_true',
+                        help='Overwrite existing files (creates timestamped backups)')
 
-    processor = TemplateProcessor(config_path, output_folder)
+    args = parser.parse_args()
+
+    processor = TemplateProcessor(args.config_path, args.output_folder, overwrite=args.overwrite)
     processor.run()
 
 
