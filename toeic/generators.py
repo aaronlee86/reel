@@ -20,7 +20,7 @@ def parse_or_string(s):
         return s
 
 class loadToeicSql:
-    def __init__(self, xid, qno, part, level, dbPath, **args):
+    def __init__(self, xid, qno, part, level, dbPath, img, **args):
         # Connect to database (creates it if it doesn't exist)
         self.part = int(part)
         self.level = int(level)
@@ -28,6 +28,7 @@ class loadToeicSql:
         self.conn.row_factory = sqlite3.Row
         self.xid = xid
         self.qno = qno
+        self.img = True if img == '1' else False
 
         # parse sex and accent dicts
         sex, accent = args.get('sex', '{}'), args.get('accent', '{}')
@@ -52,7 +53,10 @@ class loadToeicSql:
                 result = dict(existing_result)
             else:
                 # No existing question, fetch a new unused one randomly
-                query_template = 'SELECT * FROM questions WHERE part = ? AND level = ? AND valid = 1 AND used_xid IS NULL ORDER BY RANDOM() LIMIT 1'
+                if self.img:
+                    query_template = 'SELECT * FROM questions WHERE part = ? AND level = ? AND valid = 1 AND used_xid IS NULL AND img IS NOT NULL ORDER BY RANDOM() LIMIT 1'
+                else:
+                    query_template = 'SELECT * FROM questions WHERE part = ? AND level = ? AND valid = 1 AND used_xid IS NULL AND img IS NULL ORDER BY RANDOM() LIMIT 1'
                 params = (self.part, self.level)
                 cursor.execute(query_template, params)
                 fetched_result = cursor.fetchone()
@@ -210,3 +214,20 @@ def getTtsSettings(accents, sexes):
     else:
         # Mixed input types
         raise ValueError("Inputs must be either both lists or both strings")
+
+class setCoverImg:
+    def __init__(self, xid, **args):
+        self.xid = xid
+
+    def run(self):
+        return self.xid
+
+class passThrough:
+    def __init__(self, value, **args):
+        try:
+            self.value = json.loads(value)
+        except json.JSONDecodeError:
+            self.value = str(value)
+
+    def run(self):
+        return self.value

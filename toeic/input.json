@@ -1,9 +1,9 @@
 {
-  "template_csv": "template.csv",
+  "template_csv": "template_sample.csv",
   "instruction_csv": "instructions.csv",
-  "output_filename": "result.csv",
+  "output_filename": "script.csv",
   "database_path": "../data/toeic.db",
   "files_to_copy": [
-    "readme.txt"
+    "config.json"
   ]
 }

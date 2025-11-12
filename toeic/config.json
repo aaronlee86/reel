@@ -1,0 +1,17 @@
+{
+  "screen_size": [1980, 1020],
+  "font": {
+    "ttf": "font-bold.ttf",
+    "size": 42,
+    "color": "#000000"
+  },
+  "fps": 24,
+  "tts": {
+    "tts_engine": "eleven",
+    "voice": "jsCqWAovK2LkecY7zXl4"
+  },
+  "line_spacing": 5,
+  "para_spacing": 30,
+  "v_padding": 200,
+  "h_padding": 105
+}
