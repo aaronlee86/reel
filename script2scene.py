@@ -296,7 +296,7 @@ class Script2Scene:
             try:
                 font_config['size'] = int(row['font_size'])
             except ValueError as e:
-                raise ValueError(f"Invalid font_size format: {e}")
+                raise Script2SceneError(f"Invalid font_size format: {e}")
         if row.get('font_color', ''):
             font_config['color'] = row['font_color']
 
@@ -338,14 +338,17 @@ class Script2Scene:
                         'voice': voice_lines[i],
                         'speed': float(speed_lines[i])
                     }
-                except ValueError:
-                    raise Script2SceneError(f"Invalid pregap format in TTS line {i+1}")
+                except ValueError as e:
+                    raise Script2SceneError(f"Invalid pregap or speed format in TTS line {i+1}: {e}")
             else:
-                tts_config = {
-                    'tts_engine': tts_line.strip(),
-                    'voice': voice_lines[i],
-                    'speed': float(speed_lines[i])
-                }
+                try:
+                    tts_config = {
+                        'tts_engine': tts_line.strip(),
+                        'voice': voice_lines[i],
+                        'speed': float(speed_lines[i])
+                    }
+                except ValueError as e:
+                    raise Script2SceneError(f"Invalid speed format in TTS line {i+1}: {e}")
 
             tts_configs.append(tts_config)
 
@@ -484,7 +487,10 @@ class Script2Scene:
 
             # Add duration if available
             if row.get('duration'):
-                text_entry['duration'] = float(row['duration'])
+                try:
+                    text_entry['duration'] = float(row['duration'])
+                except ValueError as e:
+                    raise Script2SceneError(f"Invalid duration value in row {i+1}: {row['duration']} - {e}")
 
             # Only add line_spacing if it's not empty
             if row.get('line_spacing', '').strip():
@@ -506,15 +512,15 @@ class Script2Scene:
             if row.get('pregap'):
                 try:
                     text_entry['pregap'] = float(row['pregap'])
-                except ValueError:
-                    raise Script2SceneError(f"Invalid pregap value: {row['pregap']}")
+                except ValueError as e:
+                    raise Script2SceneError(f"Invalid pregap value in row {i+1}: {row['pregap']} - {e}")
 
             # Add postgap if specified in the row
             if row.get('postgap'):
                 try:
                     text_entry['postgap'] = float(row['postgap'])
-                except ValueError:
-                    raise Script2SceneError(f"Invalid postgap value: {row['postgap']}")
+                except ValueError as e:
+                    raise Script2SceneError(f"Invalid postgap value in row {i+1}: {row['postgap']} - {e}")
 
             scene['text'].append(text_entry)
 
@@ -538,8 +544,8 @@ class Script2Scene:
         if first_row.get('duration'):
             try:
                 scene['duration'] = float(first_row['duration'])
-            except ValueError:
-                raise Script2SceneError(f"Invalid duration value: {first_row['duration']}")
+            except ValueError as e:
+                raise Script2SceneError(f"Invalid duration value for image scene: {first_row['duration']} - {e}")
 
         # Add TTS audio if text is provided
         if first_row.get('text', '').strip():
@@ -555,15 +561,15 @@ class Script2Scene:
         if first_row.get('pregap'):
             try:
                 scene['pregap'] = float(first_row['pregap'])
-            except ValueError:
-                raise Script2SceneError(f"Invalid pregap value: {first_row['pregap']}")
+            except ValueError as e:
+                raise Script2SceneError(f"Invalid pregap value for image scene: {first_row['pregap']} - {e}")
 
         # Add postgap if specified in the row
         if first_row.get('postgap'):
             try:
                 scene['postgap'] = float(first_row['postgap'])
-            except ValueError:
-                raise Script2SceneError(f"Invalid postgap value: {first_row['postgap']}")
+            except ValueError as e:
+                raise Script2SceneError(f"Invalid postgap value for image scene: {first_row['postgap']} - {e}")
 
         return scene
 
@@ -578,21 +584,24 @@ class Script2Scene:
 
         # Add duration if available
         if first_row.get('duration'):
-            scene['duration'] = float(first_row['duration'])
+            try:
+                scene['duration'] = float(first_row['duration'])
+            except ValueError as e:
+                raise Script2SceneError(f"Invalid duration value for video scene: {first_row['duration']} - {e}")
 
         # Add pregap if specified in the row
         if first_row.get('pregap'):
             try:
                 scene['pregap'] = float(first_row['pregap'])
-            except ValueError:
-                raise Script2SceneError(f"Invalid pregap value: {first_row['pregap']}")
+            except ValueError as e:
+                raise Script2SceneError(f"Invalid pregap value for video scene: {first_row['pregap']} - {e}")
 
         # Add postgap if specified in the row
         if first_row.get('postgap'):
             try:
                 scene['postgap'] = float(first_row['postgap'])
-            except ValueError:
-                raise Script2SceneError(f"Invalid postgap value: {first_row['postgap']}")
+            except ValueError as e:
+                raise Script2SceneError(f"Invalid postgap value for video scene: {first_row['postgap']} - {e}")
 
         return scene
 
@@ -732,7 +741,10 @@ class Script2Scene:
 
                 # Add duration if available
                 if row.get('duration'):
-                    text_entry['duration'] = float(row['duration'])
+                    try:
+                        text_entry['duration'] = float(row['duration'])
+                    except ValueError as e:
+                        raise Script2SceneError(f"Invalid duration value in free scene row {i+1}: {row['duration']} - {e}")
 
                 # Add l_padding handling
                 if row.get('l_padding'):
@@ -759,14 +771,14 @@ class Script2Scene:
                 if row.get('pregap'):
                     try:
                         text_entry['pregap'] = float(row['pregap'])
-                    except ValueError:
-                        raise Script2SceneError(f"Invalid pregap value: {row['pregap']}")
+                    except ValueError as e:
+                        raise Script2SceneError(f"Invalid pregap value in free scene row {i+1}: {row['pregap']} - {e}")
 
                 if row.get('postgap'):
                     try:
                         text_entry['postgap'] = float(row['postgap'])
-                    except ValueError:
-                        raise Script2SceneError(f"Invalid postgap value: {row['postgap']}")
+                    except ValueError as e:
+                        raise Script2SceneError(f"Invalid postgap value in free scene row {i+1}: {row['postgap']} - {e}")
 
                 scene['text'].append(text_entry)
                 scene['valign'] = 'top'
@@ -824,19 +836,23 @@ class Script2Scene:
 
         self.scenes = []
 
-        for mode, group_rows in grouped_rows:
-            if mode in self.TEXT_MODES:
-                scene = self.create_text_scene(mode, group_rows)
-            elif mode == 'image':
-                scene = self.create_image_scene(group_rows)
-            elif mode == 'video':
-                scene = self.create_video_scene(group_rows)
-            elif mode == 'free':
-                scene = self.create_free_scene(group_rows)
-            else:
-                raise Script2SceneError(f"Unsupported mode: {mode}")
-
-            self.scenes.append(scene)
+        try:
+            cnt = 1
+            for mode, group_rows in grouped_rows:
+                if mode in self.TEXT_MODES:
+                    scene = self.create_text_scene(mode, group_rows)
+                elif mode == 'image':
+                    scene = self.create_image_scene(group_rows)
+                elif mode == 'video':
+                    scene = self.create_video_scene(group_rows)
+                elif mode == 'free':
+                    scene = self.create_free_scene(group_rows)
+                else:
+                    raise Script2SceneError(f"Unsupported mode: {mode}")
+                cnt += len(group_rows)
+                self.scenes.append(scene)
+        except Exception as e:
+            raise Script2SceneError(f"Error processing Line {cnt}'s {mode} scene: {e}")
 
     def save_scenes(self) -> None:
         """Save scenes to JSON file with default fps handling"""
