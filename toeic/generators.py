@@ -159,11 +159,16 @@ def getTtsSettings(accents, sexes):
     """
     tts_mapping = {
         ('am', 'man'): [
-            ('eleven', 'EozfaQ3ZX0esAp1cW5nG'),
+            #('eleven', 'EozfaQ3ZX0esAp1cW5nG'), //temporarily disable this voice for monthly quota issue
             ('eleven', 'gfRt6Z3Z8aTbpLfexQ7N'),
             ('eleven', 'MP7UPhn7eVWqCGJGIh6Q'),
             ('eleven', 'DMyrgzQFny3JI1Y1paM5'),
-            ('eleven', '6OzrBCQf8cjERkYgzSg8'),
+            #('eleven', '6OzrBCQf8cjERkYgzSg8'), //temporarily disable this voice for monthly quota issue
+            #('eleven', 'zCgijgIKIMkFHnzXcCva'),
+            #('eleven', 'RPEIZnKMqlQiZyZd1Dae'),
+            ('eleven', 's3TPKV1kjDlVtZbl4Ksh'),
+            #('eleven', 'dn9HtxgDwCH96MVX9iAO'),
+            #('eleven', '2BJW5coyhAzSr8STdHbE'),
             ('gcloud', 'en-US-Chirp3-HD-Achird'),
             ('gcloud', 'en-US-Chirp3-HD-Algenib'),
             ('gcloud', 'en-US-Chirp3-HD-Algieba'),
@@ -182,11 +187,16 @@ def getTtsSettings(accents, sexes):
             ('gcloud', 'en-US-Chirp3-HD-Zubenelgenubi')
         ],
         ('am', 'woman'): [
-            ('eleven', 'zGjIP4SZlMnY9m93k97r'),
+            #('eleven', 'zGjIP4SZlMnY9m93k97r'), //temporarily disable this voice for monthly quota issue
             ('eleven', 'kPzsL2i3teMYv0FxEYQ6'),
             ('eleven', 'kdmDKE6EkgrWrrykO9Qt'),
             ('eleven', 'dMyQqiVXTU80dDl2eNK8'),
-            ('eleven', 'WtA85syCrJwasGeHGH2p'),
+            #('eleven', 'WtA85syCrJwasGeHGH2p'), //temporarily disable this voice for monthly quota issue
+            #('eleven', 'rhKGiHCLeAC5KPBEZiUq'), // temporarily disable this voice for monthly quota issue
+            ('eleven', 'aMSt68OGf4xUZAnLpTU8'),
+            #('eleven', 'rSZFtT0J8GtnLqoDoFAp'), //temporarily disable this voice for monthly quota issue
+            #('eleven', 'OYTbf65OHHFELVut7v2H'), //temporarily disable this voice for monthly quota issue
+            #('eleven', '7YaUDeaStRuoYg3FKsmU'), //temporarily disable this voice for monthly quota issue
             ('gcloud', 'en-US-Chirp3-HD-Achernar'),
             ('gcloud', 'en-US-Chirp3-HD-Aoede'),
             ('gcloud', 'en-US-Chirp3-HD-Autonoe'),
@@ -203,7 +213,7 @@ def getTtsSettings(accents, sexes):
             ('gcloud', 'en-US-Chirp3-HD-Zephyr')
         ],
         ('cn', 'man'): [
-            ('eleven', 'w4Z9gYJrajAuQmheNbVn'),
+            #('eleven', 'w4Z9gYJrajAuQmheNbVn'), //temporarily disable this voice for monthly quota issue
             ('eleven', '9XfYMbJVZqPHaQtYnTAO'),
         ],
         ('cn', 'woman'): [
@@ -214,7 +224,10 @@ def getTtsSettings(accents, sexes):
             ('eleven', 'L0Dsvb3SLTyegXwtm47J'),
             ('eleven', '2UMI2FME0FFUFMlUoRER'),
             ('eleven', 'mZ8K1MPRiT5wDQaasg3i'),
-            ('eleven', 'lnIpQcZuikKim3oNdYlP'),
+            #('eleven', 'lnIpQcZuikKim3oNdYlP'), //temporarily disable this voice for monthly quota issue
+            #('eleven', 'c8MZcZcr0JnMAwkwnTIu'), // temporarily disable this voice for monthly quota issue
+            #('eleven', 'Lc4hEdV9uVPURYeMiyCp'), //temporarily disable this voice for monthly quota issue
+            #('eleven', 'zNsotODqUhvbJ5wMG7Ei'),    //temporarily disable this voice for monthly quota issue
             ('gcloud', 'en-GB-Chirp3-HD-Achird'),
             ('gcloud', 'en-GB-Chirp3-HD-Algenib'),
             ('gcloud', 'en-GB-Chirp3-HD-Algieba'),
@@ -233,10 +246,13 @@ def getTtsSettings(accents, sexes):
             ('gcloud', 'en-GB-Chirp3-HD-Zubenelgenubi')
         ],
         ('br', 'woman'): [
-            ('eleven', 'NFFZBoF6tNodi008z7VH'),
-            ('eleven', 'MzqUf1HbJ8UmQ0wUsx2p'),
+            #('eleven', 'NFFZBoF6tNodi008z7VH'), //temporarily disable this voice for monthly quota issue
+            #('eleven', 'MzqUf1HbJ8UmQ0wUsx2p'), //temporarily disable this voice for monthly quota issue
             ('eleven', 'lcMyyd2HUfFzxdCaC4Ta'),
             ('eleven', 'sIak7pFapfSLCfctxdOu'),
+            #('eleven', 'ZF6FPAbjXT4488VcRRnw'), //temporarily disable this voice for monthly quota issue
+            #('eleven', '4CrZuIW9am7gYAxgo2Af'), // temporarily disable this voice for monthly quota issue
+            #('eleven', 'rfkTsdZrVWEVhDycUYn9'), //temporarily disable this voice for monthly quota issue
             ('gcloud', 'en-GB-Chirp3-HD-Achernar'),
             ('gcloud', 'en-GB-Chirp3-HD-Aoede'),
             ('gcloud', 'en-GB-Chirp3-HD-Autonoe'),
@@ -253,8 +269,8 @@ def getTtsSettings(accents, sexes):
             ('gcloud', 'en-GB-Chirp3-HD-Zephyr')
         ],
         ('au', 'man'): [
-            ('eleven', 'DYkrAHD8iwork3YSUBbs'),
-            ('eleven', '9Ft9sm9dzvprPILZmLJl'),
+            #('eleven', 'DYkrAHD8iwork3YSUBbs'), //temporarily disable this voice for monthly quota issue
+            #('eleven', '9Ft9sm9dzvprPILZmLJl'), //temporarily disable this voice for monthly quota issue
             ('eleven', 'Ori1rnHIeeysIxrsFZ2X'),
             ('gcloud', 'en-AU-Chirp3-HD-Achird'),
             ('gcloud', 'en-AU-Chirp3-HD-Algenib'),
@@ -274,9 +290,9 @@ def getTtsSettings(accents, sexes):
             ('gcloud', 'en-AU-Chirp3-HD-Zubenelgenubi')
         ],
         ('au', 'woman'): [
-            ('eleven', 'aEO01A4wXwd1O8GPgGlF'),
+            #('eleven', 'aEO01A4wXwd1O8GPgGlF'), //temporarily disable this voice for monthly quota issue
             ('eleven', 'LtPsVjX1k0Kl4StEMZPK'),
-            ('eleven', '56bWURjYFHyYyVf490Dp'),
+            #('eleven', '56bWURjYFHyYyVf490Dp'), //temporarily disable this voice for monthly quota issue
             ('gcloud', 'en-AU-Chirp3-HD-Achernar'),
             ('gcloud', 'en-AU-Chirp3-HD-Aoede'),
             ('gcloud', 'en-AU-Chirp3-HD-Autonoe'),
