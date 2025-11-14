@@ -80,13 +80,15 @@ class VideoGenerator:
             audio_path: Optional[str],
             duration: Optional[float],
             pregap: float = 0,
-            postgap: float = 0) -> Optional[AudioFileClip]:
+            postgap: float = 0,
+            target_loudness: float = -16.0) -> Optional[AudioFileClip]:
         """
-        Load and process audio clip.
+        Load and process audio clip with loudness normalization.
 
         Args:
             audio_path (Optional[str]): Path to audio file
             duration (float): Desired clip duration
+            target_loudness (float): Target loudness in LUFS (default: -16.0)
 
         Returns:
             Optional[AudioFileClip]: Processed audio clip
@@ -102,12 +104,23 @@ class VideoGenerator:
             if not os.path.exists(full_audio_path):
                 raise VideoGenerationError(f"audio file not exist: {full_audio_path}")
 
-        # Load audio clip
-        audio_clip = AudioFileClip(full_audio_path)
+        # Create normalized audio file
+        normalized_path = os.path.join(self.cache_dir, f"norm_{os.path.basename(audio_path)}")
+
+        # Apply loudness normalization using FFmpeg
+        cmd = [
+            'ffmpeg', '-y', '-i', full_audio_path,
+            '-af', f'loudnorm=I={target_loudness}:TP=-1.5:LRA=11',
+            normalized_path
+        ]
+
+        subprocess.run(cmd, capture_output=True, check=True)
+
+        # Load normalized audio clip
+        audio_clip = AudioFileClip(normalized_path)
 
         # Handle audio duration
         if duration and audio_clip.duration > duration:
-            # Trim audio if longer than clip
             audio_clip = audio_clip.subclipped(0, duration)
 
         # Add pregap (silence before)
@@ -120,7 +133,6 @@ class VideoGenerator:
             silence_after = AudioClip(lambda t: 0, duration=postgap)
             audio_clip = concatenate_audioclips([audio_clip, silence_after])
 
-        # Return full audio if shorter or equal to duration
         return audio_clip
 
     def _hex_to_rgb(self, hex_color: str) -> Tuple[int, int, int]:
