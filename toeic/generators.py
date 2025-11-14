@@ -84,10 +84,9 @@ class loadToeicSql:
         # if accent or sex is None, randomly choose one from the available options
         if not result.get('accent'):
             if self.part == 2:
-                # special case for part 2: two people with different accents
+                # special case for part 2: two accents
                 first_accent = random.choices(self.accent, weights=self.accent_weight, k=1)[0]
-                remaining_accents = [a for a in self.accent if a != first_accent]
-                second_accent = random.choices(remaining_accents, weights=[self.accent_weight[self.accent.index(a)] for a in remaining_accents], k=1)[0]
+                second_accent = random.choices(self.accent, weights=self.accent_weight, k=1)[0]
                 result['accent'] = json.dumps([first_accent, second_accent])
             else:
                 result['accent'] = random.choices(self.accent, weights=self.accent_weight, k=1)[0]
@@ -106,7 +105,16 @@ class loadToeicSql:
 
         try:
             result['tts']['engine'], result['tts']['voice'] = getTtsSettings(result['accent'], result['sex'])
-            print(f"voice: {result['tts']['voice']} and type: {type(result['tts']['voice'])}")
+            # print(f"voice: {result['tts']['voice']} and type: {type(result['tts']['voice'])}")
+            if self.part == 3:
+                # for part 3, check how many people are in the conversation by unique values of voices
+                no_spakers = len(set(result['tts']['voice']))
+                if no_spakers == 2:
+                    result['num_speakers'] = ''
+                elif no_spakers == 3:
+                    result['num_speakers'] = ' with 3 speakers'
+                else:
+                    raise ValueError(f"Part 3 requires 2 or 3 different speakers, but got {no_spakers}")
         except Exception as e:
             print(f"Error getting TTS settings from sex: {result['sex']} and accent: {result['accent']}: {e}")
             return None
