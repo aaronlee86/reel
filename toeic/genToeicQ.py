@@ -92,14 +92,22 @@ def _generate_part1_questions(level, count, existing=None):
         response = client.responses.parse(
             model=ChatGPT_MODEL_VER,
             input=[
-                {"role": "system", "content": f"""Create mock TOEIC listening Part 1 questions: a picture and 4 statements.
-                 Create the AI prompt to generate the picture as well. Randomize correct answer letters.
-                 For each question, provide a clear explanation (2-3 sentences) of why the correct answer is right and why the other options are wrong.
-                 Also assign a topic/category for each question (e.g., 'office', 'transportation', 'dining', 'outdoor activities', 'construction', 'shopping', 'healthcare', etc.).
-                 Return arrays"""},
-                {"role": "user", "content": f"""Generate {count} non-repetetive questions.
-                 Avoid similar question from: {existing if existing else 'none'}.
-                 Difficulty level: {level}/3. Return JSON arrays."""}
+                {"role": "system", "content": f"""Create TOEIC listening Part 1 questions: a photo and 4 statements.
+                 Strict rule:
+                    - Create the AI prompt to generate the picture as well
+                    - Exactly one option is correct. If more than one could be correct, revise the options until only one is correct.
+                    - The value of "answer" MUST be one of "A","B","C","D", matching the correct element's position in "options".
+                    - Randomize which option is correct by shuffling options before assigning "answer".
+                    - For each question, provide a clear explanation (1-2 sentences) of why the correct answer is right and why the other options are wrong.
+                    - Assign a topic/category for each question .
+                    - No duplicate or near-duplicate questions in this batch.
+                    - Use natural, concise statements; avoid repeating the same verbs/structures.
+                    """},
+                {"role": "user", "content": f"""Generate {count} TOEIC part 1 questions.
+                    Difficulty level: {level}/3.
+                    Avoid similar with this prior set: {existing if existing else 'none'}.
+                    Topics may include: office, transportation, dining, outdoor activities, construction, shopping, healthcare, etc.
+                    Return JSON arrays."""}
             ],
             text_format=Result
         )
@@ -131,14 +139,21 @@ def _generate_part2_questions(level, count, existing=None):
         response = client.responses.parse(
             model=ChatGPT_MODEL_VER,
             input=[
-                {"role": "system", "content": f"""Create mock TOEIC listening Part 2 questions: a question or statement and 3 responses.
-                 Randomize correct answer letters.
-                 For each question, provide a clear explanation (2-3 sentences) of why the correct answer is the most appropriate response and why the other options are less suitable.
-                 Also assign a topic/category for each question (e.g., 'business meeting', 'phone conversation', 'scheduling', 'requests', 'offers', 'opinions', 'daily routine', etc.).
-                 Return arrays"""},
-                {"role": "user", "content": f"""Generate {count} non-repetetive questions.
-                 Avoid similar question from: {existing if existing else 'none'}.
-                 Difficulty level: {level}/3. Return JSON arrays."""}
+                {"role": "system", "content": f"""Create TOEIC listening Part 2 questions: a question or statement and 3 responses.
+                Strict rule:
+                    - Exactly one option is correct. If more than one could be correct, revise the options until only one is correct.
+                    - The value of "answer" MUST be one of "A","B","C", matching the correct element's position in "options".
+                    - Randomize which option is correct by shuffling options before assigning "answer".
+                    - For each question, provide a clear explanation (1-3 sentences) of why the correct answer is the most right and why the other options are wrong.
+                    - Assign a topic/category for each question .
+                    - No duplicate or near-duplicate questions in this batch.
+                    - Use natural, concise statements; avoid repeating the same verbs/structures.
+                 """},
+                {"role": "user", "content": f"""Generate {count} questions.
+                    Difficulty level: {level}/3.
+                    Avoid similar with this prior set: {existing if existing else 'none'}.
+                    Topics may include: business meeting, phone conversation, scheduling, requests, offers, opinions, daily routine, etc.
+                 Return JSON arrays."""}
             ],
             text_format=Result
         )
@@ -190,21 +205,37 @@ def _generate_part3_questions(level, count, existing=None):
         response = client.responses.parse(
             model=ChatGPT_MODEL_VER,
             input=[
-                {"role": "system", "content": f"""Create mock TOEIC listening Part 3 questions: conversations between 2-3 speakers (mix of genders) with 3 followed-up questions each.
-                 Speaker's sex (man or woman) in conv_sex for each sentence. Speaker's accent (Am,Cn,Br,or Au) in conv_accent for each sentence.
-                 Speakers of same sex must have different accent to differentiate.
-                 The conversation should be 4–6 exchanges if 2 speakers; 6–8 exchanges if 3 speakers.
-                 In returned conv array, don't need name or sex, only script.
-                 The conversation may or may not refer to a chart or visual; if it does, also create the AI prompt to generate the reference (Chart or visual); if no reference, return empty string for the prompt.
-                 In questions and options, if mentioning any speaker, speicify the gender (the man, men, woman, or women) but not accent.
-                 For each of the 3 questions, provide a clear explanation (2-3 sentences) in explanation1, explanation2, and explanation3 fields of why the correct answer is right based on the conversation.
-                 Also assign a topic/category for each conversation (e.g., 'travel planning', 'project discussion', 'customer service', 'job interview', 'office supplies', 'event planning', etc.).
-                 A brief summary of the conversation within 20 words in 'summary' array.
-                 Randomize correct answer letters.
-                 Return arrays"""},
-                {"role": "user", "content": f"""Generate {count} non-repetetive questions.
-                 Avoid similar question from: {existing if existing else 'none'}.
-                 Difficulty level: {level}/3. Return JSON arrays."""}
+                {"role": "system", "content": f"""Create TOEIC listening Part 3 questions: conversations between 2-3 speakers (mix of genders) with 3 followed-up questions each.
+                Strict rule:
+                 1. there can only be 2 or 3 speakers in the conversation. Each speaker must have a distinct (sex and accent)
+                 2. Put Speaker's sex ('man' or 'woman') in conv_sex for each sentence
+                 3. Put Speaker's accent ('Am','Cn','Br','Au') in conv_accent for each sentence.
+                 4. Speakers of same sex must have different accent to differentiate.
+                 5. The conversation must be 4–6 exchanges if 2 speakers; 6–8 exchanges if 3 speakers.
+                 6. In returned conv array, don't need name or sex, only script.
+                 6. The conversation may or may not refer to a chart or visual; if it does, also create the AI prompt to generate the reference (Chart or visual); if no reference, return empty string for the prompt.
+                 7. In the questions and options, if mentioning any speaker, speicify the gender (the man, men, woman, or women) but not accent.
+                 8. In the options, avoid using "He said" or "She said"; instead, use "The man said" or "The woman said".
+                 9. Exactly one option is correct. If more than one could be correct, revise the options until only one is correct.
+                 10. The value of "answer" MUST be one of "A","B","C","D", matching the correct element's position in "options".
+                 11. Randomize which option is correct by shuffling options before assigning "answer".
+                 12. For each of the 3 questions, provide a clear explanation (2-3 sentences) in explanation1, explanation2, and explanation3 fields of why the correct answer is right based on the conversation.
+                 13. Put a brief summary of the conversation within 20 words in 'summary' array.
+                 14. No duplicate or near-duplicate questions in this batch.
+
+                SELF-CHECK BEFORE RETURN:
+                    - items.length == {count}
+                    - For each item: 4–8 conv turns; lengths of conv, conv_sex, conv_accent are equal.
+                    - At least one “man” and one “woman”.
+                    - Number of distinct (sex,accent) speaker identities is 2 or 3.
+                    - For each QA: len(options)==4; answer in {"{A,B,C,D}"}; no option contains “correct” or parentheses indicating correctness; explanation is 2–3 sentences.
+                    - Questions make sense and are answerable from conv (and visual if present) with exactly one key.
+                 """},
+                {"role": "user", "content": f"""Generate {count} questions.
+                    Difficulty level: {level}/3.
+                    Avoid similar with this prior set: {existing if existing else 'none'}.
+                    Topics may include: travel planning, project discussion, customer service, job interview, office supplies, event planning, business meeting, etc.
+                 Return JSON arrays."""}
             ],
             text_format=Result
         )
@@ -255,18 +286,30 @@ def _generate_part4_questions(level, count, existing=None):
         response = client.responses.parse(
             model=ChatGPT_MODEL_VER,
             input=[
-                {"role": "system", "content": f"""Create mock TOEIC listening Part 4 questions: a monologue/talk (6-12 sentences) with 3 follow-up questions.
-                                                    May include a visual reference (chart/table/schedule).
-                                                    If it does, also create the AI prompt to generate the visual reference; if not, return empty string for the prompt.
-                                                    Also return type of the talk (talk, announcement, advertisement, radio advertisement, news report, broadcast, tour, excerpt from a meeting, or message) in 'type' array.
-                                                    For each of the 3 questions, provide a clear explanation (2-3 sentences) in explanation1, explanation2, and explanation3 fields of why the correct answer is right based on the talk.
-                                                    Randomize correct answer letters.
-                                                    Also assign a topic/category for each talk (e.g., 'product launch', 'weather forecast', 'museum tour', 'company policy', 'special offer', 'event announcement', etc.).
-                                                    Also return a brief summary of the talk within 20 words in 'summary' array.
-                                                    Return arrays"""},
-                {"role": "user", "content": f"""Generate {count} non-repetetive questions.
-                 Avoid similar question from: {existing if existing else 'none'}.
-                 Difficulty level: {level}/3. Return JSON arrays."""
+                {"role": "system", "content": f"""Create TOEIC listening Part 4 questions: a monologue/talk (6-12 sentences) with 3 follow-up questions.
+                    Strict rule:
+                    - Exactly one option is correct. If more than one could be correct, revise the options until only one is correct.
+                    - The value of "answer" MUST be one of "A","B","C", matching the correct element's position in "options".
+                    - Randomize which option is correct by shuffling options before assigning "answer".
+                    - For each question, provide a clear explanation (1-3 sentences) of why the correct answer is the most right and why the other options are wrong.
+                    - Assign a topic/category for each question.
+                    - No duplicate or near-duplicate questions in this batch.
+                    - Use natural, concise statements; avoid repeating the same verbs/structures.
+                    - May include a visual reference (chart/table/schedule). If it does, also create the AI prompt to generate the visual reference; if not, return empty string for the prompt.
+                    - Return type of the talk (talk, announcement, advertisement, radio advertisement, news report, broadcast, tour, excerpt from a meeting, or message) in 'type' array.
+                    - For each of the 3 questions, provide a clear explanation (2-3 sentences) in explanation1, explanation2, and explanation3 fields of why the correct answer is right based on the talk.
+                    - return a brief summary of the talk within 20 words in 'summary' array.
+                   SELF-CHECK BEFORE RETURN:
+                    - items.length == {count}
+                    - Each talk is 6–12 sentences.
+                    - For each QA: len(options)==4; answer in {"{A,B,C,D}"} ; no option contains “correct” or parentheses indicating correctness; explanation is 2–3 sentences
+                    - Questions make sense and are answerable from talk (and visual if present) with exactly one key.
+                    """},
+                {"role": "user", "content": f"""Generate {count} questions.
+                    Difficulty level: {level}/3.
+                    Avoid similar with this prior set: {existing if existing else 'none'}.
+                    Topics may include: product launch, weather forecast, museum tour, company policy, special offer, event announcement, travel information, health advisory, etc.
+                   Return JSON arrays."""
                  }
             ],
             text_format=Result,
