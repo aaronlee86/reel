@@ -1,0 +1,43 @@
+I want a python project. now please understand the requirement, and make sure we are on the same page. don't implement now
+
+Requirements Specification
+
+Overview
+Python script that read TOEIC Listening questions (part 1 to part 4) from a SQLite database and ask OpenAI to verify whether the questions make sense or not and if so give an answer
+
+Input:
+1. sqlite db path with table schema
+CREATE TABLE "questions" (
+	"id"	INTEGER,
+	"used_xid"	TEXT,
+	"used_qno"	INTEGER DEFAULT 0,
+	"part"	INTEGER,
+	"topic"	TEXT,
+	"level"	INTEGER,
+	"sex"	TEXT,
+	"accent"	TEXT,
+	"prompt"	TEXT,
+	"question"	TEXT,
+	"answer"	TEXT,
+	"A"	TEXT,
+	"B"	TEXT,
+	"C"	TEXT,
+	"D"	TEXT,
+	"img"	TEXT,
+	"img_prompt"	TEXT,
+	"type"	TEXT,
+	"summary"	TEXT,
+	"explanation"	TEXT,
+	"valid"	INTEGER DEFAULT 0,
+	PRIMARY KEY("id" AUTOINCREMENT)
+);
+
+Action:
+1. take valid==0 question and provide to openAI (gpt-4o) with part, question, option A,B,C,D and Check:
+  if answer from OpenAI aligns with the answer field in DB, update valid = 1; otherwise update valid=-1
+2. for some questions with img field not NULL (should be a local path), also upload the photo to openAI to verify
+3. print progress and show summary
+4. if If OpenAI API call fails, should the question remain valid=0
+
+Command-Line Usage
+    python verifyToeicQ.py [--part=1] [--level=2] [--count=10] --db=sql.db

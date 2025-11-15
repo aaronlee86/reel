@@ -51,18 +51,18 @@ ChatGPT_MODEL_VER = "gpt-5-mini-2025-08-07"
 def validate_question(question_data: Dict, part: int) -> int:
     """
     Validate if the answer in the question is actually correct.
-    Returns 1 if valid, 0 if invalid.
+    Returns 0 if valid, -1 if invalid.
     """
     if part == 1:
         correct_answer = question_data.get('answer')
         options = ['A', 'B', 'C', 'D']
         if correct_answer in options:
-            return 1
+            return 0
     elif part == 2:
         correct_answer = question_data.get('answer')
         options = ['A', 'B', 'C']
         if correct_answer in options:
-            return 1
+            return 0
     elif part in [3, 4]:
         options = ['A', 'B', 'C', 'D']
         try:
@@ -70,10 +70,10 @@ def validate_question(question_data: Dict, part: int) -> int:
             # if answers is a list of length 3 and all answers are in options, return 1
             if (isinstance(answers, list) and len(answers) == 3 and
                 all(ans in options for ans in answers)):
-                return 1
+                return 0
         except json.JSONDecodeError:
-            return 0
-    return 0  # Default to invalid if validation fails
+            return -1
+    return -1  # Default to invalid if validation fails
 
 
 def _generate_part1_questions(level, count, existing=None):
