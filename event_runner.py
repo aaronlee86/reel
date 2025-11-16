@@ -394,7 +394,13 @@ class VideoGenerator:
         # Ensure clip has proper duration
         clip = clip.with_start(0).with_duration(duration)
 
-        # Write individual clip
+        # Inject a silent audio track if this clip doesn't have audio
+        if clip.audio is None:
+            # Use a fixed FPS to avoid sample rate mismatch across clips.
+            silent_fps = 44100
+            silent_audio = AudioClip(lambda t: 0, duration=duration, fps=silent_fps)
+            clip = clip.with_audio(silent_audio)
+
         clip.write_videofile(
             clip_path,
             fps=fps,
@@ -438,10 +444,14 @@ class VideoGenerator:
         # Use FFmpeg concat demuxer
         cmd = [
             'ffmpeg', '-y',
+            '-fflags', '+genpts',
             '-f', 'concat',
             '-safe', '0',
             '-i', concat_file,
-            '-c', 'copy',  # Copy streams without re-encoding!
+            '-c:v', 'copy',
+            '-c:a', 'aac',
+            '-b:a', '192k',
+            '-movflags', '+faststart',
             output_path
         ]
 
