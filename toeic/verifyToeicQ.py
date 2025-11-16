@@ -253,11 +253,14 @@ B) {question['B']}
 C) {question['C']}
 D) {question['D']}
 
-Give correctiness for each option, which is rated from 0 to 100. The sum of correctness for all options should be 100.
+Give correctiness for each option, which is rated from 0 to 100. The sum of correctness for all options should be no larger than 100.
+if two or more options are equally correct, distribute the scores evenly among them.
 Respond ONLY in this exact json format:
 {{"A":[Confidence Score 0-100],"B":[Confidence Score 0-100],"C":[Confidence Score 0-100],"D":[Confidence Score 0-100]}}
 
-Example: {{"A":9,"B":5,"C":82,"D":4}}
+Example: {{"A":0,"B":5,"C":91,"D":4}}
+Example: {{"A":0,"B":50,"C":50,"D":0}}
+Example: {{"A":0,"B":0,"C":0,"D":0}}
 
 Do not include any other text."""
 
@@ -272,11 +275,14 @@ A) {question['A']}
 B) {question['B']}
 C) {question['C']}
 
-Give correctiness for each response, which is rated from 0 to 100. The sum of correctness for all responses should be 100.
+Give correctiness for each response, which is rated from 0 to 100. The sum of correctness for all responses should be no larger than 100.
+if two or more options are equally correct, distribute the scores evenly among them.
 Respond ONLY in this exact json format:
 {{"A":[Confidence Score 0-100],"B":[Confidence Score 0-100],"C":[Confidence Score 0-100]}}
 
 Example: {{"A":20,"B":5,"C":75}}
+Example: {{"A":33,"B":33,"C":33}}
+Example: {{"A":0,"B":0,"C":0}}
 
 Do not include any other text."""
 
@@ -307,7 +313,9 @@ B) {question['B'][2]}
 C) {question['C'][2]}
 D) {question['D'][2]}
 
-Give correctiness for each option, which is rated from 0 to 100. The sum of correctness for all option should be 100.
+Give correctiness for each option, which is rated from 0 to 100. The sum of correctness for all option should be no larger than 100.
+Especially, pay attention to the sex of the speaker in the question and option. If the option describes an behavior/intention or action but the actor is different in the conversation, should give 0 score to the option.
+if two or more options are equally correct, distribute the scores evenly among them.
 Respond ONLY in this exact json array format for questions 1, 2, and 3:
 [{{"A":[Confidence Score 0-100],"B":[Confidence Score 0-100],"C":[Confidence Score 0-100],"D":[Confidence Score 0-100]}},
 {{"A":[Confidence Score 0-100],"B":[Confidence Score 0-100],"C":[Confidence Score 0-100],"D":[Confidence Score 0-100]}},
@@ -344,7 +352,8 @@ B) {question['B'][2]}
 C) {question['C'][2]}
 D) {question['D'][2]}
 
-Give correctiness for each option, which is rated from 0 to 100. The sum of correctness for all option should be 100.
+Give correctiness for each option, which is rated from 0 to 100. The sum of correctness for all option should be no larger than 100.
+if two or more options are equally correct, distribute the scores evenly among them.
 Respond ONLY in this exact json array format for questions 1, 2, and 3:
 [{{"A":[Confidence Score 0-100],"B":[Confidence Score 0-100],"C":[Confidence Score 0-100],"D":[Confidence Score 0-100]}},
 {{"A":[Confidence Score 0-100],"B":[Confidence Score 0-100],"C":[Confidence Score 0-100],"D":[Confidence Score 0-100]}},
@@ -393,7 +402,7 @@ Do not include any other text."""
                 logger.warning(f"Expected 3/4 options for Part {part}, got: {answer_dict.keys()}")
                 return None
             # make sure the sum of values is 100
-            if sum(answer_dict.values()) != 100:
+            if sum(answer_dict.values()) > 100:
                 logger.warning(f"Expected sum of confidence scores to be 100, got: {sum(answer_dict.values())}")
                 return None
 
@@ -480,7 +489,7 @@ Do not include any other text."""
                 self.stats['valid'] += 1
 
             # Update database
-            self.update_question_validity(question['id'], validation, result)
+            #self.update_question_validity(question['id'], validation, result)
 
             self.stats['processed'] += 1
 
