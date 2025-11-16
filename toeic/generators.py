@@ -68,11 +68,6 @@ class loadToeicSql:
 
                 result = dict(fetched_result)
 
-                # Mark the new question as used
-                update_query = 'UPDATE questions SET used_xid = ?, used_qno = ? WHERE id=?'
-                cursor.execute(update_query, (self.xid, self.qno, result['id']))
-                self.conn.commit()
-
         except Exception as e:
             print(f"Error in query execution: {e}")
             return None
@@ -99,12 +94,18 @@ class loadToeicSql:
             else:
                 result['sex'] = random.choices(self.sex, weights=self.sex_weight, k=1)[0]
 
-        for key in ['prompt','question','A','B','C','D','answer','accent','sex']:
+        for key in ['prompt','question','A','B','C','D','answer','accent','sex','tts_engine','tts_voice']:
             if result.get(key):
                 result[key] = parse_or_string(result[key])
 
         try:
-            result['tts']['engine'], result['tts']['voice'] = getTtsSettings(result['accent'], result['sex'])
+            # First, check if tts_engine and tts_voice are already present in the result
+            if result.get('tts_engine') and result.get('tts_voice'):
+                # Use the existing engine and voice if both are present
+                result['tts']['engine'] = result['tts_engine']
+                result['tts']['voice'] = result['tts_voice']
+            else:
+                result['tts']['engine'], result['tts']['voice'] = getTtsSettings(result['accent'], result['sex'])
             # print(f"voice: {result['tts']['voice']} and type: {type(result['tts']['voice'])}")
             if self.part == 3:
                 # for part 3, check how many people are in the conversation by unique values of voices
@@ -114,10 +115,21 @@ class loadToeicSql:
                 elif no_spakers == 3:
                     result['num_speakers'] = ' with 3 speakers'
                 else:
-                    raise ValueError(f"Part 3 requires 2 or 3 different speakers, but got {no_spakers}")
+                    raise ValueError(f"Part 3 requires 2 or 3 different speakers, but got {no_spakers}: qid={result['id']}")
         except Exception as e:
             print(f"Error getting TTS settings from sex: {result['sex']} and accent: {result['accent']}: {e}")
             return None
+
+        # Mark the new question as used
+        try:
+            cursor = self.conn.cursor()
+            update_query = 'UPDATE questions SET used_xid = ?, used_qno = ?, tts_engine = ?, tts_voice = ? WHERE id=?'
+            cursor.execute(update_query, (self.xid, self.qno, json.dumps(result['tts']['engine']), json.dumps(result['tts']['voice']), result['id']))
+            self.conn.commit()
+        except Exception as e:
+            print(f"Error updating question as used: {e}")
+        finally:
+            cursor.close()
 
         return result
 
