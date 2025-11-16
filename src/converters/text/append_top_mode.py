@@ -35,7 +35,7 @@ class AppendTopModeStrategy(TextSceneStrategy):
 
         # First pass: handle wrapping, calculate heights and prepare positioning information
         positioned_calculations = [
-            self._prepare_text_entry(entry, halign, screen_width, l_padding, r_padding)
+            self._prepare_text_entry(entry, halign, screen_width, l_padding, r_padding, line_spacing)
             for entry in text_entries
         ]
 

@@ -49,6 +49,7 @@ class TextSceneStrategy(ABC):
         halign: str,
         l_padding: int,
         r_padding: int,
+        line_spacing: int,
         wrap: bool = True,
         min_font_size: int = 1
     ) -> tuple[int, int, int, str]:
@@ -111,7 +112,7 @@ class TextSceneStrategy(ABC):
             font = ImageFont.truetype(font_path, current_font_size)
 
         # Get final text dimensions for positioning
-        bbox = draw.textbbox((0, 0), final_text, font=font)
+        bbox = draw.textbbox((0, 0), final_text, font=font, spacing=line_spacing)
         text_width = bbox[2] - bbox[0]
 
         # Calculate position based on alignment
@@ -326,6 +327,7 @@ class TextSceneStrategy(ABC):
         screen_width: int,
         l_padding: int,
         r_padding: int,
+        line_spacing: int
     ) -> Dict[str, Union[Dict[str, Any], int, float, str]]:
         """
         Prepare a single text entry with positioning calculations.
@@ -372,7 +374,8 @@ class TextSceneStrategy(ABC):
             screen_width,
             entry_halign,
             entry.get('l_padding', l_padding),
-            entry.get('r_padding', r_padding)
+            entry.get('r_padding', r_padding),
+            line_spacing
         )
 
         return {
