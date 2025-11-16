@@ -489,7 +489,7 @@ Do not include any other text."""
                 self.stats['valid'] += 1
 
             # Update database
-            #self.update_question_validity(question['id'], validation, result)
+            self.update_question_validity(question['id'], validation, result)
 
             self.stats['processed'] += 1
 
