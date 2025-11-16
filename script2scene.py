@@ -368,6 +368,8 @@ class Script2Scene:
 
         tts_configs = self.parse_multi_line_tts(row)
         if tts_configs:
+            if tts_configs[0].get('tts_engine') == 'silent':
+                return None
             return tts_configs
 
         if inherit_from:
@@ -462,20 +464,14 @@ class Script2Scene:
 
         # Add text entries
         for i, row in enumerate(rows):
-            if i == 0:
-                # First row uses the scene-level config
-                text_entry = {
-                    'text': row['text'],
-                    'font': scene_font_config,
-                    'tts': scene_tts_configs
-                }
-            else:
-                # Subsequent rows inherit from scene config but can override individual fields
-                text_entry = {
-                    'text': row['text'],
-                    'font': self.build_font_config(row, inherit_from=scene_font_config),
-                    'tts': self.build_tts_config(row, inherit_from=scene_tts_configs)
-                }
+            # Subsequent rows inherit from scene config but can override individual fields
+            text_entry = {
+                'text': row['text'],
+                'font': self.build_font_config(row, inherit_from=scene_font_config)
+            }
+            tts_config = self.build_tts_config(row, inherit_from=scene_tts_configs)
+            if tts_config:
+                text_entry['tts'] = tts_config
 
             # Only add halign if it's not empty
             if row.get('alignment', '').strip():
@@ -550,12 +546,13 @@ class Script2Scene:
         # Add TTS audio if text is provided
         if first_row.get('text', '').strip():
             tts_configs = self.build_tts_config(first_row)
-            scene['audio'] = {
-                'tts': {
-                    'text': first_row['text'],
-                    'tts': tts_configs
+            if tts_configs:
+                scene['audio'] = {
+                    'tts': {
+                        'text': first_row['text'],
+                        'tts': tts_configs
+                    }
                 }
-            }
 
         # Add pregap if specified in the row
         if first_row.get('pregap'):
@@ -717,20 +714,14 @@ class Script2Scene:
 
             # Process text entry
             if text_content or not has_img:
-                if i == 0:
-                    # First row uses scene-level config
-                    text_entry = {
-                        'text': text_content,
-                        'font': scene_font_config,
-                        'tts': scene_tts_configs
-                    }
-                else:
-                    # Subsequent rows inherit from scene config
-                    text_entry = {
-                        'text': text_content,
-                        'font': self.build_font_config(row, inherit_from=scene_font_config),
-                        'tts': self.build_tts_config(row, inherit_from=scene_tts_configs)
-                    }
+                # Subsequent rows inherit from scene config
+                text_entry = {
+                    'text': text_content,
+                    'font': self.build_font_config(row, inherit_from=scene_font_config),
+                }
+                tts_config = self.build_tts_config(row, inherit_from=scene_tts_configs)
+                if tts_config:
+                    text_entry['tts'] = tts_config
 
                 # Add optional fields
                 if row.get('alignment', '').strip():

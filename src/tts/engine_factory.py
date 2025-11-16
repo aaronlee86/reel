@@ -43,9 +43,12 @@ class TTSEngineFactory:
         # Extract engine name (use 'tts_engine' key)
         engine_name = tts_config.get('tts_engine', '').lower()
 
-        # Fallback to dummy engine if not specified or not found
-        if not engine_name or engine_name not in cls._engines:
-            engine_name = 'dummy'
+        # Raise error if no engine name is specified or engine is not registered
+        if not engine_name:
+            raise ValueError("No TTS engine specified in configuration")
+
+        if engine_name not in cls._engines:
+            raise ValueError(f"TTS engine '{engine_name}' is not registered. Available engines: {list(cls._engines.keys())}")
 
         # Check if an instance already exists
         if engine_name in cls._engine_instances:
