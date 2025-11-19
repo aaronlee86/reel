@@ -1,0 +1,3 @@
+Generate {count} sets of questions.
+Difficulty level: {level}
+Avoid similar with this prior set: {existing}.

@@ -1,0 +1,156 @@
+You are generating TOEIC Listening Part 3 sets of questions.
+
+## Global Rules
+- Have exactly 2 or 3 speakers
+- Create 4 to 6 exchanges if 2 speakers and 6 to 8 exchances if 3 speakers depending on natural flow.
+- All exchanges must contribute meaningful information (no greetings, no filler).
+- NO visual descriptions.
+- NO references like “in the picture”.
+- Do NOT copy the few-shot conversation content. Create new content each time.
+- Fit typical TOEIC domains:
+  - Office: Scheduling/canceling meetings, project deadlines, discussing budgets/expenses, handling technology issues (equipment repair), hiring, training, or asking for time off.
+  - Business Travel: Booking flights/hotels, changing reservations, travel itineraries, discussing delayed transport, and requesting expense reimbursements.
+  - Services and Sales: Making a purchase, returning merchandise, customer complaints, shipping/delivery issues, restaurant reservations, or requesting information about a service.
+  - Logistics and Facilities: Office moves, finding supplies, vehicle repairs, or discussing maintenance and facility issues.
+
+## Question Rules
+- One set of conversation has 3 questions.
+- Each question has 4 choices, all similar in difficulty, no trick wording.
+- Must fit TOEIC part3 style: e.g. main purpose / situation question, a specific-detail question (time, location, reason, problem, item, cost, schedule, etc.)., require inference or next-step prediction.
+- In questions and options, use "the man" or "the woman" to refer to the speaker.
+- If there are two men in the conversation, NEVER only use "the man" to refer to one of them; It's ok to refer to both by "the men"
+- If there are two women, NEVER only use the "the woman" to refer to one the them; It's ok to refer to both by "the women"
+- Use "they" to refer all of the speakers
+
+## Answer Rules
+- Answer must be exactly one of: "A","B","C","D", each letter is evenly likely (25%) to appear.
+- Answer must match the content of the option, not the question.
+- Only one correct option.
+
+## Difficulty Level Rules:
+- 1:
+  - simple sentences
+  - No inference, no tricky distractors, no similar-sounding options
+
+- 2:
+  - May include one mild distractor
+  - One question requires light contextual understanding
+
+- 3:
+  - longer multi-clause sentences
+  - At least one question requires inference
+  - At least one similar-sounding distractor
+
+## Few-Shot Examples
+[
+{
+  "script": [
+    {
+      "speaker": "woman1", //use woman1 to specify the speaker because this is the first woman appears in the conversation
+      "line": "Hello. I’m calling about a coffee machine I purchased from your Web site. It stopped working even though I haven’t had it for very long. I expected it to last much longer than this."
+    },
+    {
+      "speaker": "man1", //because the previous speaker is woman, use man for the second speaker. Use man1 to specify the speaker because this is the first man appears in the conversation
+      "line": "Oh, I’m sorry to hear that. Our warranty covers products for up to a year. Do you know when you bought it?"
+    },
+    {
+      "speaker": "woman1", //use woman1 to refer to the same woman above
+      "line": "I’ve had it for a little over a year, so the warranty has probably just expired. This is so disappointing."
+    },
+    {
+      "speaker": "man1", //use man1 to refer to the same man above
+      "line": "Well, I’ll tell you what we can do. Although we can’t replace it, since you’re a valued customer I can offer you a coupon for forty percent off your next purchase."
+    }
+  ],
+  "questions": [
+    {
+      "question": "Why is the woman calling?", //ask a TOEIC style question; here use "the woman" to refer to the female in the conversation
+      "answer": "B",  //answer is randomly chosen from A, B, C, or D (each 25% of chance)
+      "A": "To cancel an order",  // put a clearly wrong option in non-answer option
+      "B": "To compl in about a product",  // put correct option in B because the answer is B
+      "C": "To redeem a gift card", // put a clearly wrong option in non-answer option
+      "D": "To renew a warranty", // put a clearly wrong option in non-answer option
+    },
+    {
+      "question": "What does the man ask the woman about?", //ask a TOEIC style question; here use "the man" to refer to the male speaker.
+       "answer": "D",  //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "A model name",  // put a clearly wrong option in non-answer option
+      "B": "A brand of coffee",  // put a clearly wrong option in non-answer option
+      "C": "A catalog number",  // put a clearly wrong option in non-answer option
+      "D": "A date of purchase", // put correct option in D because the answer is D
+    },
+    {
+      "question": "What does the man offer to do?", //ask a TOEIC style question
+      "answer": "A",    //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "Provide a discount",  // put correct option in A because the answer is A
+      "B": "Send a free sample", // put a clearly wrong option in non-answer option
+      "C": "Extend a warranty", // put a clearly wrong option in non-answer option
+      "D": "Issue a refund", // put a clearly wrong option in non-answer option
+    }
+  ],
+  "summary":"Customer reports expired-warranty coffee machine issue; support apologizes and offers a 40% discount coupon." //a brief summary of the conversation within 15 words
+},
+{
+  "script": [
+    {
+      "speaker": "man1", //use man1 to specify the speaker because this is the first man appears in the conversation
+      "line": "Have you taken a look at the progress they’ve made upstairs on the office expansion? It looks great!"
+    },
+    {
+      "speaker": "woman1", //use woman1 to specify the speaker because this is the first woman appears in the conversation
+      "line": "I know! I can’t believe it! And the offices up there have amazing views of the city."
+    },
+    {
+      "speaker": "man2", //use man2 to specify the speaker because this is a male speaker different than man1
+      "line": "I wonder which division will move up there when it’s finished."
+    },
+    {
+      "speaker": "woman1", //use woman1 to refer to the same woman above
+      "line": "I heard it’s the research department."
+    },
+    {
+      "speaker": "man1",//use man1 to refer to the same woman above
+      "line": "Ah, because they have the most people."
+    },
+    {
+      "speaker": "woman1",//use woman1 to refer to the same woman above
+      "line": "Probably. I’d love to have an office on that floor, though."
+    },
+    {
+      "speaker": "man2", //use man2 to refer to the same man2 above
+      "line": "Yeah. Well, the company must be making good money if they’re adding that space!"
+    },
+    {
+      "speaker": "man1", //use man1 to refer to the same man1 above
+      "line": "I think you’re right there!"
+    }
+  ],
+  "questions": [
+    {
+      "question": "What is the conversation mainly about?", //ask a TOEIC style question
+      "answer": "A", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "An enlargement of office space", // put correct option in A because our answer is A
+      "B": "A move into a new market", // put a clearly wrong option in non-answer option
+      "C": "An increase in staff numbers", // put a clearly wrong option in non-answer option
+      "D": "A change in company leadership",  // put a clearly wrong option in non-answer option
+    },
+    {
+      "question": "Why does the woman say, 'I can’t believe it'?", //ask a TOEIC style question; because there is only one woman in the conversation, it can use 'the woman'
+      "answer": "D", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "She strongly disagrees.", // put a clearly wrong option in non-answer option
+      "B": "She would like an explanation.", // put a clearly wrong option in non-answer option
+      "C": "She feels disappointed.", // put a clearly wrong option in non-answer option
+      "D": "She is happily surprised.", // put correct option in D because our answer is D
+    },
+    {
+      "question": "What do the men imply about the company?", //ask a TOEIC style question; because there are two men in the conversation, it shouldn't use 'the man'; use 'the men' instead
+      "answer": "C", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "It was recently founded.", // put a clearly wrong option in non-answer option
+      "B": "It is planning to adjust salaries.", // put a clearly wrong option in non-answer option
+      "C": "It is in a good financial situation.", // put correct option in C because our answer is C
+      "D": "It has offices in other countries.",  // put a clearly wrong option in non-answer option
+    }
+  ],
+  "summary":"Coworkers discuss impressive office expansion, speculate about department relocation, and note company’s strong growth." //a brief summary of the conversation within 15 words
+}
+]

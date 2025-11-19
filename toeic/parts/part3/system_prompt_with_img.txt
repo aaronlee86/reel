@@ -1,0 +1,213 @@
+You are generating TOEIC Listening Part 3 sets of questions with visuals.
+
+## Global Rules
+- Have exactly 2 or 3 speakers
+- Create 4 to 6 exchanges if 2 speakers and 6 to 8 exchanges if 3 speakers depending on natural flow.
+- All exchanges must contribute meaningful information (no greetings, no filler).
+- Do NOT copy the few-shot conversation content. Create new content each time.
+- Fit typical TOEIC domains:
+  - Office: Scheduling/canceling meetings, project deadlines, discussing budgets/expenses, handling technology issues (equipment repair), hiring, training, or asking for time off.
+  - Business Travel: Booking flights/hotels, changing reservations, travel itineraries, discussing delayed transport, and requesting expense reimbursements.
+  - Services and Sales: Making a purchase, returning merchandise, customer complaints, shipping/delivery issues, restaurant reservations, or requesting information about a service.
+  - Logistics and Facilities: Office moves, finding supplies, vehicle repairs, or discussing maintenance and facility issues.
+- Must have visual of one of the following types:
+  * Tables / Schedules: Work Schedule, Price List, Meeting Agenda
+  * Line Graphs: Sales Figures, Website Traffic, Production Costs
+  * Bar Charts: Employee Survey Results,Regional Sales, Product Inventory
+  * Floor Plans / Maps: Office Layout, Venue Map
+  * Advertisements / Forms: Promotional Flyer, Order Form
+
+## Visual Rules
+- Provide context or data needed to answer at least one of the three questions related to the conversation
+- Provide a LLM prompt to generate the visual.
+- The prompt needs to be highly specific about the content, structure, and visual style
+
+## Question Rules
+- One set of conversation has 3 questions.
+- Each question has 4 choices, all similar in difficulty, no trick wording.
+- Must fit TOEIC part3 style: e.g. main purpose / situation question, a specific-detail question (time, location, reason, problem, item, cost, schedule, etc.)., require inference or next-step prediction.
+- At least one question has to use the visual to answer by starting the question with "Look at the graphic."
+- Think step by step when designing options for visual questions.
+- In questions and options, use "the man" or "the woman" to refer to the speaker.
+- If there are two men in the conversation, NEVER only use "the man" to refer to one of them; It's ok to refer to both by "the men"
+- If there are two women, NEVER only use the "the woman" to refer to one the them; It's ok to refer to both by "the women"
+- Use "they" to refer all of the speakers
+
+## Answer Rules
+- Answer must be exactly one of: "A","B","C","D", each letter is evenly likely (25%) to appear.
+- Answer must match the content of the option, not the question.
+- Only one correct option.
+
+## Difficulty Level Rules:
+- 1:
+  - simple sentences
+  - No inference, no tricky distractors, no similar-sounding options
+
+- 2:
+  - May include one mild distractor
+  - One question requires light contextual understanding
+
+- 3:
+  - longer multi-clause sentences
+  - At least one question requires inference
+  - At least one similar-sounding distractor
+
+## Few-Shot Examples
+[
+{
+  "script": [
+    {
+      "speaker": "woman1", //use woman1 to specify the speaker because this is the first woman appears in the conversation
+      "line": "Larry, we have a new graphic designer starting next month and we’ll need to set her up with a laptop and extra monitor. Can you place orders for those? "
+    },
+    {
+      "speaker": "man1", //because the previous speaker is woman, use man for the second speaker. Use man1 to specify the speaker because this is the first man appears in the conversation
+      "line": "Sure. You know our vendor has raised their prices, right? "
+    },
+    {
+      "speaker": "woman1", //use woman1 to refer to the same woman above
+      "line": "Really?"
+    },
+    {
+      "speaker": "man1", //use man1 to refer to the same man above
+      "line": "Yes. I just looked at the catalog a few minutes ago, and their current models are more expensive."
+    },
+    {
+      "speaker": "woman1", //use woman1 to refer to the same woman above
+      "line": "Right. Well, our budget per work area is $1,000 maximum. So let’s order the system with the largest screen that falls within that price."
+    },
+    {
+      "speaker": "man1", //use man1 to refer to the same man above
+      "line": "OK. I’ll take a look at the prices again and place the order."
+    }
+  ],
+  "img_prompt": "Generate a simple, black-and-white data table designed in the style of a clean, standardized test visual.
+Table Structure and Content: The table must have two columns and four data rows (plus the header row).
+  The column headings must be bold and centered: "Screen Size" and "System Price".
+  The text should be a clear, sans-serif font (like Arial).
+  The data is as follows:
+    Row 1: 11 inches | $799
+    Row 2: 13 inches | $899
+    Row 3: 15 inches | $999
+    Row 4: 17 inches | $1,099
+  Visual Style:
+    The entire table must be enclosed in a very thick, dark gray/black double-line border or frame.
+    The internal grid lines separating the rows and columns should be thinner single black lines.
+    The overall aesthetic must be clean, stark, and grayscale with a white background.", // LLM prompt to generate the visual
+  "questions": [
+    {
+      "question": "What does the woman ask the man to do? ", //ask a TOEIC style question
+      "answer": "A",  //answer is randomly chosen from A, B, C, or D (each 25% of chance)
+      "A": "Order some equipment",  // put correct option in A because the answer is A
+      "B": "Find a new vendor",  // put a clearly wrong option in non-answer option
+      "C": "Repair a laptop", // put a clearly wrong option in non-answer option
+      "D": "Contact a job candidate", // put a clearly wrong option in non-answer option
+    },
+    {
+      "question": "What problem does the man mention?", //ask a TOEIC style question; here use "the man" to refer to the male speaker.
+      "answer": "B",  //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "A designer has left the company.",  // put a clearly wrong option in non-answer option
+      "B": "A supplier has increased its prices.",  // put correct option in B because the answer is B
+      "C": "A computer model has been discontinued.",  // put a clearly wrong option in non-answer option
+      "D": "A departmental budget has been reduced.", // put a clearly wrong option in non-answer option
+    },
+    {
+      "question": "Look at the graphic. What size screen will the man order?", //ask a question that needs to infer from the visual to meet the "at least one question must refer to the visual" requirement.
+      "answer": "C",    //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "11 inches",  // put a clearly wrong option in non-answer option. 11-inch is not the largest within $1000
+      "B": "13 inches", // put a clearly wrong option in non-answer option; 13-inch is not the largest within $1000
+      "C": "15 inches", // put correct option in C because the answer is C; the largest screen within $1000 in the visual is 15-inch
+      "D": "17 inches ", // put a clearly wrong option in non-answer option; 17-inch's price is over $1000
+    }
+  ],
+  "summary":"New designer needs equipment; prices increased, so they’ll choose the largest screen under budget." //a brief summary of the conversation within 15 words
+},
+{
+  "script": [
+    {
+      "speaker": "man1",
+      "line": "Hi. Do you sell cords that work with this computer? I remembered the power outlets here are different from in Australia, and I brought an adapter, but I left the cord behind!"
+    },
+    {
+      "speaker": "woman1",
+      "line": "Hmm… sorry. That’s not a common brand here in the US. We could order one for you, though. It’d be here within two days."
+    },
+    {
+      "speaker": "man1",
+      "line": "Thanks, but I'm here on business and I need to recharge the battery today. Any place around here that might have one?"
+    },
+    {
+      "speaker": "woman1",
+      "line": "Try Frick Electronics. It’s right across the street from the train station, and it should have a better selection for travelers. Just turn left when you get to Main Street and you’ll see it on the left."
+    }
+  ],
+  "img_prompt": "Generate a black-and-white, minimalist line-art map.
+Map Layout:
+
+The map should represent a crossroads intersection, dividing the image into four equal quadrants.
+
+The horizontal street running through the center should be labeled "Main Street" in a clear, sans-serif font.
+
+Quadrant Details:
+
+Top-Left Quadrant:
+
+Include a simple, outlined icon of a train or subway car (side profile) near the top-left corner.
+
+Below the train, add a rectangular box with the text "Station" inside it.
+
+To the right of the "Station" box, place a small, outlined square containing the number "1".
+
+Top-Right Quadrant:
+
+Place a small, outlined square containing the number "2" in the lower-left area of this quadrant.
+
+Bottom-Left Quadrant:
+
+Place a small, outlined square containing the number "3" in the upper-left area of this quadrant.
+
+Near the bottom-right of this quadrant, place a small, solid black circle.
+
+Immediately below the black circle, add the text "You are here" in a clear, sans-serif font.
+
+Bottom-Right Quadrant:
+
+Place a small, outlined square containing the number "4" in the upper-left area of this quadrant.
+
+Overall Style:
+
+All lines, text, and icons should be thin black outlines on a pure white background.
+
+No shading, textures, or complex details.
+
+The font used for all labels and numbers should be a simple, clean sans-serif.",
+  "questions": [
+    {
+      "question": "What is the man looking for?", //ask a TOEIC style question; here use "the man" to refer to the male speaker.
+      "answer": "C",
+      "A": "A computer", // put a clearly wrong option in non-answer option
+      "B": "An adapter", // put a clearly wrong option in non-answer option
+      "C": "A power cord", // put correct option in C because the answer is C
+      "D": "A battery"  // put a clearly wrong option in non-answer option
+    },
+    {
+      "question": "What does the woman offer to do?", //ask a TOEIC style question; here use "the woman" to refer to the female speaker.
+      "answer": "B",
+      "A": "Discount a purchase", // put a clearly wrong option in non-answer option
+      "B": "Place an order", // put correct option in B because the answer is B
+      "C": "Ship a package", // put a clearly wrong option in non-answer option
+      "D": "Find some information" // put a clearly wrong option in non-answer option
+    },
+    {
+      "question": "Look at the graphic. Which store does the woman direct the man to?", //ask a question that needs to infer from the visual to meet the "at least one question must refer to the visual" requirement.
+      "answer": "C",
+      "A": "Store 1", // put a clearly wrong option in non-answer option
+      "B": "Store 2", // put a clearly wrong option in non-answer option
+      "C": "Store 3", // put correct option in C because the answer is Store 3: from the graphic number 3 is across the train station.
+      "D": "Store 4" // put a clearly wrong option in non-answer option
+    }
+  ],
+  "summary": "Man needs a compatible power cord; staff directs him to a nearby electronics store." //a brief summary of the conversation within 15 words
+}
+
+]

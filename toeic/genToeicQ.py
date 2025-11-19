@@ -4,7 +4,7 @@ genToeicQ.py - TOEIC Question Generator
 Generates TOEIC questions and writes them to a SQLite database.
 
 Usage:
-    python genToeicQ.py --part=1 --level=2 --accent=am --count=10 --db=sql.db
+    python genToeicQ.py --part=1 --level=2 --count=10 --db=sql.db
 """
 
 import os
@@ -13,7 +13,9 @@ import sqlite3
 import sys
 import json
 import logging
-from typing import List, Dict
+from typing import List, Dict, Type
+from pydantic import BaseModel, Field
+import importlib.util
 
 
 # Configure logging
@@ -75,266 +77,104 @@ def validate_question(question_data: Dict, part: int) -> int:
             return -1
     return -1  # Default to invalid if validation fails
 
+def load_prompt(part: int, prompt_type: str, img) -> str:
+    """
+    Load prompt from external text file.
 
-def _generate_part1_questions(level, count, existing=None):
-    """Generate Part 1 questions with explanations"""
-    class Result(BaseModel):
-        picture_prompt: list[str]
-        A: list[str]
-        B: list[str]
-        C: list[str]
-        D: list[str]
-        answer: list[str]
-        explanation: list[str]
-        topic: list[str]
+    Returns:
+        str: Prompt text
+    """
+    try:
+        prompt_path = os.path.join('parts', f'part{part}', f'{prompt_type}_prompt_{"with_img" if img else "without_img"}.txt')
+        with open(prompt_path, 'r') as f:
+            return f.read().strip()
+    except FileNotFoundError:
+        logging.error(f"Prompt file not found: {prompt_path}")
+        raise
+    except Exception as e:
+        logging.error(f"Error reading prompt file: {e}")
+        raise
+
+def load_part_model(part: int, img: bool) -> Type[BaseModel]:
+    """
+    Dynamically import Result model from specific part directory
+
+    Returns:
+        Optional[Type[BaseModel]]: Imported Pydantic model or None if import fails
+    """
+    # Construct the path to the Result.py file
+    base_path = os.path.join('parts', f'part{part}')
+    model_path = os.path.join(base_path, f'Result_{'with_img' if img else 'without_img'}.py')
 
     try:
+        # Check if file exists
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Model file not found: {model_path}")
+
+        # Dynamically import the module
+        spec = importlib.util.spec_from_file_location(f"part{part}_model", model_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        # Find and return the PartResult class
+        part_result_class = getattr(module, 'Result', None)
+
+        if part_result_class is None:
+            raise AttributeError(f"No Result class found in {model_path}")
+
+        return part_result_class
+
+    except (ImportError, FileNotFoundError, AttributeError) as e:
+        print(f"Error importing model for part {part}: {e}")
+        return None
+
+def _generate_questions(part, level, img: bool, count, existing=None):
+    try:
+        # Load system and user prompts dynamically
+        system_prompt = load_prompt(part, 'system', img)
+        user_prompt = load_prompt(part, 'user', img)
+        json_schema = load_part_model(part, img)
+
+        # Format user prompt with actual values
+        user_prompt = user_prompt.format(
+            count=count,
+            level=level,
+            existing=existing if existing else 'none'
+        )
+
+        print("System Prompt:")
+        print(system_prompt)
+        print("User Prompt:")
+        print(user_prompt)
+
         response = client.responses.parse(
             model=ChatGPT_MODEL_VER,
             input=[
-                {"role": "system", "content": f"""Create TOEIC listening Part 1 questions: a photo and 4 statements.
-                 Strict rule:
-                    - Create the AI prompt to generate the picture as well
-                    - Exactly one option is correct. If more than one could be correct, revise the options until only one is correct.
-                    - The value of "answer" MUST be one of "A","B","C","D", matching the correct element's position in "options".
-                    - Randomize which option is correct by shuffling options before assigning "answer".
-                    - For each question, provide a clear explanation (1-2 sentences) of why the correct answer is right and why the other options are wrong.
-                    - Assign a topic/category for each question .
-                    - No duplicate or near-duplicate questions in this batch.
-                    - Use natural, concise statements; avoid repeating the same verbs/structures.
-                    """},
-                {"role": "user", "content": f"""Generate {count} TOEIC part 1 questions.
-                    Difficulty level: {level}/3.
-                    Avoid similar with this prior set: {existing if existing else 'none'}.
-                    Topics may include: office, transportation, dining, outdoor activities, construction, shopping, healthcare, etc.
-                    Return JSON arrays."""}
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
             ],
-            text_format=Result
+            text_format=json_schema
         )
 
         logging.info(f"total tokens {response.usage.total_tokens}")
-        result = response.output_parsed
-        logging.info(f"raw result={result}")
+        parsed_response = response.output_parsed
 
-        result = dict(result)
-        result = [dict(zip(result.keys(), values)) for values in zip(*result.values())]
-        return result
+        response_dict = parsed_response.model_dump()
+        json_str = parsed_response.model_dump_json(indent=2)
+        logging.info(f"dict result={json_str}")
+        return response_dict['items']
 
     except Exception as e:
         logging.error(f"Error: {e}")
         return []
-
-def _generate_part2_questions(level, count, existing=None):
-    """Generate Part 2 questions with explanations"""
-    class Result(BaseModel):
-        question: list[str]
-        A: list[str]
-        B: list[str]
-        C: list[str]
-        answer: list[str]
-        explanation: list[str]
-        topic: list[str]
-
-    try:
-        response = client.responses.parse(
-            model=ChatGPT_MODEL_VER,
-            input=[
-                {"role": "system", "content": f"""Create TOEIC listening Part 2 questions: a question or statement and 3 responses.
-                Strict rule:
-                    - Exactly one option is correct. If more than one could be correct, revise the options until only one is correct.
-                    - The value of "answer" MUST be one of "A","B","C", matching the correct element's position in "options".
-                    - Randomize which option is correct by shuffling options before assigning "answer".
-                    - For each question, provide a clear explanation (1-3 sentences) of why the correct answer is the most right and why the other options are wrong.
-                    - Assign a topic/category for each question .
-                    - No duplicate or near-duplicate questions in this batch.
-                    - Use natural, concise statements; avoid repeating the same verbs/structures.
-                 """},
-                {"role": "user", "content": f"""Generate {count} questions.
-                    Difficulty level: {level}/3.
-                    Avoid similar with this prior set: {existing if existing else 'none'}.
-                    Topics may include: business meeting, phone conversation, scheduling, requests, offers, opinions, daily routine, etc.
-                 Return JSON arrays."""}
-            ],
-            text_format=Result
-        )
-
-        logging.info(f"total tokens {response.usage.total_tokens}")
-        result = response.output_parsed
-        logging.info(f"raw result={result}")
-
-        result = dict(result)
-        result = [dict(zip(result.keys(), values)) for values in zip(*result.values())]
-        return result
-
-    except Exception as e:
-        logging.error(f"Error: {e}")
-        return []
-
-def _generate_part3_questions(level, count, existing=None):
-    """Generate Part 3 questions with explanations"""
-    class Result(BaseModel):
-        reference_prompt: list[str]
-        conv: list[list[str]]
-        conv_sex: list[list[str]]
-        conv_accent: list[list[str]]
-        question_1: list[str]
-        A1: list[str]
-        B1: list[str]
-        C1: list[str]
-        D1: list[str]
-        answer1: list[str]
-        explanation1: list[str]
-        question_2: list[str]
-        A2: list[str]
-        B2: list[str]
-        C2: list[str]
-        D2: list[str]
-        answer2: list[str]
-        explanation2: list[str]
-        question_3: list[str]
-        A3: list[str]
-        B3: list[str]
-        C3: list[str]
-        D3: list[str]
-        answer3: list[str]
-        explanation3: list[str]
-        summary: list[str]
-        topic: list[str]
-
-    try:
-        response = client.responses.parse(
-            model=ChatGPT_MODEL_VER,
-            input=[
-                {"role": "system", "content": f"""Create TOEIC listening Part 3 questions: conversations between 2-3 speakers (mix of genders) with 3 followed-up questions each.
-                Strict rule:
-                 1. there can only be 2 or 3 speakers in the conversation. Each speaker must have a distinct (sex and accent)
-                 2. Put Speaker's sex ('man' or 'woman') in conv_sex for each sentence
-                 3. Put Speaker's accent ('Am','Cn','Br','Au') in conv_accent for each sentence.
-                 4. Speakers of same sex must have different accent to differentiate.
-                 5. The conversation must be 4–6 exchanges if 2 speakers; 6–8 exchanges if 3 speakers.
-                 6. In returned conv array, don't need name or sex, only script.
-                 6. The conversation may or may not refer to a chart or visual; if it does, also create the AI prompt to generate the reference (Chart or visual); if no reference, return empty string for the prompt.
-                 7. In the questions and options, if mentioning any speaker, speicify the gender (the man, men, woman, or women) but not accent.
-                 8. In the options, avoid using "He said" or "She said"; instead, use "The man said" or "The woman said".
-                 9. Exactly one option is correct. If more than one could be correct, revise the options until only one is correct.
-                 10. The value of "answer" MUST be one of "A","B","C","D", matching the correct element's position in "options".
-                 11. Randomize which option is correct by shuffling options before assigning "answer".
-                 12. For each of the 3 questions, provide a clear explanation (2-3 sentences) in explanation1, explanation2, and explanation3 fields of why the correct answer is right based on the conversation.
-                 13. Put a brief summary of the conversation within 20 words in 'summary' array.
-                 14. No duplicate or near-duplicate questions in this batch.
-
-                SELF-CHECK BEFORE RETURN:
-                    - items.length == {count}
-                    - For each item: 4–8 conv turns; lengths of conv, conv_sex, conv_accent are equal.
-                    - At least one “man” and one “woman”.
-                    - Number of distinct (sex,accent) speaker identities is 2 or 3.
-                    - For each QA: len(options)==4; answer in {"{A,B,C,D}"}; no option contains “correct” or parentheses indicating correctness; explanation is 2–3 sentences.
-                    - Questions make sense and are answerable from conv (and visual if present) with exactly one key.
-                 """},
-                {"role": "user", "content": f"""Generate {count} questions.
-                    Difficulty level: {level}/3.
-                    Avoid similar with this prior set: {existing if existing else 'none'}.
-                    Topics may include: travel planning, project discussion, customer service, job interview, office supplies, event planning, business meeting, etc.
-                 Return JSON arrays."""}
-            ],
-            text_format=Result
-        )
-
-        logging.info(f"total tokens {response.usage.total_tokens}")
-        result = response.output_parsed
-        logging.info(f"raw result={result}")
-
-        result = dict(result)
-        result = [dict(zip(result.keys(), values)) for values in zip(*result.values())]
-        return result
-
-    except Exception as e:
-        logging.error(f"Error: {e}")
-        return []
-
-def _generate_part4_questions(level, count, existing=None):
-    """Generate Part 4 questions with explanations"""
-    class Result(BaseModel):
-        reference_prompt: list[str]
-        talk: list[str]
-        question_1: list[str]
-        type: list[str]
-        A1: list[str]
-        B1: list[str]
-        C1: list[str]
-        D1: list[str]
-        answer1: list[str]
-        explanation1: list[str]
-        question_2: list[str]
-        A2: list[str]
-        B2: list[str]
-        C2: list[str]
-        D2: list[str]
-        answer2: list[str]
-        explanation2: list[str]
-        question_3: list[str]
-        A3: list[str]
-        B3: list[str]
-        C3: list[str]
-        D3: list[str]
-        answer3: list[str]
-        explanation3: list[str]
-        summary: list[str]
-        topic: list[str]
-
-    try:
-        response = client.responses.parse(
-            model=ChatGPT_MODEL_VER,
-            input=[
-                {"role": "system", "content": f"""Create TOEIC listening Part 4 questions: a monologue/talk (6-12 sentences) with 3 follow-up questions.
-                    Strict rule:
-                    - Exactly one option is correct. If more than one could be correct, revise the options until only one is correct.
-                    - The value of "answer" MUST be one of "A","B","C", matching the correct element's position in "options".
-                    - Randomize which option is correct by shuffling options before assigning "answer".
-                    - For each question, provide a clear explanation (1-3 sentences) of why the correct answer is the most right and why the other options are wrong.
-                    - Assign a topic/category for each question.
-                    - No duplicate or near-duplicate questions in this batch.
-                    - Use natural, concise statements; avoid repeating the same verbs/structures.
-                    - May include a visual reference (chart/table/schedule). If it does, also create the AI prompt to generate the visual reference; if not, return empty string for the prompt.
-                    - Return type of the talk (talk, announcement, advertisement, radio advertisement, news report, broadcast, tour, excerpt from a meeting, or message) in 'type' array.
-                    - For each of the 3 questions, provide a clear explanation (2-3 sentences) in explanation1, explanation2, and explanation3 fields of why the correct answer is right based on the talk.
-                    - return a brief summary of the talk within 20 words in 'summary' array.
-                   SELF-CHECK BEFORE RETURN:
-                    - items.length == {count}
-                    - Each talk is 6–12 sentences.
-                    - For each QA: len(options)==4; answer in {"{A,B,C,D}"} ; no option contains “correct” or parentheses indicating correctness; explanation is 2–3 sentences
-                    - Questions make sense and are answerable from talk (and visual if present) with exactly one key.
-                    """},
-                {"role": "user", "content": f"""Generate {count} questions.
-                    Difficulty level: {level}/3.
-                    Avoid similar with this prior set: {existing if existing else 'none'}.
-                    Topics may include: product launch, weather forecast, museum tour, company policy, special offer, event announcement, travel information, health advisory, etc.
-                   Return JSON arrays."""
-                 }
-            ],
-            text_format=Result,
-            temperature=1
-        )
-
-        logging.info(f"total tokens {response.usage.total_tokens}")
-        result = response.output_parsed
-        logging.info(f"raw result={result}")
-
-        result = dict(result)
-        result = [dict(zip(result.keys(), values)) for values in zip(*result.values())]
-        return result
-
-    except Exception as e:
-        logging.error(f"Error: {e}")
-        return []
-
 
 class ToeicQuestionGenerator:
     """Generates TOEIC questions based on specified parameters."""
 
-    def __init__(self, part: int, level: int):
+    def __init__(self, part: int, level: int, img: bool):
         self.part = part
         self.level = level
+        self.img = img
 
     def generate_questions(self, count: int, existing) -> List[Dict]:
         """Generate TOEIC questions."""
@@ -343,8 +183,9 @@ class ToeicQuestionGenerator:
         if self.part not in [1, 2, 3, 4]:
             raise ValueError("Invalid part number. Must be 1, 2, 3, or 4.")
 
+        result = []
         if self.part == 1:
-            result = _generate_part1_questions(self.level, count, existing=existing)
+            result = _generate_questions(self.part, self.level, self.img, count, existing=existing)
             for q in result:
                 q['img_prompt'] = q.pop('picture_prompt')
                 q['part'] = 1
@@ -358,7 +199,7 @@ class ToeicQuestionGenerator:
                 q['valid'] = validate_question(q, self.part)
 
         elif self.part == 2:
-            result = _generate_part2_questions(self.level, count, existing=existing)
+            result = _generate_questions(self.part, self.level, self.img, count, existing=existing)
             for q in result:
                 q['part'] = 2
                 q["level"] = self.level
@@ -370,25 +211,23 @@ class ToeicQuestionGenerator:
                 q['valid'] = validate_question(q, self.part)
 
         elif self.part == 3:
-            result = _generate_part3_questions(self.level, count, existing=existing)
-            for q in result:
-                q['img_prompt'] = q.pop('reference_prompt')
-                q['prompt'] = json.dumps(q.pop('conv'))
-                q['part'] = 3
-                q["level"] = self.level
-                q['A'] = json.dumps([q.pop('A1'), q.pop('A2'), q.pop('A3')])
-                q['B'] = json.dumps([q.pop('B1'), q.pop('B2'), q.pop('B3')])
-                q['C'] = json.dumps([q.pop('C1'), q.pop('C2'), q.pop('C3')])
-                q['D'] = json.dumps([q.pop('D1'), q.pop('D2'), q.pop('D3')])
-                q['answer'] = json.dumps([q.pop('answer1'), q.pop('answer2'), q.pop('answer3')])
-                q['question'] = json.dumps([q.pop('question_1'), q.pop('question_2'), q.pop('question_3')])
-                q['explanation'] = json.dumps([q.pop('explanation1'), q.pop('explanation2'), q.pop('explanation3')])
-                q['sex'] = json.dumps(q.pop('conv_sex'))
-                q['accent'] = json.dumps(q.pop('conv_accent'))
+            for item in _generate_questions(self.part, self.level, self.img, count, existing=existing):
+                q = {'part': 3, 'level': self.level, 'img_prompt': None}
+                if self.img:
+                    q['img_prompt'] = item['img_prompt']
+                q['prompt'] = json.dumps([conv["line"] for conv in item["script"]])
+                q['sex'] = json.dumps([conv["speaker"] for conv in item["script"]])
+                q['A'] = json.dumps([qu['A'] for qu in item['questions']])
+                q['B'] = json.dumps([qu['B'] for qu in item['questions']])
+                q['C'] = json.dumps([qu['C'] for qu in item['questions']])
+                q['D'] = json.dumps([qu['D'] for qu in item['questions']])
+                q['answer'] = json.dumps([qu['answer'] for qu in item['questions']])
+                q['question'] = json.dumps([qu['question'] for qu in item['questions']])
                 q['valid'] = validate_question(q, self.part)
+                result.append(q)
 
         elif self.part == 4:
-            result = _generate_part4_questions(self.level, count, existing=existing)
+            result = _generate_questions(self.part, self.level, self.img, count, existing=existing)
             for q in result:
                 q['img_prompt'] = q.pop('reference_prompt')
                 q['prompt'] = json.dumps(q.pop('talk'))
@@ -481,7 +320,7 @@ class DatabaseManager:
             logging.error("Invalid part number. Must be 1, 2, 3, or 4.")
             return existing_questions
 
-        query = "SELECT * FROM questions WHERE part = ? AND level = ? AND valid = 1 ORDER BY id DESC LIMIT 100"
+        query = "SELECT * FROM questions WHERE part = ? AND level = ? AND valid = 0 ORDER BY id DESC LIMIT 100"
 
         try:
             cursor.execute(query, (part, level,))
@@ -517,6 +356,7 @@ def parse_arguments() -> argparse.Namespace:
 
     parser.add_argument("--part", type=int, required=True, help="TOEIC part number")
     parser.add_argument("--level", type=int, required=True, help="Difficulty level")
+    parser.add_argument("--img", action='store_true', help="With image prompt")
     parser.add_argument("--count", type=int, required=True, help="Number of questions to generate")
     parser.add_argument("--db", type=str, required=True, help="SQLite database file path")
 
@@ -558,7 +398,8 @@ def main():
         db_manager = DatabaseManager(args.db)
         generator = ToeicQuestionGenerator(
             part=args.part,
-            level=args.level
+            level=args.level,
+            img=args.img
         )
 
         logging.info(f"Generating {args.count} TOEIC questions...")
@@ -575,7 +416,7 @@ def main():
         logging.info(f"Generated {len(questions)} questions successfully")
 
         # Log validation summary
-        valid_count = sum(1 for q in questions if q.get('valid', 0) == 1)
+        valid_count = sum(1 for q in questions if q.get('valid', -1) == 0)
         invalid_count = len(questions) - valid_count
         logging.info(f"Validation summary: {valid_count} valid, {invalid_count} invalid")
 

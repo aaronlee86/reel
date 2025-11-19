@@ -58,7 +58,8 @@ class ToeicVerifier:
 
     def get_questions(self, part: Optional[int] = None,
                      level: Optional[int] = None,
-                     count: Optional[int] = None) -> List[Dict]:
+                     count: Optional[int] = None,
+                     start_id: Optional[int] = None) -> List[Dict]:
         """
         Query questions from database with filters
 
@@ -77,6 +78,10 @@ class ToeicVerifier:
         query = "SELECT * FROM questions WHERE valid = 0"
         params = []
 
+        if start_id is not None: # New logic for --id
+            query += " AND id >= ?"
+            params.append(start_id)
+
         if part is not None:
             query += " AND part = ?"
             params.append(part)
@@ -88,6 +93,8 @@ class ToeicVerifier:
         if level is not None:
             query += " AND level = ?"
             params.append(level)
+
+        query += " ORDER BY id ASC"
 
         if count is not None:
             query += " LIMIT ?"
@@ -428,7 +435,8 @@ Do not include any other text."""
 
     def process_questions(self, part: Optional[int] = None,
                          level: Optional[int] = None,
-                         count: Optional[int] = None):
+                         count: Optional[int] = None,
+                         start_id: Optional[int] = None):
         """
         Main processing loop
 
@@ -437,7 +445,7 @@ Do not include any other text."""
             level: Filter by difficulty level
             count: Limit number of questions
         """
-        questions = self.get_questions(part, level, count)
+        questions = self.get_questions(part, level, count, start_id)
 
         if not questions:
             logger.info("No questions found matching the criteria.")
@@ -525,6 +533,7 @@ Examples:
                        help='Filter by TOEIC part (1-4)')
     parser.add_argument('--level', type=int, help='Filter by difficulty level')
     parser.add_argument('--count', type=int, help='Limit number of questions to process')
+    parser.add_argument('--id', type=int, dest='start_id', help='Start verification from this Question ID (inclusive)')
 
     args = parser.parse_args()
 
@@ -533,7 +542,8 @@ Examples:
         verifier.process_questions(
             part=args.part,
             level=args.level,
-            count=args.count
+            count=args.count,
+            start_id=args.start_id
         )
     except Exception as e:
         logger.error(f"Error: {e}")
