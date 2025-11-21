@@ -11,8 +11,11 @@ import sys
 import base64
 import json
 import logging
-from typing import Optional, Dict, List, Tuple
+from typing import Optional, Dict, List, Type
 from openai import OpenAI
+import importlib.util
+from pydantic import BaseModel
+
 
 # Configure logging
 logging.basicConfig(
@@ -23,6 +26,97 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 ChatGPT_MODEL_VER = "gpt-5-mini-2025-08-07"
+
+def convert_to_schema(q_dict: Dict) -> Dict:
+    # Build script section
+    part = q_dict['part']
+    questions = q_dict['question']
+
+    # Build questions section
+    q_list = []
+    num_q = len(questions)
+
+    for i in range(num_q):
+        q_list.append({
+            "question": questions[i],
+            "A": q_dict['A'][i],
+            "B": q_dict['B'][i],
+            "C": q_dict['C'][i]
+        })
+        if part != 2:
+            # only part 2 has 3 options
+            q_list[-1]['D'] = q_dict['D'][i]
+
+    output_json = {
+        "questions": q_list
+    }
+
+    if part == 3:
+        script = []
+        speakers = q_dict['sex']
+        lines = q_dict['prompt']
+
+        for spk, line in zip(speakers, lines):
+            script.append({
+                "speaker": spk,
+                "line": line
+            })
+
+        output_json['script'] = script
+
+    return  output_json
+
+def load_prompt(part: int, prompt_type: str, img) -> str:
+    """
+    Load prompt from external text file.
+
+    Returns:
+        str: Prompt text
+    """
+    try:
+        prompt_path = os.path.join('parts', f'part{part}', f'verify_{prompt_type}_prompt_{"with_img" if img else "without_img"}.txt')
+        with open(prompt_path, 'r') as f:
+            return f.read().strip()
+    except FileNotFoundError:
+        logging.error(f"Prompt file not found: {prompt_path}")
+        raise
+    except Exception as e:
+        logging.error(f"Error reading prompt file: {e}")
+        raise
+
+def load_part_model(part: int, img: bool) -> Type[BaseModel]:
+    """
+    Dynamically import Result model from specific part directory
+
+    Returns:
+        Optional[Type[BaseModel]]: Imported Pydantic model or None if import fails
+    """
+    # Construct the path to the Result.py file
+    base_path = os.path.join('parts', f'part{part}')
+    model_path = os.path.join(base_path, f'Verify_Result_{'with_img' if img else 'without_img'}.py')
+
+    try:
+        # Check if file exists
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Model file not found: {model_path}")
+
+        # Dynamically import the module
+        spec = importlib.util.spec_from_file_location(f"part{part}_model", model_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        # Find and return the PartResult class
+        part_result_class = getattr(module, 'Result', None)
+
+        if part_result_class is None:
+            raise AttributeError(f"No Result class found in {model_path}")
+
+        return part_result_class
+
+    except (ImportError, FileNotFoundError, AttributeError) as e:
+        print(f"Error importing model for part {part}: {e}")
+        return None
+
 
 class ToeicVerifier:
     """Main class for verifying TOEIC questions using OpenAI"""
@@ -59,7 +153,8 @@ class ToeicVerifier:
     def get_questions(self, part: Optional[int] = None,
                      level: Optional[int] = None,
                      count: Optional[int] = None,
-                     start_id: Optional[int] = None) -> List[Dict]:
+                     start_id: Optional[int] = None,
+                     img: bool = False ) -> List[Dict]:
         """
         Query questions from database with filters
 
@@ -86,9 +181,8 @@ class ToeicVerifier:
             query += " AND part = ?"
             params.append(part)
 
-            # Part 1 requires images
-            if part == 1:
-                query += " AND img IS NOT NULL"
+        if img:
+            query += " AND img IS NOT NULL AND img_prompt IS NOT NULL"
 
         if level is not None:
             query += " AND level = ?"
@@ -140,284 +234,103 @@ class ToeicVerifier:
         }
         return mime_types.get(ext, 'image/jpeg')
 
-    def verify_question(self, question: Dict) -> int:
+    def verify_question(self, question: Dict, img: bool = False) -> int:
         """
         Verify a single question with OpenAI
-
         Args:
-            question: Question dictionary from database
-
+            question: Question dictionary
+            img: Whether to include image prompt
         Returns:
             validation status: 1 (valid), -1 (invalid), -2 (error),
             status message
         """
         try:
             # Build the prompt based on part
-            prompt = self._build_prompt(question)
-            logger.info(f"Prompt:\n{prompt}")
-
-            # Prepare messages
-            messages = []
-
-            # Handle Part 1 - Image questions
-            if question['part'] in (1,3,4) and question['img']:
-                base64_image = self.encode_image(os.path.join('..', 'assets','photo','toeic',f'p{question['part']}',question['img']))
-                if base64_image is None:
-                    return -2, "Image encoding error"
-
-                mime_type = self.get_image_mime_type(question['img'])
-                messages.append({
-                    "role": "user",
-                    "content": [
-                        {"type": "input_text", "text": prompt},
-                        {"type": "input_image", "image_url": f"data:{mime_type};base64,{base64_image}"}
-                    ]
-                })
-            else:
-                messages.append({
-                    "role": "user",
-                    "content": [{"type": "input_text", "text": prompt}]
-                })
-
-            # Call OpenAI API
-            response = self.client.responses.create(
-                model=ChatGPT_MODEL_VER,
-                input=messages
-            )
-
-            logger.info(f"  OpenAI Response: {response}")
-            logger.info(f"  type of OpenAI Response: {type(response)}")
-            answer_obj = json.loads(response.output_text.strip())
-            #answer_obj = json.loads('[{"A": 80, "B": 10, "C": 5, "D": 5}, {"A": 5, "B": 85, "C": 5, "D": 5}, {"A": 100, "B": 0, "C": 0, "D": 0}]')
-            #answer_obj = json.loads('{"A": 80, "B": 10, "C": 5, "D": 5}')
-            logger.info(f"  Extracted Answer Text: {answer_obj}")
-            # Extract answer from response
-            result = self._extract_answer(answer_obj, question['part'])
-            if result is None:
-                errstr = f"Could not parse response: {response}"
-                logger.warning(errstr)
-                return -2, errstr
-
-            openai_answer, confidence = result
-
-            # check confidence and answer
-            for c in confidence:
-                if c < 85:
-                    errstr = f"Low confidence score: {openai_answer} {confidence}"
-                    logger.warning(errstr)
-                    return -1, errstr
-
-            # Compare with database answer
-            print(f"openai_answer and type: {openai_answer}, {type(openai_answer)}")
-            db_answer = question['answer'].strip().upper()
-            if len(db_answer) > 1:
-                db_answer = json.loads(question['answer'].strip().upper())
-            else:
-                db_answer = [db_answer]
-            print(f"db_answer and type: {db_answer}, {type(db_answer)}")
-            # Check if answers match
-            if openai_answer != db_answer:
-                # Answers don't match - mark as invalid regardless of confidence
-                return -1, f"Answer mismatch: OpenAI: {openai_answer} with confidence {confidence}"
-            else:
-                return 1, f"Valid answer with confidence: {confidence}"
+            system_prompt = load_prompt(question['part'], 'system', img)
+            user_prompt = load_prompt(question['part'], 'user', img)
+            json_schema = load_part_model(question['part'], img)
         except Exception as e:
-            logger.error(f"Exception: {e}")
-            return -2, f"Exception: {e}"
+            logger.error(f"Error loading prompts or models: {e}")
+            return -2, f"Error loading prompts or models: {e}"
 
-    def _build_prompt(self, question: Dict) -> str:
-        """Build the prompt for OpenAI based on TOEIC part"""
-        part = question['part']
-        print("question:", question)
+        # Format user prompt with actual values
+        user_prompt = user_prompt.format(
+            question=convert_to_schema(question)
+        )
 
-        if part == 3:
-            speaker_info = []
+        db_vector = []
+        # convert db answer to a vector
+        for i in question['answer']:
+            db_vector.append([100.0 if i == 'A' else 0.0, 100.0 if i == 'B' else 0.0, 100.0 if i == 'C' else 0.0, 100.0 if i == 'D' else 0.0])
 
-            for sex,accent in zip(json.loads(question['sex']),json.loads(question['accent'])):
-                speaker_info.append(f"{sex} with {accent} accent")
+        # print prompts for debugging
+        logger.debug(f"System Prompt:\n{system_prompt}\n")
+        logger.info(f"User Prompt:\n{user_prompt}\n")
 
-            conversation_exchanges = ""
-            for speaker, exchange in zip(speaker_info, json.loads(question['prompt'])):
-                conversation_exchanges += f'"{speaker}": "{exchange}"\n'
+        # Prepare messages
+        user_message = [{"type": "input_text", "text": user_prompt}]
+        if img and question['img']:
+            img_name = question['img'][0] # Note we've converted to list anyway
+            try:
+                img_path = os.path.join('..', 'assets','photo','toeic',f'p{question['part']}', img_name)
+                base64_image = self.encode_image(img_path)
+                if base64_image is None:
+                    return -2, f"Image encoding error {img_path}"
 
-        if part in [3, 4]:
-            # For parts 3 and 4, parse JSON fields
-            question['question'] = json.loads(question.pop('question'))
-            question['A'] = json.loads(question.pop('A'))
-            question['B'] = json.loads(question.pop('B'))
-            question['C'] = json.loads(question.pop('C'))
-            question['D'] = json.loads(question.pop('D'))
+                mime_type = self.get_image_mime_type(img_name)
+                user_message.append({"type": "input_image", "image_url": f"data:{mime_type};base64,{base64_image}"})
+            except Exception as e:
+                logger.error(f"Error preparing image for question ID {question['id']}: {e}")
+                return -2, f"Error preparing image: {e}"
 
-        if part == 1:
-            # Part 1: Photographs - 4 statements describing an image
-            prompt = f"""You are solving a TOEIC Listening Part 1 question (Photographs).
+        try:
+            response = self.client.responses.parse(
+                model=ChatGPT_MODEL_VER,
+                input=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_message}
+                ],
+                text_format=json_schema
+            )
+            logging.info(f"total tokens {response.usage.total_tokens}")
+        except Exception as e:
+            logger.error(f"OpenAI API error: {e}")
+            return -2, f"OpenAI API error: {e}"
 
-Look at the image and determine which statement best describes what you see.
+        parsed_response = response.output_parsed
 
-Options:
-A) {question['A']}
-B) {question['B']}
-C) {question['C']}
-D) {question['D']}
+        response_dict = parsed_response.model_dump()
+        json_str = parsed_response.model_dump_json(indent=2)
+        logging.info(f" AI dict result={json_str}")
 
-Give correctiness for each option, which is rated from 0 to 100. The sum of correctness for all options should be no larger than 100.
-if two or more options are equally correct, distribute the scores evenly among them.
-Respond ONLY in this exact json format:
-{{"A":[Confidence Score 0-100],"B":[Confidence Score 0-100],"C":[Confidence Score 0-100],"D":[Confidence Score 0-100]}}
+        ai_answer = response_dict['answer']
 
-Example: {{"A":0,"B":5,"C":91,"D":4}}
-Example: {{"A":0,"B":50,"C":50,"D":0}}
-Example: {{"A":0,"B":0,"C":0,"D":0}}
+        # convert answer dict to a 4 number vector e.g. {"A": xx,"B":yy,"C":zz,"D":ww} to [xx, yy, zz, ww]
+        ai_vector = [ [a['A'],a['B'],a['C'],a['D']] for a in ai_answer]
+        logger.info(f"ai_vector: {ai_vector}")
+        logger.info(f"db_vector: {db_vector}")
 
-Do not include any other text."""
+        # compare db_vector and v1
+        # verify number of answers match
+        if len(db_vector) != len(ai_vector):
+            print(f"Number of answers mismatch: db_vector has {len(db_vector)} answers, v1 has {len(ai_vector)} answers")
+            return -2, f"Number of answers mismatch"
 
-        elif part == 2:
-            # Part 2: Question-Response - 3 responses to a question
-            prompt = f"""You are solving a TOEIC Listening Part 2 question.
+        for v_db, v_ai in zip(db_vector, ai_vector):
+            print(f"Comparing db: {v_db} with ai: {v_ai}")
+            # check length match
+            if len(v_db) != len(v_ai):
+                print(f"  Length mismatch: db_vector has {len(v_db)} options, v_ai has {len(v_ai)} options")
+                return -2, f"Answer option length mismatch"
+            # compute sum of absolute difference
+            diff = sum(abs(a - b) for a, b in zip(v_db, v_ai))
+            logger.info(f"  Computed diff: {diff}")
+            # threshold for acceptance is 10
+            if diff > 10:
+                print(f"  Mismatch detected (diff {diff} > 10)")
+                return -3, f"Answer mismatch: AI: {ai_answer}"
 
-Question: {question['question']}
-
-Responses:
-A) {question['A']}
-B) {question['B']}
-C) {question['C']}
-
-Give correctiness for each response, which is rated from 0 to 100. The sum of correctness for all responses should be no larger than 100.
-if two or more options are equally correct, distribute the scores evenly among them.
-Respond ONLY in this exact json format:
-{{"A":[Confidence Score 0-100],"B":[Confidence Score 0-100],"C":[Confidence Score 0-100]}}
-
-Example: {{"A":20,"B":5,"C":75}}
-Example: {{"A":33,"B":33,"C":33}}
-Example: {{"A":0,"B":0,"C":0}}
-
-Do not include any other text."""
-
-        elif part == 3:
-            # Part 3: Conversations - conversation text + question + 4 options
-            prompt = f"""You are solving a TOEIC Listening Part 3 question (Conversations).
-
-Conversation:
-{conversation_exchanges}
-Question1: {question['question'][0]}
-Options:
-A) {question['A'][0]}
-B) {question['B'][0]}
-C) {question['C'][0]}
-D) {question['D'][0]}
-
-Question2: {question['question'][1]}
-Options:
-A) {question['A'][1]}
-B) {question['B'][1]}
-C) {question['C'][1]}
-D) {question['D'][1]}
-
-Question3: {question['question'][2]}
-Options:
-A) {question['A'][2]}
-B) {question['B'][2]}
-C) {question['C'][2]}
-D) {question['D'][2]}
-
-Give correctiness for each option, which is rated from 0 to 100. The sum of correctness for all option should be no larger than 100.
-Especially, pay attention to the sex of the speaker in the question and option. If the option describes an behavior/intention or action but the actor is different in the conversation, should give 0 score to the option.
-if two or more options are equally correct, distribute the scores evenly among them.
-Respond ONLY in this exact json array format for questions 1, 2, and 3:
-[{{"A":[Confidence Score 0-100],"B":[Confidence Score 0-100],"C":[Confidence Score 0-100],"D":[Confidence Score 0-100]}},
-{{"A":[Confidence Score 0-100],"B":[Confidence Score 0-100],"C":[Confidence Score 0-100],"D":[Confidence Score 0-100]}},
-{{"A":[Confidence Score 0-100],"B":[Confidence Score 0-100],"C":[Confidence Score 0-100],"D":[Confidence Score 0-100]}}]
-
-Example: [{{"A":10,"B":20,"C":60,"D":10}},{{"A":5,"B":15,"C":70,"D":10}},{{"A":25,"B":25,"C":25,"D":25}}]
-Do not include any other text."""
-
-        elif part == 4:
-            # Part 4: Talks - talk/monologue text + question + 4 options
-            prompt = f"""You are verifying a TOEIC Listening Part 4 question (Talks).
-
-Talk:
-{question['prompt']}
-
-Question1: {question['question'][0]}
-Options:
-A) {question['A'][0]}
-B) {question['B'][0]}
-C) {question['C'][0]}
-D) {question['D'][0]}
-
-Question2: {question['question'][1]}
-Options:
-A) {question['A'][1]}
-B) {question['B'][1]}
-C) {question['C'][1]}
-D) {question['D'][1]}
-
-Question3: {question['question'][2]}
-Options:
-A) {question['A'][2]}
-B) {question['B'][2]}
-C) {question['C'][2]}
-D) {question['D'][2]}
-
-Give correctiness for each option, which is rated from 0 to 100. The sum of correctness for all option should be no larger than 100.
-if two or more options are equally correct, distribute the scores evenly among them.
-Respond ONLY in this exact json array format for questions 1, 2, and 3:
-[{{"A":[Confidence Score 0-100],"B":[Confidence Score 0-100],"C":[Confidence Score 0-100],"D":[Confidence Score 0-100]}},
-{{"A":[Confidence Score 0-100],"B":[Confidence Score 0-100],"C":[Confidence Score 0-100],"D":[Confidence Score 0-100]}},
-{{"A":[Confidence Score 0-100],"B":[Confidence Score 0-100],"C":[Confidence Score 0-100],"D":[Confidence Score 0-100]}}]
-
-Example: [{{"A":10,"B":20,"C":60,"D":10}},{{"A":5,"B":15,"C":70,"D":10}},{{"A":25,"B":25,"C":25,"D":25}}]
-Do not include any other text."""
-
-        else:
-            # Fallback for unknown parts
-            prompt = None
-
-        return prompt
-
-    def _extract_answer(self, response_json: str, part: int):
-        """
-        Extract answer letter and confidence score from OpenAI response
-
-        Args:
-            response_json: Full response from OpenAI (format: a json {'A':xx,'B':yy,'C':zz,...} )
-            part: TOEIC part number (optional, for validation)
-
-        Returns:
-            Tuple of (answer letter, confidence score) or None if parsing fails
-        """
-        # Find the key-value pair with the max value
-        # Note: If there's a tie, this returns the *first* one found
-
-        # Validate response_json is in expected format
-        if isinstance(response_json, dict):
-            response_json = [response_json]
-
-        if not isinstance(response_json, list):
-            logger.warning(f"Unexpected response format: {type(response_json)}")
-            return None
-
-        valid_answers = {'A', 'B', 'C', 'D'} if part != 2 else {'A', 'B', 'C'}
-
-        answers = []
-        scores = []
-
-        for answer_dict in response_json:
-            answer_dict = {k: v for k, v in answer_dict.items() if k in valid_answers}
-            # make sure there are exactly 4 keys
-            if len(answer_dict) != len(valid_answers):
-                logger.warning(f"Expected 3/4 options for Part {part}, got: {answer_dict.keys()}")
-                return None
-            # make sure the sum of values is 100
-            if sum(answer_dict.values()) > 100:
-                logger.warning(f"Expected sum of confidence scores to be 100, got: {sum(answer_dict.values())}")
-                return None
-
-            answer, score = max(answer_dict.items(), key=lambda item: item[1])
-            answers.append(answer)
-            scores.append(score)
-
-        return answers, scores
+        return 1, f"answer match: {ai_answer}"
 
     def update_question_validity(self, question_id: int, valid: int, status: str):
         """
@@ -436,7 +349,8 @@ Do not include any other text."""
     def process_questions(self, part: Optional[int] = None,
                          level: Optional[int] = None,
                          count: Optional[int] = None,
-                         start_id: Optional[int] = None):
+                         start_id: Optional[int] = None,
+                         img: bool = False):
         """
         Main processing loop
 
@@ -445,7 +359,7 @@ Do not include any other text."""
             level: Filter by difficulty level
             count: Limit number of questions
         """
-        questions = self.get_questions(part, level, count, start_id)
+        questions = self.get_questions(part, level, count, start_id, img)
 
         if not questions:
             logger.info("No questions found matching the criteria.")
@@ -484,10 +398,19 @@ Do not include any other text."""
                     logger.info(f"  Talk: {question['prompt'][:80]}...")
                 logger.info(f"  Question: {question['question'][:80]}...")
 
-            logger.info(f"  DB Answer: {question['answer']}")
+            # convert every to possible json format
+            for key, value in question.items():
+                if isinstance(value, str):
+                    if value.startswith('[') or value.startswith('{'):
+                        question[key] = json.loads(value)
+                    else:
+                        question[key] = [value]
+
+            logger.debug(f"  DB Answer: {question['answer']}")
+            logger.debug(f"  DB Answer's type: {type(question['answer'])}")
 
             # Verify question
-            validation, result = self.verify_question(question)
+            validation, result = self.verify_question(question, img)
 
             if validation == -2:
                 self.stats['errors'] += 1
@@ -532,6 +455,7 @@ Examples:
     parser.add_argument('--part', type=int, choices=[1, 2, 3, 4],
                        help='Filter by TOEIC part (1-4)')
     parser.add_argument('--level', type=int, help='Filter by difficulty level')
+    parser.add_argument("--img", action='store_true', help="With image prompt")
     parser.add_argument('--count', type=int, help='Limit number of questions to process')
     parser.add_argument('--id', type=int, dest='start_id', help='Start verification from this Question ID (inclusive)')
 
@@ -543,7 +467,8 @@ Examples:
             part=args.part,
             level=args.level,
             count=args.count,
-            start_id=args.start_id
+            start_id=args.start_id,
+            img=args.img
         )
     except Exception as e:
         logger.error(f"Error: {e}")

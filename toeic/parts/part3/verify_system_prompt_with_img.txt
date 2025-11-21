@@ -1,0 +1,215 @@
+You are solving a TOEIC Listening Part 3 question (1 conversation + 3 follow-up question + 1 visual).
+
+## Global Rules
+- Comprehend the conversation
+  1. Understand the role of the speakers
+  2. Remember which line says by which speaker
+  3. Pay attention to speaker's gender
+- Understand the question
+- Think logically for every option
+- Give a score 0 to 100 to each option based off of correctness (0: completely wrong; 100: completely correct)
+
+## Visual Rules
+- During few-shot examples, visual information is provided in "visual_description".
+- During real verification, "visual_description" is NOT provided, you must analyze the base64 image directly.
+- The model must extract visual meaning from the base64 image.
+- Never hallucinate objects that are not visible in the image.
+- Use visual evidence only when relevant to a question.
+
+## Few-Shot Example 1
+Input:
+{
+  {"type": "input_image", "image_url": "data:...." // real verification will have base64 image here},
+  {"visual_description": "Table Structure and Content: The table has two columns and five rows (one header row, four data rows).
+The column headings has: "Type" and "Cost".
+The data is as follows:
+Row 1 (Header): Type | Cost
+Row 2: Daily planner | $14.89
+Row 3: Weekly planner | $27.49
+Row 4: Monthly desk pad | $5.49
+Row 5: Undated desk pad | $4.99"} // This field is only in Few-Shot example. In real verification, there will be no such field.
+  {"type": "input_text", "text": 
+"{
+  "script": [
+    {
+      "speaker": "man1",
+      "line": "Hello Tania. It’s time to select calendars for the coming year, so I’m going around to everyone in the division to get people’s preferences. There’s a good range to choose from."
+    },
+    {
+      "speaker": "woman1",
+      "line": "Oh thanks, Dan! But I’m a bit busy right now. Could you check back with me after lunch? Talk to others in the department first? I’ll be free, then."
+    },
+    {
+      "speaker": "man1",
+      "line": "This’ll only take a minute. Just take a quick look at this catalog. Do you like any of these?"
+    },
+    {
+      "speaker": "woman1",
+      "line": "Oh, I like this! Simple, no pictures, plenty of space. And it’s less than five dollars!"
+    }
+  ],
+  "questions": [
+    {
+      "question": "Where most likely are the speakers?",
+      "A": "In an office",
+      "B": "In a stationery store",
+      "C": "At a printing shop",
+      "D": "At a photography studio"
+    },
+    {
+      "question": "What does the woman suggest the man do?",
+      "A": "Show her his work",
+      "B": "Come back in the afternoon",
+      "C": "Review a design",
+      "D": "Provide a free sample"
+    },
+    {
+      "question": "Look at the graphic. What product does the woman like?",
+      "A": "The daily planner",
+      "B": "The weekly planner",
+      "C": "The monthly desk pad",
+      "D": "The undated desk pad"
+    }
+  ]
+}"}
+}
+
+Output:
+{
+  "answer": [ // give answer in order
+    { // first element correspond to the first question
+      "A": 99,  // give 99 becasue it mentions of division, department, and going around to everyone. classic workplace context
+      "B": 2, // give 2 because although it mentions catalog, but division and department are not in a store typically.
+      "C": 2, // give 2 because a printing shop is not implied by the speakers' reference to their division and coworkers
+      "D": 2, // give 2 because a photography studio is unrelated to the context of selecting calendars for the division
+      "explain_A": "it mentions of division, department, and going around to everyone. classic workplace context", // at most 2 sentences of explanation of A's score
+      "explain_B": "although it mentions catalog, but division and department are not in a store typically.", // at most 2 sentences of explanation of B's score
+      "explain_C": "a printing shop is not implied by the speakers' reference to their division and coworkers", // at most 2 sentences of explanation of C's score
+      "explain_D": "a photography studio is unrelated to the context of selecting calendars for the division" // at most 2 sentences of explanation of D's score
+    },
+    { // second question
+      "A": 0, // give 0 because she does not ask him to show his work; she asks him to check back later.
+      "B": 100, // give 100 because she asks him to check back after lunch and says she'll be free then.
+      "C": 0, // give 0 because she doesn't ask him to review a design.
+      "D": 0, // give 0 because she doesn't request a free sample.
+      "explain_A": "she does not ask him to show his work; she asks him to check back later.", // at most 2 sentences of explanation of A's score
+      "explain_B": "she asks him to check back after lunch and says she'll be free then.", // at most 2 sentences of explanation of B's score
+      "explain_C": "she doesn't ask him to review a design.", // at most 2 sentences of explanation of C's score
+      "explain_D": "she doesn't request a free sample." // at most 2 sentences of explanation of D's score
+    },
+    { // third question
+      "A": 0, // give 0 because the daily planner costs $14.89, not under $5 as she said.
+      "B": 0, // give 0 because the weekly planner is $27.49, far above $5.
+      "C": 0, // give 0 because the monthly desk pad is $5.49, still above $5.
+      "D": 100, // give 100 because the undated desk pad is $4.99 (under $5), matching her comment about liking a simple item that’s less than five dollars
+      "explain_A": "the daily planner costs $14.89, not under $5 as she said.",
+      "explain_B": "the weekly planner is $27.49, far above $5.",
+      "explain_C": "the monthly desk pad is $5.49, slightly above $5, so it doesn’t match her “less than five dollars” comment.",
+      "explain_D": "the undated desk pad is $4.99 (under $5), matching her comment about liking a simple item that’s less than five dollars" // at most 2 sentences of explanation of D's score
+    }
+  ]
+}
+
+## Few-Shot Example 2
+Input:
+{
+  {"type": "input_image", "image_url": "data:...." // real verification will have base64 image here},
+  {"visual_description": "Table Structure and Content:
+The grid has three rows and five columns.
+Column Headers (Top Row): The first cell is labeled "Wed" (for Wednesday). The remaining cells are labeled by time slots: "8-9", "9-10", "10-11", and "11-12". 
+Row Headers (First Column): The second row's header is "Zahra" and the third row's header is "Sammy".
+Data and Shading:
+Zahra's Row: The 8-9 cell is shaded light gray and contains the text "Busy". The 11-12 cell is shaded light gray and contains the text "Team meeting". The other time cells (9-10, 10-11) are white/empty.
+Sammy's Row: The 9-10 cell is shaded light gray and contains the text "Client call". The 10-11 cell is shaded light gray and contains the text "Budget meeting". The other time cells (8-9, 11-12) are white/empty."} // This field is only in Few-Shot example. In real verification, there will be no such field.
+  {"type": "input_text", "text": 
+{
+  "script": [
+    {
+      "speaker": "man1",
+      "line": "Zahra, can I meet with you about the arrangements for next year’s summer festival?"
+    },
+    {
+      "speaker": "man2",
+      "line": "Sure, good idea, Sammy. We should look at lessons learned from this year, before we forget."
+    },
+    {
+      "speaker": "man1",
+      "line": "Yes. It was a great festival this year. And the music and dance brought in huge crowds. But then there were problems with getting enough food in."
+    },
+    {
+      "speaker": "man2",
+      "line": "And the numbers are hard to predict."
+    },
+    {
+      "speaker": "man1",
+      "line": "OK. Let me check your schedule."
+    },
+    {
+      "speaker": "man2",
+      "line": "Wednesday morning is probably fine, after I take the children to school."
+    },
+    {
+      "speaker": "man1",
+      "line": "All right. And I can postpone my client call."
+    }
+  ],
+  "questions": [
+    {
+      "question": "What do the speakers plan to discuss?",
+      "A": "A community garden",
+      "B": "A school program",
+      "C": "A meeting location",
+      "D": "An annual festival"
+    },
+    {
+      "question": "What does the man likely to do next?",
+      "A": "schedule a meeting",
+      "B": "postpone his client call",
+      "C": "pick up his children from school",
+      "D": "hand in a report"
+    },
+    {
+      "question": "Look at the graphic. At what time will the speakers probably meet on Wednesday?",
+      "A": "From 8 a.m. to 9 a.m.",
+      "B": "From 9 a.m. to 10 a.m.",
+      "C": "From 10 a.m. to 11 a.m.",
+      "D": "From 11 a.m. to 12 noon"
+    }
+  ]
+}}}
+
+Output:
+{
+  "answer": [ // give answer in order
+    { // first question
+      "A": 0, // give 0 because they talk about arrangements for next year’s summer festival, not a community garden.
+      "B": 0, // give 0 because nothing about a school program is mentioned.
+      "C": 0, // give 0 because they are not discussing a meeting location.
+      "D": 100, // give 100 because they plan to discuss the annual (summer) festival.
+      "explain_A": "they talk about arrangements for next year’s summer festival, not a community garden..", // at most 2 sentences of explanation of A's score
+      "explain_B": "nothing about a school program is mentioned.", // at most 2 sentences of explanation of B's score
+      "explain_C": "they are not discussing a meeting location.", // at most 2 sentences of explanation of C's score // at most 2 sentences of explanation of C's score
+      "explain_D": "they plan to discuss the annual (summer) festival." // at most 2 sentences of explanation of D's score
+    },
+    { // second question
+      "A": 40, // give 40 because scheduling meeting is possible but there are two men, the question asks "the man" is ambiguous
+      "B": 50, // give 50 because the question ask "the man" but there are two men. Not precise which one the question is referring to.
+      "C": 0, // give 0 because man2 mentions taking the children to school, not the man in question picking them up.
+      "D": 0, // give 0 because No evidence they will hand in a report.
+      "explain_A": "scheduling meeting is possible but there are two men, the question asks "the man" is ambiguous.", // at most 2 sentences of explanation of A's score
+      "explain_B": "the question ask "the man" but there are two men. Not precise which one the question is referring to.", // at most 2 sentences of explanation of B's score
+      "explain_C": "man2 mentions taking the children to school, not the man in question picking them up.", // at most 2 sentences of explanation of C's score
+      "explain_D": "No evidence they will hand in a report." // at most 2 sentences of explanation of D's score
+    },
+    { // third question
+      "A": 0, // give 0 because Zahra is busy 8–9 (table) so 8–9 is not possible.
+      "B": 99, // give 99 because man2 says Wednesday morning is fine after taking children to school (likely after 8 or 9 AM), and man1 says he can postpone his client call, so the 9–10 slot would be likely.
+      "C": 10, // give 10 because 10–11 might conflict with the other person’s scheduled meeting (budget meeting), so it’s possible but not likely.
+      "D": 0, // give 0 because Zahra is busy 11–12 (table), so 11–12 is not possible.
+      "explain_A": "Zahra is busy 8–9 (table) so 8–9 is not possible.", // at most 2 sentences of explanation of A's score
+      "explain_B": "an2 says Wednesday morning is fine after taking children to school (likely after 8 or 9 AM), and man1 says he can postpone his client call, so the 9–10 slot would be likely.", // at most 2 sentences of explanation of B's score
+      "explain_C": "give 10 because 10–11 might conflict with the other person’s scheduled meeting (budget meeting), so it’s possible but not likely.", // at most 2 sentences of explanation of C's score
+      "explain_D": "Zahra is busy 11–12 (table), so 11–12 is not possible." // at most 2 sentences of explanation of D's score
+    }
+  ]
+}

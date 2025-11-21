@@ -1,0 +1,241 @@
+You are solving a TOEIC Listening Part 3 question (1 conversation + 3 follow-up question).
+
+## Global Rules
+- Comprehend the conversation
+  1. Understand the role of the speakers
+  2. Remember which line says by which speaker
+  3. Pay attention to speaker's gender
+- Understand the question
+- Think logically for every option
+- Give a score 0 to 100 to each option based off of correctness (0: completely wrong; 100: completely correct)
+
+## Few-Shot Example 1
+Input:
+{
+  "script": [
+    {
+      "speaker": "woman1",
+      "line": "A guest called to request a wake-up call at six and asked about early check-in."
+    },
+    {
+      "speaker": "man1",
+      "line": "We can offer early check-in at noon, and I'm waiving the early fee for this reservation."
+    },
+    {
+      "speaker": "woman1",
+      "line": "Should we hold their luggage if they arrive before the room is ready?"
+    },
+    {
+      "speaker": "man1",
+      "line": "Yes, the front desk can hold luggage at no charge until the room becomes available."
+    }
+  ],
+  "questions": [
+    {
+      "question": "What time did the guest request a wake-up call?",
+      "A": "7:00 AM",
+      "B": "6:00 AM",
+      "C": "5:30 AM",
+      "D": "8:00 AM",
+    },
+    {
+      "question": "When can the guest check in early without an extra fee?",
+      "A": "8:00 AM",
+      "B": "Noon",
+      "C": "12:00 PM",
+      "D": "12:30 PM",
+    },
+    {
+      "question": "Will the front desk charge to hold the guest's luggage?",
+      "A": "Yes, a small fee",
+      "B": "Yes, unless requested in advance",
+      "C": "Yes, unless the guest is VIP",
+      "D": "No, unless large luggage",
+    }
+  ]
+}
+
+Output:
+{
+  "answer": [ // give answer in order
+    { // first element correspond to the first question
+      "A": 0,  // give 0 because it's obviously wrong
+      "B": 100, // give 100 because it's exactly right. 'woman1' says a guest called to request a wake-up call at six, which is the option B 6:00 AM
+      "C": 0, // give 0 because it's obviously wrong
+      "D": 0, // give 0 because it's obviously wrong,
+      "explain_A": "the script says the guest requested a wake-up call at six, not seven.", // at most 2 sentences of explanation of A's score
+      "explain_B": "woman1 says a guest called to request a wake-up call at six.", // at most 2 sentences of explanation of B's score
+      "explain_C": "5:30 AM is not mentioned.", // at most 2 sentences of explanation of C's score
+      "explain_D": "8:00 AM is not mentioned." // at most 2 sentences of explanation of D's score
+    },
+    { // second question
+      "A": 0, // give 0 because it's obviously wrong
+      "B": 100, // give 100 because it's exactly right. 'man1' says they can offer early check-in at noon
+      "C": 100, // give 100 because it's exactly right. 'man1' says they can offer early check-in at noon which is also 12:00 PM
+      "D": 90, // give 90 because it's highly possibly correct. Logically, if you can check-in at noon, you can check-in after noon. Therefore 12:30 PM is fine.
+      "explain_A": "the staff offered early check-in at noon, not 8:00 AM.",
+      "explain_B": "man1 explicitly says they can offer early check-in at noon.",
+      "explain_C": "12:00 PM is the same time as noon, stated by man1.",
+      "explain_D": "if check-in is allowed at noon, checking in at 12:30 PM would also be after that time; however the speaker specifically said noon, not 12:30."
+    },
+    { // third question
+      "A": 0, // give 0 because it's obviously wrong
+      "B": 0, // give 0 because it's obviously wrong
+      "C": 0, // give 0 because it's obviously wrong
+      "D": 5, // give 5 because they don't mention large luggage is the exception.
+      "explain_A": "the man says the front desk can hold luggage at no charge, so there is no small fee.",
+      "explain_B": "no condition about requesting in advance is mentioned; it is offered at no charge.",
+      "explain_C": "no VIP exception is given; the policy is stated as no charge.",
+      "explain_D": "man1 says luggage can be held at no charge until the room is available and does not mention an exception for large luggage, so this option is very unlikey." // at most 2 sentences of explanation of D's score
+    }
+  ]
+}
+
+## Few-Shot Example 2
+Input:
+{
+  "script": [
+    {
+      "speaker": "woman1",
+      "line": "Hi, will the conference badges be ready for pickup this morning?"
+    },
+    {
+      "speaker": "man1",
+      "line": "Yes, I finished printing them and left the boxes at reception."
+    },
+    {
+      "speaker": "woman1",
+      "line": "Great — do we need to sign anything when we collect them?"
+    },
+    {
+      "speaker": "man1",
+      "line": "Yes, just tell reception your team name and sign a form and they'll hand them over."
+    },
+    {
+      "speaker": "woman1",
+      "line": "Perfect, I'll swing by in ten minutes."
+    }
+  ],
+  "questions": [
+    {
+      "question": "Where does the woman say the conference badges are?",
+      "A": "In the storage room",
+      "B": "At reception",
+      "C": "With security at the entrance",
+      "D": "In the printing room"
+    },
+    {
+      "question": "What does the woman plan to do after the conversation about badges?",
+      "A": "Swing by to the reception in 15 minues",
+      "B": "Go to reception in a few minutes",
+      "C": "Head to reception in 10 minutes",
+      "D": "Ask someone else to collect them"
+    },
+    {
+      "question": "How should someone collect the badges, according to the man?",
+      "A": "Sign a pickup form at reception",
+      "B": "Tell reception your team name",
+      "C": "Collect them from the printing office",
+      "D": "Tell reception your team name and sign a form"
+    }
+  ]
+}
+Output:
+{
+  "answer": [ // give answer in order
+    { // first question
+      "A": 0, // give 0 because it's obviously wrong
+      "B": 0, // give 0 because the question asks where the "woman" says the badges are, but in the conversation, it's the man "man1" says it.
+      "C": 0, // give 0 because it's obviously wrong
+      "D": 0, // give 0 because it's obviously wrong
+      "explain_A": "the woman does not say the badges are in the storage room; she asks if they'll be ready.", // at most 2 sentences of explanation of A's score
+      "explain_B": "the woman never says the badges are at reception — the man says that. The question specifically asks what the woman says.", // at most 2 sentences of explanation of B's score
+      "explain_C": "the woman does not say they are with security at the entrance.", // at most 2 sentences of explanation of C's score // at most 2 sentences of explanation of C's score
+      "explain_D": "the woman does not say they are in the printing room." // at most 2 sentences of explanation of D's score
+    },
+    { // second question
+      "A": 10, // give 10 because she says in ten minutes, not 15 minutes
+      "B": 80, // give 80 because in a few minutes is less precise, although it can mean 5 to 10 miinutes. It's a little vague
+      "C": 100, // give 100 because it's correct
+      "D": 0, // give 0 because it's obviously wrong
+      "explain_A": "she says 'in ten minutes,' not 15 minutes—close but incorrect.", // at most 2 sentences of explanation of A's score
+      "explain_B": "'a few minutes' is vaguer but could reasonably describe 'in ten minutes'; not as precise.", // at most 2 sentences of explanation of B's score
+      "explain_C": "she explicitly says 'I'll swing by in ten minutes.'", // at most 2 sentences of explanation of C's score
+      "explain_D": "she does not say she'll ask someone else to collect them." // at most 2 sentences of explanation of D's score
+    },
+    { // third question
+      "A": 50, // give 50 because "Sign a pickup form" is not enough. Also need to tell team name.
+      "B": 50, // give 50 because "Tell reception your team name" is not enough. Also need to sign the form.
+      "C": 0,
+      "D": 100, // give 100 because it's exactly correct
+      "explain_A": "signing a form at reception is part of the required actions, but the man also said to tell the team name, so this alone is incomplete.", // at most 2 sentences of explanation of A's score
+      "explain_B": "telling reception the team name is also part of the instructions, but alone it's incomplete without signing the form.", // at most 2 sentences of explanation of B's score
+      "explain_C": "the man said the boxes were left at reception, not at the printing office.", // at most 2 sentences of explanation of C's score
+      "explain_D": "the man explicitly said to 'tell reception your team name and sign a form' to receive the badges." // at most 2 sentences of explanation of D's score
+    }
+  ]
+}
+
+
+
+{
+  "name": "verify_result",
+  "strict": false,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "answer": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "A": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "B": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "C": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "D": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "explain_A": {
+              "type": "string"
+            },
+             "explain_B": {
+              "type": "string"
+            },
+             "explain_C": {
+              "type": "string"
+            },
+             "explain_D": {
+              "type": "string"
+            },
+          },
+          "required": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "explain_A","explain_B","explain_C","explain_D"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": [
+      "answer"
+    ],
+    "additionalProperties": false
+  }
+}
