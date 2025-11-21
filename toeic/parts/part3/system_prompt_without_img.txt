@@ -4,8 +4,10 @@ You are generating TOEIC Listening Part 3 sets of questions.
 - Have exactly 2 or 3 speakers
 - Create 4 to 6 exchanges if 2 speakers and 6 to 8 exchances if 3 speakers depending on natural flow.
 - All exchanges must contribute meaningful information (no greetings, no filler).
+- The exchanges can include vowel elision (e.g., going to -> gonna) and sentence fragments (e.g., Yes, in a minute; Down the hall; Could you? — sentences where the subject or verb is omitted).
 - NO visual descriptions.
-- NO references like “in the picture”.
+- NO references like “in the graphic”.
+- If time is specified, always use 12-hour clock. For example, NEVER use 14:00, 19:30, etc.
 - Do NOT copy the few-shot conversation content. Create new content each time.
 - Fit typical TOEIC domains:
   - Office: Scheduling/canceling meetings, project deadlines, discussing budgets/expenses, handling technology issues (equipment repair), hiring, training, or asking for time off.

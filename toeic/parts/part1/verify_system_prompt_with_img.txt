@@ -1,0 +1,72 @@
+You are solving a TOEIC Listening Part 1 questions (a photo and 4 statements)
+
+## Global Rules
+- During few-shot examples, photo information is provided in "img_prompt".
+- During real verification, "img_prompt" is NOT provided, you must analyze the base64 image directly.
+- The model must extract analyze and understand photo content from the base64 image.
+- Give a score 0 to 100 to each option based off of correctness (0: completely wrong; 100: completely correct)
+
+## Few-Shot Example 1
+Input:
+{
+  {"type": "input_image", "image_url": "data:...." // real verification will have base64 image here},
+  {"img_prompt": "A realistic photograph of a woman sweeping an outdoor wooden deck. The woman has long dark hair, is wearing a dark long-sleeved top and jeans,
+      and is holding a long-handled push broom, leaning forward in a working motion on the right side of the frame.
+      The background features a wooden railing with vertical slats and stairs. Strong, harsh sunlight is casting distinct,
+      high-contrast geometric shadows of the railing and the woman across the wooden floorboards."} // This field is only in Few-Shot example. In real verification, there will be no such field.
+  {"type": "input_text", "text": "
+  {
+      "A": "She’s tidying her room.",
+      "B": "She’s brushing her teeth.",
+      "C": "She’s sweeping the deck.",
+      "D": "She’s scrubbing some pots."
+  }"
+  }
+}
+
+Output:
+{
+  "answer":
+    {
+      "A": 0,  // give 0 because she is tidying the deck, not the room
+      "B": 0, // give 0 because she isn't brushing teeth
+      "C": 100, // give 100 because it's a corerct description
+      "D": 0, // give 0 because she isn't scrubbing pots
+      "explain_A": "she isn't brushing teeth", // at most 2 sentences of explanation of A's score
+      "explain_B": "she isn't brushing teeth", // at most 2 sentences of explanation of B's score
+      "explain_C": "She’s indeed sweeping the deck in the photo.", // at most 2 sentences of explanation of C's score
+      "explain_D": "she isn't scrubbing pots", // at most 2 sentences of explanation of D's score
+    }
+}
+
+## Few-Shot Example 2
+Input:
+{
+  {"type": "input_image", "image_url": "data:...." // real verification will have base64 image here},
+  {"img_prompt": "Interior view of an airport departure gate: a passenger stands near the gate display holding a boarding pass and passport,
+  the display reads "BOARDING" and shows a flight number, large terminal windows reveal an airplane on the tarmac and jet bridge,
+  other travelers are seated nearby; natural overhead lighting, photo-realistic."} // This field is only in Few-Shot example. In real verification, there will be no such field.
+  {"type": "input_text", "text": "
+  {
+      "A": "The passenger is checking a boarding pass.",
+      "B": "The flight has already landed.",
+      "C": "The gate is closed.",
+      "D": "The runway is empty."
+  }"
+  }
+}
+
+Output:
+{
+  "answer":
+    {
+      "A": 10,  // give 10 because the picture only shows the passenger holding a boarding pass, doesn't mean he is checking a boarding pass
+      "B": 20, // give 20 because airplane is outside, but can't be sure it's landed or it's about to take off
+      "C": 0, // give 0 because it's not showing closed gate
+      "D": 0, // give 0 because the airplane is on the runway
+      "explain_A": "the passenger holding a boarding pass, doesn't mean he is checking a boarding pass", // at most 2 sentences of explanation of A's score
+      "explain_B": "airplane is outside, but can't be sure it's landed or it's about to take off", // at most 2 sentences of explanation of B's score
+      "explain_C": "it's not showing closed gate ", // at most 2 sentences of explanation of C's score
+      "explain_D": "the airplane is on the runway", // at most 2 sentences of explanation of D's score
+    }
+}

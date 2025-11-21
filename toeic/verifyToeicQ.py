@@ -15,7 +15,7 @@ from typing import Optional, Dict, List, Type
 from openai import OpenAI
 import importlib.util
 from pydantic import BaseModel
-
+from common import VerifyStatus
 
 # Configure logging
 logging.basicConfig(
@@ -27,42 +27,60 @@ logger = logging.getLogger(__name__)
 
 ChatGPT_MODEL_VER = "gpt-5-mini-2025-08-07"
 
+# Load a pre-trained Sentence Transformer model
+logging.info("loading Sentence Transformer module...")
+from sentence_transformers import SentenceTransformer, util
+sent_model = SentenceTransformer('all-MiniLM-L6-v2')
+logging.info("done")
+
+
 def convert_to_schema(q_dict: Dict) -> Dict:
     # Build script section
     part = q_dict['part']
-    questions = q_dict['question']
 
-    # Build questions section
-    q_list = []
-    num_q = len(questions)
+    if part == 1:
+        output_json = {
+            "A": q_dict['A'][0],
+            "B": q_dict['B'][0],
+            "C": q_dict['C'][0],
+            "D": q_dict['D'][0]
+        }
+    else:
+        questions = q_dict['question']
 
-    for i in range(num_q):
-        q_list.append({
-            "question": questions[i],
-            "A": q_dict['A'][i],
-            "B": q_dict['B'][i],
-            "C": q_dict['C'][i]
-        })
-        if part != 2:
-            # only part 2 has 3 options
-            q_list[-1]['D'] = q_dict['D'][i]
+        # Build questions section
+        q_list = []
+        num_q = len(questions)
 
-    output_json = {
-        "questions": q_list
-    }
-
-    if part == 3:
-        script = []
-        speakers = q_dict['sex']
-        lines = q_dict['prompt']
-
-        for spk, line in zip(speakers, lines):
-            script.append({
-                "speaker": spk,
-                "line": line
+        for i in range(num_q):
+            q_list.append({
+                "question": questions[i],
+                "A": q_dict['A'][i],
+                "B": q_dict['B'][i],
+                "C": q_dict['C'][i]
             })
+            if part != 2:
+                # only part 2 has 3 options
+                q_list[-1]['D'] = q_dict['D'][i]
 
-        output_json['script'] = script
+        output_json = {
+            "questions": q_list
+        }
+
+        if part == 3:
+            script = []
+            speakers = q_dict['sex']
+            lines = q_dict['prompt']
+
+            for spk, line in zip(speakers, lines):
+                script.append({
+                    "speaker": spk,
+                    "line": line
+                })
+
+            output_json['script'] = script
+        elif part == 4:
+            output_json['talk'] = q_dict['prompt']
 
     return  output_json
 
@@ -183,6 +201,8 @@ class ToeicVerifier:
 
         if img:
             query += " AND img IS NOT NULL AND img_prompt IS NOT NULL"
+        else:
+            query += " AND (img_prompt IS NULL OR img_prompt = '')"
 
         if level is not None:
             query += " AND level = ?"
@@ -234,16 +254,40 @@ class ToeicVerifier:
         }
         return mime_types.get(ext, 'image/jpeg')
 
-    def verify_question(self, question: Dict, img: bool = False) -> int:
+    def preverify_question(self, question: Dict, img: bool = False):
+        if question['part'] in (3,4):
+            questions = question['question']
+
+            # check if the 3 questions are similar
+            embeddings = sent_model.encode(questions, convert_to_tensor=True)
+            cosine_scores = util.cos_sim(embeddings, embeddings)
+
+            print(f"q1 = {questions[0]}")
+            print(f"q2 = {questions[1]}")
+            print(f"q3 = {questions[2]}")
+            print(f"cosine: {cosine_scores}")
+
+            threshold = 0.7
+            if abs(cosine_scores[0][1].item()) > threshold or abs(cosine_scores[0][2].item()) > threshold or abs(cosine_scores[1][2].item()) > threshold :
+                return VerifyStatus.INVALID, f"too similar with thrshold > {threshold}. consine matrix: {cosine_scores}"
+
+        return VerifyStatus.UNVERIFIED, None
+
+    def verify_question(self, question: Dict, img: bool = False):
         """
         Verify a single question with OpenAI
         Args:
             question: Question dictionary
             img: Whether to include image prompt
         Returns:
-            validation status: 1 (valid), -1 (invalid), -2 (error),
+            validation status
             status message
         """
+
+        status, msg = self.preverify_question(question, img)
+        if status != VerifyStatus.UNVERIFIED:
+            return status, msg
+
         try:
             # Build the prompt based on part
             system_prompt = load_prompt(question['part'], 'system', img)
@@ -251,7 +295,7 @@ class ToeicVerifier:
             json_schema = load_part_model(question['part'], img)
         except Exception as e:
             logger.error(f"Error loading prompts or models: {e}")
-            return -2, f"Error loading prompts or models: {e}"
+            return VerifyStatus.ERROR, f"Error loading prompts or models: {e}"
 
         # Format user prompt with actual values
         user_prompt = user_prompt.format(
@@ -270,18 +314,18 @@ class ToeicVerifier:
         # Prepare messages
         user_message = [{"type": "input_text", "text": user_prompt}]
         if img and question['img']:
-            img_name = question['img'][0] # Note we've converted to list anyway
+            img_name = question['img']
             try:
                 img_path = os.path.join('..', 'assets','photo','toeic',f'p{question['part']}', img_name)
                 base64_image = self.encode_image(img_path)
                 if base64_image is None:
-                    return -2, f"Image encoding error {img_path}"
+                    return VerifyStatus.ERROR, f"Image encoding error {img_path}"
 
                 mime_type = self.get_image_mime_type(img_name)
                 user_message.append({"type": "input_image", "image_url": f"data:{mime_type};base64,{base64_image}"})
             except Exception as e:
                 logger.error(f"Error preparing image for question ID {question['id']}: {e}")
-                return -2, f"Error preparing image: {e}"
+                return VerifyStatus.ERROR, f"Error preparing image: {e}"
 
         try:
             response = self.client.responses.parse(
@@ -295,7 +339,7 @@ class ToeicVerifier:
             logging.info(f"total tokens {response.usage.total_tokens}")
         except Exception as e:
             logger.error(f"OpenAI API error: {e}")
-            return -2, f"OpenAI API error: {e}"
+            return VerifyStatus.ERROR, f"OpenAI API error: {e}"
 
         parsed_response = response.output_parsed
 
@@ -306,7 +350,7 @@ class ToeicVerifier:
         ai_answer = response_dict['answer']
 
         # convert answer dict to a 4 number vector e.g. {"A": xx,"B":yy,"C":zz,"D":ww} to [xx, yy, zz, ww]
-        ai_vector = [ [a['A'],a['B'],a['C'],a['D']] for a in ai_answer]
+        ai_vector = [[a['A'],a['B'],a['C'],a.get('D',0)] for a in ai_answer]
         logger.info(f"ai_vector: {ai_vector}")
         logger.info(f"db_vector: {db_vector}")
 
@@ -314,21 +358,22 @@ class ToeicVerifier:
         # verify number of answers match
         if len(db_vector) != len(ai_vector):
             print(f"Number of answers mismatch: db_vector has {len(db_vector)} answers, v1 has {len(ai_vector)} answers")
-            return -2, f"Number of answers mismatch"
+            return VerifyStatus.ERROR, f"Number of answers mismatch"
 
         for v_db, v_ai in zip(db_vector, ai_vector):
             print(f"Comparing db: {v_db} with ai: {v_ai}")
             # check length match
             if len(v_db) != len(v_ai):
                 print(f"  Length mismatch: db_vector has {len(v_db)} options, v_ai has {len(v_ai)} options")
-                return -2, f"Answer option length mismatch"
+                return VerifyStatus.ERROR, f"Answer option length mismatch"
             # compute sum of absolute difference
             diff = sum(abs(a - b) for a, b in zip(v_db, v_ai))
             logger.info(f"  Computed diff: {diff}")
             # threshold for acceptance is 10
-            if diff > 10:
-                print(f"  Mismatch detected (diff {diff} > 10)")
-                return -3, f"Answer mismatch: AI: {ai_answer}"
+            threshold = 30
+            if diff > threshold:
+                print(f"  Mismatch detected (diff {diff} > {threshold})")
+                return VerifyStatus.INVALID, f"Answer mismatch: AI: {ai_answer}"
 
         return 1, f"answer match: {ai_answer}"
 
@@ -338,7 +383,7 @@ class ToeicVerifier:
 
         Args:
             question_id: Question ID
-            valid: Validation status (1, -1, or 0)
+            valid: Validation status
         """
         conn = self.connect_db()
         cursor = conn.cursor()
@@ -376,35 +421,32 @@ class ToeicVerifier:
             # Log different fields based on part
             if question['part'] == 1:
                 # Part 1: Image + statements
-                logger.info(f"  Type: Photographs (Image + 4 statements)")
                 if question['img']:
                     logger.info(f"  Image: {question['img']}")
                 else:
                     logger.warning(f"  WARNING: Part 1 question missing image")
             elif question['part'] == 2:
                 # Part 2: Question + 3 responses
-                logger.info(f"  Type: Question-Response")
                 logger.info(f"  Question: {question['question'][:80]}...")
             elif question['part'] == 3:
                 # Part 3: Conversation + question + 4 options
-                logger.info(f"  Type: Conversations")
                 if question['prompt']:
                     logger.info(f"  Conversation: {question['prompt'][:80]}...")
                 logger.info(f"  Question: {question['question'][:80]}...")
             elif question['part'] == 4:
                 # Part 4: Talk + question + 4 options
-                logger.info(f"  Type: Talks")
                 if question['prompt']:
                     logger.info(f"  Talk: {question['prompt'][:80]}...")
                 logger.info(f"  Question: {question['question'][:80]}...")
 
             # convert every to possible json format
             for key, value in question.items():
-                if isinstance(value, str):
-                    if value.startswith('[') or value.startswith('{'):
-                        question[key] = json.loads(value)
-                    else:
-                        question[key] = [value]
+                if key in ['sex','prompt','question','answer','A','B','C','D']:
+                    if isinstance(value, str):
+                        if value.startswith('[') or value.startswith('{'):
+                            question[key] = json.loads(value)
+                        else:
+                            question[key] = [value]
 
             logger.debug(f"  DB Answer: {question['answer']}")
             logger.debug(f"  DB Answer's type: {type(question['answer'])}")
@@ -412,9 +454,9 @@ class ToeicVerifier:
             # Verify question
             validation, result = self.verify_question(question, img)
 
-            if validation == -2:
+            if validation == VerifyStatus.ERROR:
                 self.stats['errors'] += 1
-            elif validation == -1:
+            elif validation == VerifyStatus.INVALID:
                 self.stats['invalid'] += 1
             else:
                 self.stats['valid'] += 1

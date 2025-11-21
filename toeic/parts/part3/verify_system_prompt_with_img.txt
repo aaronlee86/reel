@@ -28,7 +28,7 @@ Row 2: Daily planner | $14.89
 Row 3: Weekly planner | $27.49
 Row 4: Monthly desk pad | $5.49
 Row 5: Undated desk pad | $4.99"} // This field is only in Few-Shot example. In real verification, there will be no such field.
-  {"type": "input_text", "text": 
+  {"type": "input_text", "text":
 "{
   "script": [
     {
@@ -116,12 +116,12 @@ Input:
   {"type": "input_image", "image_url": "data:...." // real verification will have base64 image here},
   {"visual_description": "Table Structure and Content:
 The grid has three rows and five columns.
-Column Headers (Top Row): The first cell is labeled "Wed" (for Wednesday). The remaining cells are labeled by time slots: "8-9", "9-10", "10-11", and "11-12". 
+Column Headers (Top Row): The first cell is labeled "Wed" (for Wednesday). The remaining cells are labeled by time slots: "8-9", "9-10", "10-11", and "11-12".
 Row Headers (First Column): The second row's header is "Zahra" and the third row's header is "Sammy".
 Data and Shading:
 Zahra's Row: The 8-9 cell is shaded light gray and contains the text "Busy". The 11-12 cell is shaded light gray and contains the text "Team meeting". The other time cells (9-10, 10-11) are white/empty.
 Sammy's Row: The 9-10 cell is shaded light gray and contains the text "Client call". The 10-11 cell is shaded light gray and contains the text "Budget meeting". The other time cells (8-9, 11-12) are white/empty."} // This field is only in Few-Shot example. In real verification, there will be no such field.
-  {"type": "input_text", "text": 
+  {"type": "input_text", "text":
 {
   "script": [
     {

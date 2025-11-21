@@ -1,0 +1,75 @@
+You are solving a TOEIC Listening Part 4 question (1 talk + 3 follow-up question).
+
+## Global Rules
+- Comprehend the talk
+- Understand the question
+- Think logically for every option
+- Give a score 0 to 100 to each option based off of correctness (0: completely wrong; 100: completely correct)
+
+## Few-Shot Example 1
+Input:
+{
+  "talk": "Before we close tonight’s meeting, I’d like to announce that our photography club will be holding a very special event on Tuesday, April sixth, at seven P.M. We’ve invited Matthew
+Johnson, director of the photography division at Tempo Advertising Company, to be a guest speaker. He’ll discuss techniques for indoor photography, including the management
+of color and light. He’ll also show examples from his work. The presentation is expected to last about two hours and will cost ten dollars. And as always, guests are welcome to attend and are
+encouraged to become club members",
+  "questions": [
+    {
+      "question": "What special event is being announced?",
+      "A": "A presentation",
+      "B": "A tour",
+      "C": "A show",
+      "D": "A demonstration"
+    },
+    {
+      "question": "What will attendees learn about?",
+      "A": "Advertising techniques",
+      "B": "Public speaking",
+      "C": "Art history",
+      "D": "Indoor photography"
+    },
+    {
+      "question": "What are guests invited to do?",
+      "A": "Make a donation",
+      "B": "Enjoy some snacks",
+      "C": "Buy a camera",
+      "D": "Submit feedback online"
+    }
+  ]
+}
+
+Output:
+{
+  "answer": [ // give answer in order
+    { // first element correspond to the first question
+      "A": 100,  // give 100 because it's obviously wrong
+      "B": 0, // give 0 because it's obviously wrong
+      "C": 0, // give 0 because it's obviously wrong
+      "D": 60, // give 60 because demonstration is somewhat similar to presentation,
+      "explain_A": "The talk explicitly says 'The presentation is expected ...", // at most 2 sentences of explanation of A's score
+      "explain_B": "The talk mentions no location visit, no guided walk, and no physical movement.", // at most 2 sentences of explanation of B's score
+      "explain_C": "The event is an informational session with a speaker—not a performance", // at most 2 sentences of explanation of C's score
+      "explain_D": "Showing examples is slightly related to demonstrating, but the passage explicitly labels the event a presentation, not a demonstration." // at most 2 sentences of explanation of D's score
+    },
+    { // second question
+      "A": 0, // give 0 because it's obviously wrong
+      "B": 0, // give 0 because it's obviously wrong
+      "C": 0, // give 0 because it's obviously wrong
+      "D": 100, // give 100 because it's totally correct.
+      "explain_A": "Although the guest speaker works at an advertising company, the talk never mentions teaching advertising techniques.",
+      "explain_B": "The event includes a guest speaker, but he is not teaching public speaking.",
+      "explain_C": "The talk emphasizes indoor photography techniques, not art history.",
+      "explain_D": "The speaker will discuss techniques for indoor photography, including managing color and light."
+    },
+    { // third question
+      "A": 0, // give 0 because it's obviously wrong
+      "B": 0, // give 0 because it's obviously wrong
+      "C": 0, // give 0 because it's obviously wrong
+      "D": 0, // give 0 because it's obviously wrong
+      "explain_A": "The announcement never mentions donations, fees, fundraising, or asking guests for money (except the $10 event cost).",
+      "explain_B": "Snacks or refreshments are not mentioned.",
+      "explain_C": "Buying a camera is not mentioned.",
+      "explain_D": "No website, survey, or feedback submission is mentioned." // at most 2 sentences of explanation of D's score
+    }
+  ]
+}

@@ -16,7 +16,7 @@ import logging
 from typing import List, Dict, Type
 from pydantic import BaseModel, Field
 import importlib.util
-
+from common import VerifyStatus
 
 # Configure logging
 def setup_logging() -> None:
@@ -53,29 +53,35 @@ ChatGPT_MODEL_VER = "gpt-5-mini-2025-08-07"
 def validate_question(question_data: Dict, part: int) -> int:
     """
     Validate if the answer in the question is actually correct.
-    Returns 0 if valid, -1 if invalid.
     """
     if part == 1:
         correct_answer = question_data.get('answer')
-        options = ['A', 'B', 'C', 'D']
-        if correct_answer in options:
-            return 0
+        if correct_answer not in ['A', 'B', 'C', 'D']:
+            return VerifyStatus.PREVALID_FAIL, f"Answer character is invalid: {correct_answer}"
     elif part == 2:
         correct_answer = question_data.get('answer')
-        options = ['A', 'B', 'C']
-        if correct_answer in options:
-            return 0
+        if correct_answer not in ['A', 'B', 'C']:
+            return VerifyStatus.PREVALID_FAIL, f"Answer character is invalid: {correct_answer}"
     elif part in [3, 4]:
-        options = ['A', 'B', 'C', 'D']
         try:
             answers = json.loads(question_data.get('answer', '[]'))
             # if answers is a list of length 3 and all answers are in options, return 1
-            if (isinstance(answers, list) and len(answers) == 3 and
-                all(ans in options for ans in answers)):
-                return 0
+            if not (isinstance(answers, list) and len(answers) == 3 and
+                all(ans in ['A', 'B', 'C', 'D'] for ans in answers)):
+                return VerifyStatus.PREVALID_FAIL, "Answer characters are invalid"
         except json.JSONDecodeError:
-            return -1
-    return -1  # Default to invalid if validation fails
+            return VerifyStatus.PREVALID_FAIL, f"Answer is not valid JSON {question_data.get('answer')}"
+
+        if part == 3:
+            # check at most 3 people
+            try:
+                no_spakers = len(set(json.loads(question_data['sex'])))
+                if not 2 <= no_spakers <= 3:
+                    return VerifyStatus.PREVALID_FAIL, f"{no_spakers} speakers"
+            except json.JSONDecodeError:
+                return VerifyStatus.PREVALID_FAIL, f"Sex is not valid JSON {question_data['sex']}"
+
+    return VerifyStatus.UNVERIFIED, None
 
 def load_prompt(part: int, prompt_type: str, img) -> str:
     """
@@ -185,30 +191,27 @@ class ToeicQuestionGenerator:
 
         result = []
         if self.part == 1:
-            result = _generate_questions(self.part, self.level, self.img, count, existing=existing)
-            for q in result:
-                q['img_prompt'] = q.pop('picture_prompt')
-                q['part'] = 1
-                q["level"] = self.level
-                q['A'] = q.pop('A')
-                q['B'] = q.pop('B')
-                q['C'] = q.pop('C')
-                q['D'] = q.pop('D')
-                q['answer'] = q.pop('answer')
-                q['explanation'] = q.pop('explanation')
-                q['valid'] = validate_question(q, self.part)
+            for item in _generate_questions(self.part, self.level, self.img, count, existing=existing):
+                q = {'part': 1, 'level': self.level, 'img_prompt': item['img_prompt']}
+                q['A'] = item['A']
+                q['B'] = item['B']
+                q['C'] = item['C']
+                q['D'] = item['D']
+                q['answer'] = item['answer']
+                q['valid'], q['valid_status'] = validate_question(q, self.part)
+                result.append(q)
 
         elif self.part == 2:
-            result = _generate_questions(self.part, self.level, self.img, count, existing=existing)
-            for q in result:
-                q['part'] = 2
-                q["level"] = self.level
-                q['A'] = q.pop('A')
-                q['B'] = q.pop('B')
-                q['C'] = q.pop('C')
-                q['answer'] = q.pop('answer')
-                q['explanation'] = q.pop('explanation')
-                q['valid'] = validate_question(q, self.part)
+            for item in _generate_questions(self.part, self.level, self.img, count, existing=existing):
+                q = {'part': 2, 'level': self.level, 'img_prompt': None}
+                q['A'] = item['A']
+                q['B'] = item['B']
+                q['C'] = item['C']
+                q['D'] = None
+                q['question'] = item ['question']
+                q['answer'] = item['answer']
+                q['valid'], q['valid_status'] = validate_question(q, self.part)
+                result.append(q)
 
         elif self.part == 3:
             for item in _generate_questions(self.part, self.level, self.img, count, existing=existing):
@@ -222,25 +225,28 @@ class ToeicQuestionGenerator:
                 q['C'] = json.dumps([qu['C'] for qu in item['questions']])
                 q['D'] = json.dumps([qu['D'] for qu in item['questions']])
                 q['answer'] = json.dumps([qu['answer'] for qu in item['questions']])
+                q['summary'] = item['summary']
                 q['question'] = json.dumps([qu['question'] for qu in item['questions']])
-                q['valid'] = validate_question(q, self.part)
+                q['valid'], q['valid_status'] = validate_question(q, self.part)
                 result.append(q)
 
         elif self.part == 4:
-            result = _generate_questions(self.part, self.level, self.img, count, existing=existing)
-            for q in result:
-                q['img_prompt'] = q.pop('reference_prompt')
-                q['prompt'] = json.dumps(q.pop('talk'))
-                q['part'] = 4
-                q["level"] = self.level
-                q['A'] = json.dumps([q.pop('A1'), q.pop('A2'), q.pop('A3')])
-                q['B'] = json.dumps([q.pop('B1'), q.pop('B2'), q.pop('B3')])
-                q['C'] = json.dumps([q.pop('C1'), q.pop('C2'), q.pop('C3')])
-                q['D'] = json.dumps([q.pop('D1'), q.pop('D2'), q.pop('D3')])
-                q['answer'] = json.dumps([q.pop('answer1'), q.pop('answer2'), q.pop('answer3')])
-                q['question'] = json.dumps([q.pop('question_1'), q.pop('question_2'), q.pop('question_3')])
-                q['explanation'] = json.dumps([q.pop('explanation1'), q.pop('explanation2'), q.pop('explanation3')])
-                q['valid'] = validate_question(q, self.part)
+            for item in _generate_questions(self.part, self.level, self.img, count, existing=existing):
+                q = {'part': 4, 'level': self.level, 'img_prompt': None}
+                if self.img:
+                    q['img_prompt'] = item['img_prompt']
+                q['prompt'] = item['talk']
+                q['sex'] = item['sex']
+                q['A'] = json.dumps([qu['A'] for qu in item['questions']])
+                q['B'] = json.dumps([qu['B'] for qu in item['questions']])
+                q['C'] = json.dumps([qu['C'] for qu in item['questions']])
+                q['D'] = json.dumps([qu['D'] for qu in item['questions']])
+                q['answer'] = json.dumps([qu['answer'] for qu in item['questions']])
+                q['type'] = item['type']
+                q['summary'] = item['summary']
+                q['question'] = json.dumps([qu['question'] for qu in item['questions']])
+                q['valid'], q['valid_status'] = validate_question(q, self.part)
+                result.append(q)
 
         return result
 
@@ -274,13 +280,12 @@ class DatabaseManager:
                 cursor.execute(
                     """
                     INSERT INTO questions
-                    (part, level, accent, sex, question, prompt, answer, A, B, C, D, img_prompt, type, summary, explanation, topic, valid)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    (part, level, sex, question, prompt, answer, A, B, C, D, img_prompt, type, summary, topic, valid, valid_status)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         question.get("part"),
                         question.get("level"),
-                        question.get("accent"),
                         question.get("sex"),
                         question.get("question"),
                         question.get("prompt"),
@@ -292,9 +297,9 @@ class DatabaseManager:
                         question.get("img_prompt"),
                         question.get("type"),
                         question.get("summary"),
-                        question.get("explanation"),
                         question.get("topic"),
-                        question.get("valid")
+                        question.get("valid"),
+                        question.get("valid_status")
                     )
                 )
                 inserted_count += 1

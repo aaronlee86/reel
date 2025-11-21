@@ -1,0 +1,119 @@
+You are generating TOEIC Listening Part 4 sets of questions.
+
+## Global Rules
+- Exactly one speaker
+- Let's think step by step about the speaker's sex. If it can be easily identified, put "man" or "woman"; otherwise put null
+- The talk must be 5 to 10 sentences (natural, coherent, no filler).
+- The talk must be continuous narration — not a dialogue.
+- NO visual descriptions.
+- NO references like “in the graphic”.
+- Do NOT copy the few-shot content. Create new content each time.
+- If time is specified, always use 12-hour clock. For example, NEVER use 14:00, 19:30, etc.
+- Fit typical TOEIC domains:
+  - Workplace Communication: Announcements, Voicemails, Instructions, Policy changes, staff meetings, training, safety rules, reporting issues, new equipment procedures.
+  - Public Information: Announcements, Airport/train/bus schedules, gate changes, delays, traffic reports, weather updates, public event instructions.
+  - Consumer & Service: Advertisements, Automated Messages, Product promotions, sales, special offers, customer service updates, account status, appointment confirmations/rescheduling.
+  - Presentations & Tours: Guided Tours, News Reports, Descriptions of places (museums, landmarks), company history, introducing a speaker, project or financial status updates.
+  - Logistics & Maintenance: Service Updates, Maintenance Notices, Building repairs, power outages, road work, delivery tracking, equipment servicing, temporary closures.
+
+## Question Rules
+- Every set of talk has 3 questions.
+- Each question has 4 choices, all similar in difficulty, no trick wording, No pattern bias.
+- Must fit TOEIC part4 style. For example:
+  1. General Situation/Main Idea: Questions about the purpose of the talk, the speaker's identity, or the intended audience.
+  2. Specific Details: Questions asking for a particular piece of information, often involving time, place, numbers, or action.
+  3. Inference/Next Action: Questions that require you to understand implied meaning or what the listeners are advised to do next.
+
+## Answer Rules
+- Answer must be exactly one of: "A","B","C","D", each letter is evenly likely (25%) to appear.
+- Answer must match the content of the option, not the question.
+- Only one correct option.
+
+## Difficulty Level Rules:
+- 1:
+  - Only one main idea.
+  - Information is clearly and directly stated.
+  - No inference required for questions.
+
+- 2:
+  - Include 2–3 pieces of information (time, place, action).
+  - Light paraphrasing required to find answers.
+  - All answers are still directly supported by the script.
+
+- 3:
+  - At least one inference-based question
+  - At least one implied suggestion or consequence
+  - Multi-step reasoning
+  - Avoid any advanced academic vocabulary.
+
+## Few-Shot Examples
+[
+{
+  "talk": "This is a message for Tanisha Travis. This is Sonia Mendez calling from Dr. Leonardo’s office. I’m calling to confirm your appointment for Friday, May third. Since this’ll be your first time here, please bring your medical records from your previous doctor with you, or arrange to have them sent to our office before your appointment. Oh, and we’ve had to push back your
+appointment time by a few minutes — to 2:15. If you have any questions, please give us a call at 555-0137. We’ll see you on Friday at 2:15.",
+  "sex": "woman", // Pay attention to the content of the talk. Think step by step here. Because the speaker is Tanisha, which is a female name, put 'woman' here
+  "questions": [
+    {
+      "question": "What is the purpose of the message?", // ask a TOEIC style question
+      "answer": "A", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "To confirm an appointment", // put correct option in A because the answer is A
+      "B": "To schedule a meeting", // put a clearly wrong option in non-answer option
+      "C": "To request a phone number", // put a clearly wrong option in non-answer option
+      "D": "To give directions" // put a clearly wrong option in non-answer option
+    },
+    {
+      "question": "What is Ms. Travis asked to do?", // ask a TOEIC style question; here use "Ms. Travis" to refer to the speaker because she mentioned her name so listeners would know
+      "answer": "D", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "Make an advance payment", // put a clearly wrong option in non-answer option
+      "B": "Give contact information", // put a clearly wrong option in non-answer option
+      "C": "Make a reservation", // put a clearly wrong option in non-answer option
+      "D": "Provide previous records" // put correct option in D because the answer is D
+    },
+    {
+      "question": "What change does the speaker mention?", // ask a TOEIC style question; here use "the speaker" to refer to the speaker
+      "answer": "B", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "A parking area has opened.", // put a clearly wrong option in non-answer option
+      "B": "An arrival time has been adjusted.", // put correct option in B because the answer is B
+      "C": "An office policy has been revised.", // put a clearly wrong option in non-answer option
+      "D": "A patient fee has increased." // put a clearly wrong option in non-answer option
+    }
+  ],
+  "type": "telephone message", // type of the talk
+  "summary":"Appointment confirmation: bring prior medical records and note new time changed to 2:15 on Friday." //a brief summary within 15 words
+},
+{
+  "talk": "Is your construction company trying to expand? Do you find it hard to compete with other businesses because your equipment is old and inefficient? Then Millennium Tools has the products
+you’ve been looking for. We’ve designed a sleek, completely modern line of construction tools that will cut down the time of your project. Whether you specialize in residential or commercial
+buildings, our tools are designed to help you maximize your team’s efficiency. Don’t waste time with outdated equipment!  Visit one of our retail outlets for a demonstration of the newest
+models available. Call 555-0173 for a list of locations and opening times. You’ll be glad you did.",
+  "sex": null, // Pay attention to the content of the talk. Think step by step here. Becasue No gender is indicated in the talk, put null.
+  "questions": [
+    {
+      "question": "Who is the advertisement most likely for?", // ask a TOEIC style question
+      "answer": "D", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "Automobile manufacturers",
+      "B": "Real estate agents",
+      "C": "Computer store managers",
+      "D": "Construction company owners" // put correct option in D because the answer is D
+    },
+    {
+      "question": "What does the speaker say about his company’s products?", // ask a TOEIC style question; here use "the speaker" to refer to the speaker
+      "answer": "A", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "They are more efficient than older models.", // put correct option in A because the answer is A
+      "B": "They are less expensive than a competitor’s.",
+      "C": "They are easy to maintain.",
+      "D": "They are available for only a short time."
+    },
+    {
+      "question": "How are listeners invited to respond to the advertisement?", // ask a TOEIC style question 
+      "answer": "B", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "By filling out a questionnaire",
+      "B": "By attending a demonstration", // put correct option in B because the answer is B
+      "C": "By placing a telephone order",
+      "D": "By requesting a free sample"
+    }
+  ],
+  "type": "advertisement", // type of the talk 
+  "summary":"Millennium Tools advertises modern construction equipment to boost efficiency and invites businesses to visit for demonstrations." //a brief summary within 15 words
+}
+]

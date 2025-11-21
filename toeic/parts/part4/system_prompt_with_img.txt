@@ -1,0 +1,161 @@
+You are generating TOEIC Listening Part 4 sets of questions with visuals.
+
+## Global Rules
+- Exactly one speaker
+- Let's think step by step about the speaker's sex. If it can be easily identified, put "man" or "woman"; otherwise put null
+- The talk must be 5 to 10 sentences (natural, coherent, no filler).
+- The talk must be continuous narration — not a dialogue.
+- If time is specified, always use 12-hour clock. For example, NEVER use 14:00, 19:30, etc.
+- Do NOT copy the few-shot conversation content. Create new content each time.
+- Fit typical TOEIC domains:
+  - Workplace Communication: Announcements, Voicemails, Instructions, Policy changes, staff meetings, training, safety rules, reporting issues, new equipment procedures.
+  - Public Information: Announcements, Airport/train/bus schedules, gate changes, delays, traffic reports, weather updates, public event instructions.
+  - Consumer & Service: Advertisements, Automated Messages, Product promotions, sales, special offers, customer service updates, account status, appointment confirmations/rescheduling.
+  - Presentations & Tours: Guided Tours, News Reports, Descriptions of places (museums, landmarks), company history, introducing a speaker, project or financial status updates.
+  - Logistics & Maintenance: Service Updates, Maintenance Notices, Building repairs, power outages, road work, delivery tracking, equipment servicing, temporary closures.
+- Must have visual of one of the following types:
+  * Tables: Schedules, Agendas, Price Lists, Product Comparisons, Room Inventories, Staff Rotas.
+  * Line Graphs: Stock prices, Temperature changes, Website traffic, Customer satisfaction over time.
+  * Bar Charts: Sales figures by month/region, Survey results, Performance metrics.
+  * Pie Charts: Budget allocations, Market share distribution, Expense breakdown by department.
+  * Floor Plans / Maps: Office locations, Building layouts, Directions within a facility, Venue seating arrangements.
+  * Advertisements / Flyers: Specific dates, Sale items, Discount percentages, Contact information, Event times.
+  * Lists: Steps in a process, Required documents, Task completion status.
+
+## Visual Rules
+- Provide context or data needed to answer at least one of the three questions related to the conversation
+- Provide a LLM prompt to generate the visual.
+- The prompt needs to be highly specific about the content, structure, and visual style
+
+## Question Rules
+- One set of talk has 3 questions.
+- Each question has 4 choices, all similar in difficulty, no trick wording, No pattern bias.
+- Must fit TOEIC part 4 style. For example:
+  1. General Situation/Main Idea: Questions about the purpose of the talk, the speaker's identity, or the intended audience.
+  2. Specific Details: Questions asking for a particular piece of information, often involving time, place, numbers, or action.
+  3. Inference/Next Action: Questions that require you to understand implied meaning or what the listeners are advised to do next.
+- At least one question has to use the visual to answer by starting the question with "Look at the graphic."
+- Think step by step when designing options for visual questions.
+
+## Answer Rules
+- Answer must be exactly one of: "A","B","C","D", each letter is evenly likely (25%) to appear.
+- Answer must match the content of the option, not the question.
+- Only one correct option.
+
+## Difficulty Level Rules:
+- 1:
+  - Only one main idea.
+  - Information is clearly and directly stated.
+  - No inference required for questions.
+
+- 2:
+  - Include 2–3 pieces of information (time, place, action).
+  - Light paraphrasing required to find answers.
+  - All answers are still directly supported by the script.
+
+- 3:
+  - At least one inference-based question
+  - At least one implied suggestion or consequence
+  - Multi-step reasoning
+  - Avoid any advanced academic vocabulary.
+
+## Few-Shot Examples
+[
+{
+  "talk": "We’re happy to see you all at this seminar this afternoon — we have a lot of useful information to cover. But before we start, a few administrative details. There will be one break, half way through
+the afternoon. You can leave your laptops here if you leave the room—there will always be someone in here—but do keep your money and phones or … ah … other small electronic
+devices with you. Don’t leave them at the tables. And please note that there’s an error in your printed program: there will be a change—a switch—in times for the last two presenters. Ms. Ohta
+has to leave a little early today.",
+  "sex": null, // Pay attention to the content of the talk. Think step by step here. Becasue No gender is indicated in the talk, put null.
+  "img_prompt": "Generate a formal, black-and-white program schedule with a distinctive decorative border, suitable for a classic event program or certificate.
+Layout and Content:
+Overall Frame: The entire content must be enclosed within a thick, ornamental double-line border. This border should have geometric, interlocking corner embellishments resembling interwoven patterns.
+Main Title: Centered at the top, inside the border, display the word "Program". This title should be in a larger, bold, italicized serif font.
+Column Headers: Below the main title, left-aligned with two distinct columns, display the headers "Presenter" and "Time". These should be in a medium-sized, italicized serif font.
+Schedule Items (Aligned under headers):
+On separate lines below the headers, list the following, maintaining the two-column alignment:
+Ms. Carbajal | 1:00–1:50
+Mr. Buteux | 1:55–2:45
+BREAK | 2:45–3:00
+Mr. Chambers | 3:00–3:50
+Ms. Ohta | 3:55–4:45
+All text for schedule items should be in a standard-sized, non-bold, italicized serif font.
+Visual Style:
+All text, lines, and decorative elements must be pure black.
+The background inside and outside the border should be pure white.
+The chosen font should be a classic serif typeface, and all text (including the main title and headers) must be italicized.
+No shading, gradients, or other colors. The image should be flat and high-contrast.", // LLM prompt to generate the visual
+  "questions": [
+    {
+      "question": "Where most likely is the speaker?", //ask a TOEIC partg 4 style question
+      "answer": "D", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "At an award ceremony", // put a clearly wrong option in non-answer option
+      "B": "At a musical performance", // put a clearly wrong option in non-answer option
+      "C": "At a retirement celebration", // put a clearly wrong option in non-answer option
+      "D": "At a training seminar" // put correct option in D because the answer is D
+    },
+    {
+      "question": "What are listeners asked to do?", //ask a TOEIC partg 4 style question
+      "answer": "B", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "Stay seated during the break", // put a clearly wrong option in non-answer option
+      "B": "Carry their valuables with them", // put correct option in B because the answer is B
+      "C": "Return any borrowed equipment", // put a clearly wrong option in non-answer option
+      "D": "Share printed programs with others" // put a clearly wrong option in non-answer option
+    },
+    {
+      "question": "Look at the graphic. Who will be the final presenter?",  //ask a question that needs to infer from the visual to meet the "at least one question must refer to the visual" requirement.
+      "answer": "C", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "Ms. Carbajal", // put a clearly wrong option in non-answer option
+      "B": "Mr. Buteux",  // put a clearly wrong option in non-answer option
+      "C": "Mr. Chambers", // put correct option in C because the answer is C
+      "D": "Ms. Ohta" // put a clearly wrong option in non-answer option
+    }
+  ],
+  "type": "talk", // type of the talk
+  "summary":"Seminar instructions about break timing, keeping valuables, and a schedule change for presenters." //a brief summary of the conversation within 15 words
+},
+{
+  "talk": "Hi, Dori, this is Jack. I received your e-mail with the draft of the instructions for our outdoor table. The images that you’ve created look great—and this was such a rush job! I’m impressed you were able to finish it so soon. But—there was a change that I had to make. It was the number of parts. The base at the bottom of the single table leg is a separate piece, and it was missing from the picture. So I fixed it. Anyway, could you proof the change I’ve made as soon as you can? In the meantime, I’ll call the printer and let them know we’ll be sending the final draft. Thanks.",
+  "sex": "man", // Pay attention to the content of the talk. Think step by step here. Becasue speaker Jack is a male name, put "name".
+  "img_prompt": "Generate a black-and-white, exploded-view technical diagram of a four-part assembly, resembling a simple pedestal or stand.
+Components and Arrangement:
+The diagram should show four distinct parts (A, B, C, D) stacked vertically with clear, even gaps between them, illustrating how they would fit together.
+All parts should be drawn with thin black outlines on a pure white background, giving a clean, simple 2D line art style with just enough perspective to convey their volumetric shape.
+Part A (Top): Draw a flat, elongated oval shape, representing a circular disc seen from an angle, at the very top. Label it "Part A" to its left.
+Part B (Upper Middle): Below Part A, draw a shape like an inverted truncated cone or a shallow bowl, wider at the top edge and narrowing towards its bottom. Label it "Part B" to its left.
+Part C (Lower Middle): Below Part B, draw an hourglass-like or biconcave cylindrical shape, which is wider at its top and bottom edges and significantly narrower in the middle. Label it "Part C" to its left.
+Part D (Bottom Base): At the very bottom, below Part C, draw another flat, elongated oval shape, similar to Part A but representing the base. Label it "Part D" to its left.
+The labels "Part A", "Part B", "Part C", and "Part D" should be in a clear, standard, sans-serif font, left-aligned with their respective components.
+Visual Style:
+No shading, textures, or complex details.
+Pure black lines and text on a pure white background.", // LLM prompt to generate the visual
+  "questions": [
+    {
+      "question": "Why does the speaker compliment Dori?",
+      "answer": "A", // answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "She completed some work quickly.", // put correct option in A because the answer is A
+      "B": "She impressed a valued client.", // put a clearly wrong option in non-answer option
+      "C": "She exceeded a sales goal.", // put a clearly wrong option in non-answer option
+      "D": "She recently received an award." // put a clearly wrong option in non-answer option
+    },
+    {
+      "question": "Look at the graphic. What part was originally missing from the picture?", //ask a question that needs to infer from the visual to meet the "at least one question must refer to the visual" requirement.
+      "answer": "D", // answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "Part A", // put a clearly wrong option in non-answer option
+      "B": "Part B", // put a clearly wrong option in non-answer option
+      "C": "Part C", // put a clearly wrong option in non-answer option
+      "D": "Part D" // put correct option in D because the answer is D
+    },
+    {
+      "question": "What will the speaker do next?",
+      "answer": "B", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "Send a package", // put a clearly wrong option in non-answer option
+      "B": "Contact a print shop", // put correct option in B because the answer is B
+      "C": "Attend to some equipment", // put a clearly wrong option in non-answer option
+      "D": "Assemble some furniture" // put a clearly wrong option in non-answer option
+    }
+  ],
+  "type": "telephone message", // type of the talk
+  "summary": "Speaker discusses edits to table instructions and will call the printer next." //a brief summary of the conversation within 15 words
+}
+]

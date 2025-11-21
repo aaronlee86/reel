@@ -1,0 +1,72 @@
+You are generating TOEIC Listening Part 2 questions (a question or statement and 3 responses)
+
+## Global Rules
+- Provide 1 question and 3 answer choices.
+- Only one correct response. The other two MUST be impossible response to the question!!!
+- Do NOT reveal the correct answer in wording or grammar.
+- Vocabulary must remain realistic for TOEIC.
+- The question or options can include vowel elision (e.g., going to -> gonna) and sentence fragments (e.g., Yes, in a minute; Down the hall; Could you? — sentences where the subject or verb is omitted).
+- If time is specified, always use 12-hour clock. For example, NEVER use 14:00, 19:30, etc.
+- Do NOT copy the few-shot conversation content. Create new content each time.
+- Fit typical TOEIC domains:
+  - Office Administration: Routine tasks, scheduling, and resources management within a company. 
+  - Projects & Deadlines: Status updates, responsibilities, and management of business tasks.
+  - Human Resources: Staffing, personnel matters, and internal communications.
+  - Client & Sales: Interactions with customers, marketing, and business development.
+  - Travel & Commuting: Business trips, daily travel to and from the workplace, and logistics.
+  - Shopping & Purchases: Buying items for the company or personal needs, and related issues.
+  - Dining & Food: Arranging meals, business lunches, and restaurant discussions.
+  - Facilities & Maintenance: Issues related to the physical workspace and necessary services.
+  - Personal & Social: Informal, conversational topics used for small talk or personal scheduling.
+  
+## Question Rules
+- Each question has 3 choices, all similar in difficulty, no trick wording.
+- Each choice should be brief. No more than 10 words.
+
+## Answer Rules
+- Answer must be exactly one of: "A","B","C", each letter is evenly likely (33.33%) to appear.
+- Answer must match the content of the option, not the question.
+- Only one correct option. The other two options MUST not be a possible response.
+
+## Difficulty Level Rules:
+- 1:
+ - Use direct, straightforward questions.
+ - The correct answer directly matches the question.
+ - No inference or wordplay.
+ - Avoid similar-sounding distractors.
+ - All incorrect answers should clearly not fit logically.
+
+- 2:
+ - Allow light indirect responses.
+ - One distractor can seem reasonable but must still be wrong.
+ - Minor paraphrasing is allowed.
+ - The correct answer should require basic understanding of context.
+
+- 3:
+  - Include at least ONE of the following:
+    - Similar-sounding distractor (e.g. fee/free, train/drain)
+    - Indirect logical response
+    - Inference-based correct answer
+ - The question and correct answer should NOT be perfectly symmetrical.
+ - Avoid using any high-level academic vocabulary.
+ - The difficulty must come from logic and structure, not rare words.
+
+## Few-Shot Examples
+{
+  "items": [
+    {
+      "question": "Don’t you need a ticket for the show?", 
+      "answer": "A",  //answer is randomly chosen from A, B, C (each 33.33% of chance)
+      "A": "I bought ours online.", // put correct response in A because the answer is A
+      "B": "Yes, it might snow.", // put a tricky wrong response here. It uses Similar-sounding distractor (show versus snow)
+      "C": "We took the train." // put a tricky wrong response in non-answer option. It uses "train" to confuse because question mentions "ticket" 
+    },
+    {
+      "question": "What food are you taking to the company picnic?", 
+      "answer": "C",  //answer is randomly chosen from A,B, C (each 33.33% of chance)
+      "A": "In the park, nearby.", // put wrong response in non-answer option 
+      "B": "As soon as I finish lunch.", // put wrong response in non-answer option 
+      "C": "They’re having it catered this year." // put correct response in C because the answer is C.
+    }
+  ]
+}

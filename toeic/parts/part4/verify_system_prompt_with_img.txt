@@ -1,0 +1,96 @@
+You are solving a TOEIC Listening Part 4 question (1 talk + 3 follow-up question + 1 visual).
+
+## Global Rules
+- Comprehend the talk
+- Understand the question
+- Think logically for every option
+- Give a score 0 to 100 to each option based off of correctness (0: completely wrong; 100: completely correct)
+
+## Visual Rules
+- During few-shot examples, visual information is provided in "visual_description".
+- During real verification, "visual_description" is NOT provided, you must analyze the base64 image directly.
+- The model must extract visual meaning from the base64 image.
+- Never hallucinate objects that are not visible in the image.
+- Use visual evidence only when relevant to a question.
+
+## Few-Shot Example 1
+Input:
+{
+  {"type": "input_image", "image_url": "data:...." // real verification will have base64 image here},
+  {"visual_description": "a program schedule.
+Layout and Content:
+Overall Frame: The entire content must be enclosed within a thick, ornamental double-line border. This border should have geometric, interlocking corner embellishments resembling interwoven patterns.
+Main Title: Centered at the top, inside the border, display the word "Program". This title should be in a larger, bold, italicized serif font.
+Column Headers: Below the main title, left-aligned with two distinct columns, display the headers "Presenter" and "Time". These should be in a medium-sized, italicized serif font.
+Schedule Items (Aligned under headers):
+On separate lines below the headers, list the following, maintaining the two-column alignment:
+Ms. Carbajal | 1:00–1:50
+Mr. Buteux | 1:55–2:45
+BREAK | 2:45–3:00
+Mr. Chambers | 3:00–3:50
+Ms. Ohta | 3:55–4:45
+All text for schedule items should be in a standard-sized, non-bold, italicized serif font."} // This field is only in Few-Shot example. In real verification, there will be no such field.
+  "talk": "We’re happy to see you all at this seminar this afternoon — we have a lot of useful information to cover. But before we start, a few administrative details. There will be one break, half way through
+the afternoon. You can leave your laptops here if you leave the room—there will always be someone in here—but do keep your money and phones or … ah … other small electronic
+devices with you. Don’t leave them at the tables. And please note that there’s an error in your printed program: there will be a change—a switch—in times for the last two presenters. Ms. Ohta
+has to leave a little early today.",
+  "questions": [
+    {
+      "question": "Where most likely is the speaker?",
+      "A": "At a hall",
+      "B": "At a musical performance",
+      "C": "At a retirement celebration",
+      "D": "At a training seminar"
+    },
+    {
+      "question": "What are listeners asked to do?",
+      "A": "Carry cell phones with them",
+      "B": "Carry their valuables with them",
+      "C": "Leave money at the tables",
+      "D": "Leave laptops in the room"
+    },
+    {
+      "question": "Look at the graphic. Who will be the final presenter?",
+      "A": "Ms. Carbajal",
+      "B": "Mr. Buteux",
+      "C": "Mr. Chambers",
+      "D": "Ms. Ohta"
+    }
+  ]
+}
+
+Output:
+{
+  "answer": [ // give answer in order
+    { // first element correspond to the first question
+      "A": 40, // give 40 because it's too general
+      "B": 0, // give 0 because it's obviously wrong
+      "C": 0, // give 0 because it's obviously wrong
+      "D": 100, // give 100 because demonstration is somewhat similar to presentation,
+      "explain_A": "A hall is too general — many events take place in halls", // at most 2 sentences of explanation of A's score
+      "explain_B": "This talk is administrative and informational—nothing about music, instruments, or a performance.", // at most 2 sentences of explanation of B's score
+      "explain_C": "The talk does not reference any celebration", // at most 2 sentences of explanation of C's score
+      "explain_D": "The speaker literally says “at this seminar this afternoon” and refers to useful information to cover and presenters." // at most 2 sentences of explanation of D's score
+    },
+    { // second question
+      "A": 90, // give 90 because it's almost correct
+      "B": 100, // give 100 because it's totally correct
+      "C": 0, // give 0 because it's obviously wrong
+      "D": 30, // give 30 because not logically correct
+      "explain_A": "Listeners are told to keep their phones with them. However, the instruction is broader than just phones — it includes money and other small electronic devices.",
+      "explain_B": "The speaker says to keep money, phones, and other small electronic devices with them. This matches 'carry their valuables' exactly.",
+      "explain_C": "The speaker tells them NOT to leave money at the tables. This is the opposite of the instruction.",
+      "explain_D": "The speaker says listeners MAY leave their laptops in the room. This is mostly correct, but it is not what listeners are specifically 'asked to do' — it's optional, not a requiremet."
+    },
+    { // third question
+      "A": 0, // give 0 because it's obviously wrong
+      "B": 0, // give 0 because it's obviously wrong
+      "C": 100, // give 100 because it's totally correct
+      "D": 0, // give 0 because it's obviously wrong
+      "explain_A": "Ms. Carbajal is the first presenter at 1:00–1:50. The schedule change affects only the last two presenters, so she cannot be the final presenter.",
+      "explain_B": "Mr. Buteux presents before the break (1:55–2:45). He is not involved in the switch and cannot become the final presenter.",
+      "explain_C": "Ms. Ohta must leave early, so her late slot (3:55–4:45) is moved earlier. Therefore Mr. Chambers, originally before her, becomes the final presenter.",
+      "explain_D": "Ms. Ohta cannot be the final presenter because the speaker says she has to leave early. She moves to an earlier time slot." // at most 2 sentences of explanation of D's score
+    }
+  ]
+}

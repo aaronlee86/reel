@@ -1,0 +1,96 @@
+You are generating TOEIC Listening Part 1 questions (a photo and 4 statements)
+
+## Global Rules
+- Provide 1 correct sentence and 3 incorrect distractors.
+- No academic vocabulary or C1/C2 words.
+- Stay within realistic TOEIC vocabulary range.
+- Avoid over-specific or unrealistic scenarios.
+- Vocabulary must remain realistic for TOEIC.
+- Do NOT copy the few-shot conversation content. Create new content each time.
+
+## Photograph Rules
+- Provide a LLM prompt to generate the photo.
+- Photo can be of the following types
+  - Pictures with People (Action/Activity Focus)
+    1. One Person Action
+    2. Multiple People Action
+    3. Person's State/Posture
+    4. People's Location/Preposition
+    5. Clothing/Appearance
+  - Pictures without People (State/Object Focus)
+    6. Object Location/Arrangement
+    7. Object State/Condition
+    8. Passive Voice (Object Action)
+    9. Scenery/Landscape
+- The photo falls into two broad thematic categories:
+  1. Business Professional:
+      a. Office/Desk Work: People performing tasks common to an office setting.
+      b. Meetings/Presentations: Interactions between two or more people, often focused on collaboration or instruction.
+      c. Industrial/Manual Labor: Activities related to manufacturing, construction, or maintenance.
+      d. Commercial/Retail: Scenarios involving stores, shops, or transactions.
+  2. General and Public Life Themes:
+      a. Outdoor/Public Spaces: Scenes set outside or in common areas.
+      b. Travel/Transportation: Scenarios related to getting from one place to another.
+      c. Food Service/Dining:	Pictures set in restaurants, cafés, or kitchens.
+      d. Abstract Scenes/Landscapes:	Photos that focus on objects and environments without people (often testing passive voice and prepositions).
+
+   and General/Public Life.
+
+## Option Rules
+- Only one correct option. The other 3 options MUST be incorrect distractors.
+- Distractor types include:
+    1. Incorrect Verb/Action: The statement describes an action that is not happening (e.g., The man is writing when he is clearly reading).
+    2. Incorrect Preposition: The statement uses the wrong spatial relationship. (e.g. "The chair is on the desk." when it is next to the desk.)
+    3. Similar Sounding Words: The statement uses a word that sounds similar to a visible noun or action, but means something completely different. (e.g. "The woman is knitting." when the woman is sitting. (Knitting/Sitting))
+    4. Incorrect Passive Voice: The statement uses the passive voice to describe an action that is still happening when the picture only shows the result of a finished action. (e.g. "The flowers are being watered." when the picture shows the flowers have already been arranged in a vase.)
+
+## Difficulty Level Rules:
+- 1:
+ - Describe only one clearly visible action or object.
+ - Use simple present continuous or passive constructions.
+ - No ambiguous wording.
+ - No indirect or abstract descriptions.
+ - The correct answer must be obvious based on the image.
+
+- 2:
+ - Describe two visible elements (action + location or object + position).
+ - Allow light detail such as placement or background but keep clarity.
+ - Avoid highly abstract expressions.
+ - Distractors should be plausible but clearly incorrect.
+
+- 3:
+  - Use indirect or state-based descriptions.
+  - Allow passive voice and slightly ambiguous phrasing.
+  - The correct description should still match the image but require careful attention.
+  - Distractors may describe similar actions but must not actually match the image.
+  - Do NOT use advanced vocabulary.
+
+## Few-Shot Examples
+{
+  "items": [
+    {
+      "img_prompt": "A realistic photograph of a woman sweeping an outdoor wooden deck. The woman has long dark hair, is wearing a dark long-sleeved top and jeans,
+      and is holding a long-handled push broom, leaning forward in a working motion on the right side of the frame.
+      The background features a wooden railing with vertical slats and stairs. Strong, harsh sunlight is casting distinct,
+      high-contrast geometric shadows of the railing and the woman across the wooden floorboards.", // LLM prompt to generate the photo as specifc and detailed as possible
+      "answer": "C", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "She’s tidying her room.", // put a clearly wrong option in non-answer option
+      "B": "She’s brushing her teeth.", // put a clearly wrong option in non-answer option
+      "C": "She’s sweeping the deck.", // put correct option in C because the answer is C;
+      "D": "She’s scrubbing some pots." // put a clearly wrong option in non-answer option
+    },
+    {
+      "img_prompt": "A photorealistic photograph of an intimate, dimly lit dining room setting.
+      A small, square table is draped with a white tablecloth and is set for a single diner with a plate, cup, and silverware.
+      Centered on the table is a tall, slender table lamp with a small white shade, which is illuminated, casting a focused glow on the setting.
+      The background wall is a dark, textured color, interrupted by a detailed white decorative chair rail. Hanging above the table is a large,
+       silver-framed, square impressionistic landscape painting, with a short, leafy green garland draped along the top of the frame.
+       Realistic lighting, high contrast, indoor setting.", // LLM prompt to generate the photo as specifc and detailed as possible
+      "answer": "A", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
+      "A": "A painting is hanging on the wall.", // put correct option in A because the answer is A;
+      "B": "Some people are eating a meal.", // put a disctractor: it's a restaurant but no people are in the picture
+      "C": "The table is being cleared.", // put a disctractor: there is a table, but it's not cleared
+      "D": "A lamp is being turned off." // put a disctractor: there is a lamp, but it's on
+    }
+  ]
+}
