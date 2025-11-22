@@ -115,6 +115,18 @@ class loadToeicSql:
             if result.get(key):
                 result[key] = parse_or_string(result[key])
 
+        if self.part == 1:
+            result['thinktime'] = 5
+        elif self.part == 2:
+            result['thinktime'] = 5
+        elif self.part in [3,4]:
+            result['thinktime'] = []
+            for q in result.get('question', []):
+                if 'Look at the graphic' in q:
+                    result['thinktime'].append(12)
+                else:
+                    result['thinktime'].append(8)
+
         try:
             # First, check if tts_engine and tts_voice are already present in the result
             if result.get('tts_engine') and result.get('tts_voice'):
