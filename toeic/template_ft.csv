@@ -832,13 +832,11 @@ $(q1.answer)  $(q2.answer)  $(q3.answer)  $(q4.answer)  $(q5.answer)  $(q6.answe
 "Part 2",,,,,,,,"left",,"105",,,,"PublicSans-Black.ttf","32",,,"silent",,"1","0",,,,
 "7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
 $(q7.answer)  $(q8.answer)  $(q9.answer)  $(q10.answer)  $(q11.answer)  $(q12.answer)  $(q13.answer)  $(q14.answer)  $(q15.answer)  $(q16.answer)  $(q17.answer)  $(q18.answer)  $(q19.answer)  $(q20.answer)  $(q21.answer)  $(q22.answer)  $(q23.answer)  $(q24.answer)  $(q25.answer)  $(q26.answer)  $(q27.answer)  $(q28.answer)  $(q29.answer)  $(q30.answer)  $(q31.answer)",,,,,,,,"left",,"125",,,,"SplineSansMono-Regular.ttf","26",,,"silent",,"1","0",,,,
-"Part 3",,,,,"20",,,"left",,"105",,,,"PublicSans-Black.ttf","32",,,"silent",,"1","0",,,,
+"Part 3",,,,,"60",,,"left",,"105",,,,"PublicSans-Black.ttf","32",,,"silent",,"1","0",,,,
 "32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55
  $(q32.answer[0])  $(q32.answer[1])  $(q32.answer[2])  $(q35.answer[0])  $(q35.answer[1])  $(q35.answer[2])  $(q38.answer[0])  $(q38.answer[1])  $(q38.answer[2])  $(q41.answer[0])  $(q41.answer[1])  $(q41.answer[2])  $(q44.answer[0])  $(q44.answer[1])  $(q44.answer[2])  $(q47.answer[0])  $(q47.answer[1])  $(q47.answer[2])  $(q50.answer[0])  $(q50.answer[1])  $(q50.answer[2])  $(q53.answer[0])  $(q53.answer[1])  $(q53.answer[2])
 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70
- $(q56.answer[0])  $(q56.answer[1])  $(q56.answer[2])  $(q59.answer[0])  $(q59.answer[1])  $(q59.answer[2])  $(q62.answer[0])  $(q62.answer[1])  $(q62.answer[2])  $(q65.answer[0])  $(q65.answer[1])  $(q65.answer[2])  $(q68.answer[0])  $(q68.answer[1])  $(q68.answer[2])
-
- ",,,,,,,,"left",,"125",,,,"SplineSansMono-Regular.ttf","26",,,"silent",,"1","0",,,,
+ $(q56.answer[0])  $(q56.answer[1])  $(q56.answer[2])  $(q59.answer[0])  $(q59.answer[1])  $(q59.answer[2])  $(q62.answer[0])  $(q62.answer[1])  $(q62.answer[2])  $(q65.answer[0])  $(q65.answer[1])  $(q65.answer[2])  $(q68.answer[0])  $(q68.answer[1])  $(q68.answer[2])",,,,,,,,"left",,"125",,,,"SplineSansMono-Regular.ttf","26",,,"silent",,"1","0",,,,
 "Part 4",,,,,,,,"left",,"105",,,,"PublicSans-Black.ttf","32",,,"silent",,"1","0",,,,
 "71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100
  $(q71.answer[0])  $(q71.answer[1])  $(q71.answer[2])  $(q74.answer[0])  $(q74.answer[1])  $(q74.answer[2])  $(q77.answer[0])  $(q77.answer[1])  $(q77.answer[2])  $(q80.answer[0])  $(q80.answer[1])  $(q80.answer[2])  $(q83.answer[0])  $(q83.answer[1])  $(q83.answer[2])  $(q86.answer[0])  $(q86.answer[1])  $(q86.answer[2])  $(q89.answer[0])  $(q89.answer[1])  $(q89.answer[2])  $(q92.answer[0])  $(q92.answer[1])  $(q92.answer[2])  $(q95.answer[0])  $(q95.answer[1])  $(q95.answer[2])  $(q98.answer[0])  $(q98.answer[1])  $(q98.answer[2])",,,,,,,,"left",,"125",,,,"SplineSansMono-Regular.ttf","26",,,"silent",,"1","0",,,,
