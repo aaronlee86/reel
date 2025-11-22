@@ -6,6 +6,7 @@ from datetime import datetime
 import sqlite3
 import random
 import json
+import numpy as np
 
 def parse_or_string(s):
     try:
@@ -76,25 +77,41 @@ class loadToeicSql:
 
         # Take accent and sex to add tts.engine and tts.voice
         result['tts'] = {}
-        # if accent or sex is None, randomly choose one from the available options
-        if not result.get('accent'):
-            if self.part == 2:
-                # special case for part 2: two accents
-                first_accent = random.choices(self.accent, weights=self.accent_weight, k=1)[0]
-                second_accent = random.choices(self.accent, weights=self.accent_weight, k=1)[0]
-                result['accent'] = json.dumps([first_accent, second_accent])
-            else:
-                result['accent'] = random.choices(self.accent, weights=self.accent_weight, k=1)[0]
-        if not result.get('sex'):
-            if self.part == 2:
-                # special case for part 2: two people with opposite sexes
-                first_speaker = random.choices(self.sex, weights=self.sex_weight, k=1)[0]
-                second_speaker = 'woman' if first_speaker == 'man' else 'man'
-                result['sex'] = json.dumps([first_speaker, second_speaker])
-            else:
-                result['sex'] = random.choices(self.sex, weights=self.sex_weight, k=1)[0]
 
-        for key in ['prompt','question','A','B','C','D','answer','accent','sex','tts_engine','tts_voice']:
+        sex_weights_normalized = np.array(self.sex_weight) / np.sum(self.sex_weight)
+        sex_choice = np.random.choice(self.sex, size=2, replace=False, p=sex_weights_normalized)
+        accent_weights_normalized = np.array(self.accent_weight) / np.sum(self.accent_weight)
+        accent_man = np.random.choice(self.accent, size=2, replace=False, p=accent_weights_normalized)
+        accent_woman = np.random.choice(self.accent, size=2, replace=False, p=accent_weights_normalized)
+        voice_dict = {
+            'man': ('man', accent_man[0]),
+            'man1': ('man', accent_man[0]),
+            'man2': ('man', accent_man[1]),
+            'woman': ('woman', accent_woman[0]),
+            'woman1': ('woman', accent_woman[0]),
+            'woman2': ('woman', accent_woman[1])}
+
+        if self.part == 2:
+            # special case for part 2: two people with opposite sexes
+            result['sex'] = json.dumps(sex_choice.tolist())
+
+        # if not sex in result, randomly choose one
+        if not result.get('sex'):
+            result['sex'] = sex_choice[0]
+
+        sex = result.get('sex')
+        # check if starts with [
+        if sex.startswith('['):
+            # sex is a list
+            sex_list = json.loads(sex)
+            result['sex'] = [voice_dict[s][0] for s in sex_list]
+            result['accent'] = [voice_dict[s][1] for s in sex_list]
+        else:
+            # sex is a string
+            result['sex'] = voice_dict[sex][0]
+            result['accent'] = voice_dict[sex][1]
+
+        for key in ['prompt','question','A','B','C','D','answer','tts_engine','tts_voice']:
             if result.get(key):
                 result[key] = parse_or_string(result[key])
 
