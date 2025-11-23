@@ -101,7 +101,7 @@
 "Part 2",,,,"1","0.5","free","photo/toeic/toeic_part2.jpeg","left","top",,,"230",,,"0",,,"$(nar.tts.engine)","$(nar.tts.voice)","$(nar.tts.speed)",,,,,
 "Directions",,,,,"0.5",,,"left",,"105","105",,,"Times-Bold.ttf","42",,,"$(nar.tts.engine)","$(nar.tts.voice)","$(nar.tts.speed)",,,,,
 "You will hear a question or statement and three responses spoken in English.  They will not be printed in your test book and will be spoken only one time. Select the best response to the question or statement and mark the letter (A), (B), or (C) on your answer sheet. ",,,,,"0.5",,,"left",,"107","107",,,"Times-Regular.ttf","30",,"15","$(nar.tts.engine)","$(nar.tts.voice)","$(nar.tts.speed)",,,,,
-"Now let us begin with question number 7",,,,,,,,,,,,,,,"0",,,"$(nar.tts.engine)","$(nar.tts.voice)","$(nar.tts.speed)",,,,,
+"Now let us begin with question number 7",,,,,"1",,,,,,,,,,"0",,,"$(nar.tts.engine)","$(nar.tts.voice)","$(nar.tts.speed)",,,,,
 "7. Mark your answer on your answer sheet.",,"number 7",,,"0.5","free","photo/toeic/toeic_part2.jpeg","center","top",,,"300",,"Times-Bold.ttf","42",,,"$(nar.tts.engine)","$(nar.tts.voice)","$(nar.tts.speed)",,,,,
 "$(q7.question)",,,,,"0.5",,,,,,,,,,"0",,,"$(q7.tts.engine[0])","$(q7.tts.voice[0])","1",,,,,
 "A.",,,,,"0.1",,,"left",,,,,,,"0",,,"$(nar.tts.engine)","$(nar.tts.voice)","1",,,,,
