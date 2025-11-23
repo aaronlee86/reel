@@ -8,6 +8,7 @@ from src.tts.elevenlabs import ElevenLabsTTSEngine
 from src.tts.engine_factory import TTSEngineFactory
 from src.tts.openai import OpenAiTTSEngine
 from src.tts.gemini import GeminiTTSEngine
+from src.tts.azure import AzureTTSEngine
 
 def process_vclip(
     clip: Dict[str, Any],
