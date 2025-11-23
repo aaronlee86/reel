@@ -1,6 +1,7 @@
 "variable","classname","param1","param2","param3","param4","param5"
 "cover","generators.setCoverImg",,,,,
 "nar","generators.passThrough","value={""tts"": {""engine"": ""eleven"", ""voice"":""pNInz6obpgDQGcFmaJgB"", ""speed"": 1}}",,,,
+"time","generators.passThrough","value={""nextpage"": 5}",,,,
 "q1","generators.loadToeicSql","part=1","level=1","sex={'man':1, 'woman':1}","accent={'am':5,'br':3, 'au':1, 'cn':1}","img=1"
 "q2","generators.loadToeicSql","part=1","level=1","sex={'man':1, 'woman':1}","accent={'am':5,'br':3, 'au':1, 'cn':1}","img=1"
 "q3","generators.loadToeicSql","part=1","level=2","sex={'man':1, 'woman':1}","accent={'am':5,'br':3, 'au':1, 'cn':1}","img=1"
