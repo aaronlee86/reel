@@ -27,12 +27,6 @@ logger = logging.getLogger(__name__)
 
 ChatGPT_MODEL_VER = "gpt-5-mini-2025-08-07"
 
-# Load a pre-trained Sentence Transformer model
-logging.info("loading Sentence Transformer module...")
-from sentence_transformers import SentenceTransformer, util
-sent_model = SentenceTransformer('all-MiniLM-L6-v2')
-logging.info("done")
-
 
 def convert_to_schema(q_dict: Dict) -> Dict:
     # Build script section
@@ -257,6 +251,12 @@ class ToeicVerifier:
     def preverify_question(self, question: Dict, img: bool = False):
         if question['part'] in (3,4):
             questions = question['question']
+
+            # Load a pre-trained Sentence Transformer model
+            logging.info("loading Sentence Transformer module...")
+            from sentence_transformers import SentenceTransformer, util
+            sent_model = SentenceTransformer('all-MiniLM-L6-v2')
+            logging.info("done")
 
             # check if the 3 questions are similar
             embeddings = sent_model.encode(questions, convert_to_tensor=True)
