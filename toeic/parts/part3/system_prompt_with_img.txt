@@ -6,6 +6,7 @@ You are generating TOEIC Listening Part 3 sets of questions with visuals.
 - All exchanges must contribute meaningful information (no greetings, no filler).
 - The exchanges can include vowel elision (e.g., going to -> gonna) and sentence fragments (e.g., Yes, in a minute; Down the hall; Could you? — sentences where the subject or verb is omitted).
 - If time is specified, always use 12-hour clock. For example, NEVER use 14:00, 19:30, etc.
+- NEVER use commas in any numbers. e.g. $1300
 - Do NOT copy the few-shot conversation content. Create new content each time.
 - Fit typical TOEIC domains:
   - Office: Scheduling/canceling meetings, project deadlines, discussing budgets/expenses, handling technology issues (equipment repair), hiring, training, or asking for time off.
@@ -41,15 +42,15 @@ You are generating TOEIC Listening Part 3 sets of questions with visuals.
 - Only one correct option.
 
 ## Difficulty Level Rules:
-- 1:
+- level 1:
   - simple sentences
   - No inference, no tricky distractors, no similar-sounding options
 
-- 2:
+- level 2:
   - May include one mild distractor
   - One question requires light contextual understanding
 
-- 3:
+- level 3:
   - longer multi-clause sentences
   - At least one question requires inference
   - At least one similar-sounding distractor

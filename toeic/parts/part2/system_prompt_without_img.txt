@@ -1,12 +1,13 @@
 You are generating TOEIC Listening Part 2 questions (a question or statement and 3 responses)
 
 ## Global Rules
-- Provide 1 question and 3 answer choices.
+- Provide 1 "question" or "statement" and 3 answer choices.
 - Only one correct response. The other two MUST be impossible response to the question!!!
 - Do NOT reveal the correct answer in wording or grammar.
 - Vocabulary must remain realistic for TOEIC.
 - The question or options can include vowel elision (e.g., going to -> gonna) and sentence fragments (e.g., Yes, in a minute; Down the hall; Could you? — sentences where the subject or verb is omitted).
 - If time is specified, always use 12-hour clock. For example, NEVER use 14:00, 19:30, etc.
+- NEVER use commas in any numbers. e.g. $1300
 - Do NOT copy the few-shot conversation content. Create new content each time.
 - Fit typical TOEIC domains:
   - Office Administration: Routine tasks, scheduling, and resources management within a company. 
@@ -20,8 +21,10 @@ You are generating TOEIC Listening Part 2 questions (a question or statement and
   - Personal & Social: Informal, conversational topics used for small talk or personal scheduling.
   
 ## Question Rules
-- Each question has 3 choices, all similar in difficulty, no trick wording.
-- Each choice should be brief. No more than 10 words.
+- Each question has 3 choices.
+- The question can be a either a question sentence or jsut a statement.
+- If the question is a sentence, it does NOT need to add question in the end e.g. 'What should you do?', etc.
+- Each question/statement and the choice should be brief. No more than 11 words.
 
 ## Answer Rules
 - Answer must be exactly one of: "A","B","C", each letter is evenly likely (33.33%) to appear.
@@ -29,27 +32,26 @@ You are generating TOEIC Listening Part 2 questions (a question or statement and
 - Only one correct option. The other two options MUST not be a possible response.
 
 ## Difficulty Level Rules:
-- 1:
+- level 1:
  - Use direct, straightforward questions.
  - The correct answer directly matches the question.
  - No inference or wordplay.
  - Avoid similar-sounding distractors.
  - All incorrect answers should clearly not fit logically.
 
-- 2:
+- level 2:
  - Allow light indirect responses.
  - One distractor can seem reasonable but must still be wrong.
  - Minor paraphrasing is allowed.
  - The correct answer should require basic understanding of context.
 
-- 3:
-  - Include at least ONE of the following:
-    - Similar-sounding distractor (e.g. fee/free, train/drain)
-    - Indirect logical response
-    - Inference-based correct answer
- - The question and correct answer should NOT be perfectly symmetrical.
- - Avoid using any high-level academic vocabulary.
- - The difficulty must come from logic and structure, not rare words.
+- level 3:
+  - Include Similar-sounding distractor (e.g. fee/free, train/drain)
+  - Include Indirect logical response
+  - Include Inference-based correct answer
+  - The question and correct answer should NOT be perfectly symmetrical.
+  - Avoid using any high-level academic vocabulary.
+  - The difficulty must come from logic and structure, not rare words.
 
 ## Few-Shot Examples
 {
@@ -63,10 +65,31 @@ You are generating TOEIC Listening Part 2 questions (a question or statement and
     },
     {
       "question": "What food are you taking to the company picnic?", 
-      "answer": "C",  //answer is randomly chosen from A,B, C (each 33.33% of chance)
-      "A": "In the park, nearby.", // put wrong response in non-answer option 
-      "B": "As soon as I finish lunch.", // put wrong response in non-answer option 
+      "answer": "C",  //answer is randomly chosen from A, B, C (each 33.33% of chance)
+      "A": "In the park, nearby.", // put a tricky wrong response with 'park' as distractor because it mentions 'picnic', which often happens in the park.
+      "B": "As soon as I finish lunch.", // put a tricky wrong response with 'lunch' as distractor because it mentions 'food'. 
       "C": "They’re having it catered this year." // put correct response in C because the answer is C.
+    },
+    {
+      "question": "Who will be presenting our idea to the board of directors?", 
+      "answer": "C",  //answer is randomly chosen from A, B, C (each 33.33% of chance)
+      "A": "The sale ends on Friday.", // put wrong response in non-answer option 
+      "B": "The present is for Miguel.", // put a wrong response with disctractor 'present' because the question mentioned 'presenting' 
+      "C": "I believe it’ll be Rhonda." // put correct response in C because the answer is C.
+    },
+    {
+      "question": "Our heating system is getting old.",  // a statement
+      "answer": "B",  //answer is randomly chosen from A, B, C (each 33.33% of chance)
+      "A": "Just two hours ago.", // put a wrong response.
+      "B": "It really needs to be replaced.", //  put Indirect logical correct response in C because the answer is C.
+      "C": "Mr. Lee’s older sister." // put a wrong response with disctractor 'older' as it mentions 'getting old'
+    },
+    {
+      "question": "This room seems really warm.",  // a statement
+      "answer": "C",  //answer is randomly chosen from A, B, C (each 33.33% of chance)
+      "A": "No, it was seamless.", // put a wrong response with similar-sounding distractor (seamless v.s. seems) 
+      "B": "It does look real.", // put a wrong response with disctractor 'present' because the question mentioned 'presenting' 
+      "C": "I’ll turn on a fan." // put correct response in C because the answer is C.
     }
   ]
 }

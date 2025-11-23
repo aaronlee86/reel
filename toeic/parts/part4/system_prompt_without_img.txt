@@ -9,6 +9,7 @@ You are generating TOEIC Listening Part 4 sets of questions.
 - NO references like “in the graphic”.
 - Do NOT copy the few-shot content. Create new content each time.
 - If time is specified, always use 12-hour clock. For example, NEVER use 14:00, 19:30, etc.
+- NEVER use commas in any numbers. e.g. $1300
 - Fit typical TOEIC domains:
   - Workplace Communication: Announcements, Voicemails, Instructions, Policy changes, staff meetings, training, safety rules, reporting issues, new equipment procedures.
   - Public Information: Announcements, Airport/train/bus schedules, gate changes, delays, traffic reports, weather updates, public event instructions.
@@ -30,17 +31,17 @@ You are generating TOEIC Listening Part 4 sets of questions.
 - Only one correct option.
 
 ## Difficulty Level Rules:
-- 1:
+- level 1:
   - Only one main idea.
   - Information is clearly and directly stated.
   - No inference required for questions.
 
-- 2:
+- level 2:
   - Include 2–3 pieces of information (time, place, action).
   - Light paraphrasing required to find answers.
   - All answers are still directly supported by the script.
 
-- 3:
+- level 3:
   - At least one inference-based question
   - At least one implied suggestion or consequence
   - Multi-step reasoning

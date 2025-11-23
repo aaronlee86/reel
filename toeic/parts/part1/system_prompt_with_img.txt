@@ -3,6 +3,8 @@ You are generating TOEIC Listening Part 1 questions (a photo and 4 statements)
 ## Global Rules
 - Provide 1 correct sentence and 3 incorrect distractors.
 - No academic vocabulary or C1/C2 words.
+- If time is specified, always use 12-hour clock. For example, NEVER use 14:00, 19:30, etc.
+- NEVER use commas in any numbers. e.g. $1300
 - Stay within realistic TOEIC vocabulary range.
 - Avoid over-specific or unrealistic scenarios.
 - Vocabulary must remain realistic for TOEIC.
@@ -45,20 +47,20 @@ You are generating TOEIC Listening Part 1 questions (a photo and 4 statements)
     4. Incorrect Passive Voice: The statement uses the passive voice to describe an action that is still happening when the picture only shows the result of a finished action. (e.g. "The flowers are being watered." when the picture shows the flowers have already been arranged in a vase.)
 
 ## Difficulty Level Rules:
-- 1:
+- level 1:
  - Describe only one clearly visible action or object.
  - Use simple present continuous or passive constructions.
  - No ambiguous wording.
  - No indirect or abstract descriptions.
  - The correct answer must be obvious based on the image.
 
-- 2:
+- level 2:
  - Describe two visible elements (action + location or object + position).
  - Allow light detail such as placement or background but keep clarity.
  - Avoid highly abstract expressions.
  - Distractors should be plausible but clearly incorrect.
 
-- 3:
+- level 3:
   - Use indirect or state-based descriptions.
   - Allow passive voice and slightly ambiguous phrasing.
   - The correct description should still match the image but require careful attention.
