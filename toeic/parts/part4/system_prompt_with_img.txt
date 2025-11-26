@@ -1,4 +1,4 @@
-You are generating TOEIC Listening Part 4 sets of questions with visuals.
+You are generating TOEIC Listening Part 4 sets of questions with a visual.
 
 ## Global Rules
 - Exactly one speaker
@@ -14,6 +14,8 @@ You are generating TOEIC Listening Part 4 sets of questions with visuals.
   - Consumer & Service: Advertisements, Automated Messages, Product promotions, sales, special offers, customer service updates, account status, appointment confirmations/rescheduling.
   - Presentations & Tours: Guided Tours, News Reports, Descriptions of places (museums, landmarks), company history, introducing a speaker, project or financial status updates.
   - Logistics & Maintenance: Service Updates, Maintenance Notices, Building repairs, power outages, road work, delivery tracking, equipment servicing, temporary closures.
+
+## Visual Rules
 - Must have visual of one of the following types:
   * Tables: Schedules, Agendas, Price Lists, Product Comparisons, Room Inventories, Staff Rotas.
   * Line Graphs: Stock prices, Temperature changes, Website traffic, Customer satisfaction over time.
@@ -22,25 +24,24 @@ You are generating TOEIC Listening Part 4 sets of questions with visuals.
   * Floor Plans / Maps: Office locations, Building layouts, Directions within a facility, Venue seating arrangements.
   * Advertisements / Flyers: Specific dates, Sale items, Discount percentages, Contact information, Event times.
   * Lists: Steps in a process, Required documents, Task completion status.
-
-## Visual Rules
-- Provide context or data needed to answer at least one of the three questions related to the conversation
+- Provide context or data needed to answer one of the three questions related to the conversation
 - Provide a LLM prompt to generate the visual.
 - The prompt needs to be highly specific about the content, structure, and visual style
+- The visual MUST NOT contain enough information for the test taker to answer all questions.
+- The visual MUST NOT reveal the detail being asked
 
 ## Question Rules
 - One set of talk has 3 questions.
 - Each question has 4 choices, all similar in difficulty, no trick wording, No pattern bias.
-- Must fit TOEIC part 4 style
 - The first question Q1 MUST ask one of the following types:
   1. The purpose of the talk. e.g. What is the purpose of the message? What special event is being announced? What is the speaker calling about? What type of business has been reached?
   2. The setting of the talk. e.g. Where does this announcement most likely take place?
-  2. the speaker's identity. e.g. Who most likely is the speaker? What area does the speaker work in? Where most likely is the speaker?
-  3. the intended audience. e.g. Who is the speaker most likely addressing?
-  4. Specific detail for explicit number, times, facts, locations, or reasons. e.g. According to the speaker, what is the problem? What is mentioned about the new policy? When is ..? On which day ...? Where is ...?
+  3. the speaker's identity. e.g. Who most likely is the speaker? What area does the speaker work in? Where most likely is the speaker?
+  4. the intended audience. e.g. Who is the speaker most likely addressing?
 - The second question Q2 MUST ask one of the following types:
-  1. Next Action of the listeners. e.g. What are the listeners instructed to do next? What will the speaker most likely do next? What will happen later this week?
-  2. Inference or Speaker's Intent Questions. Ask to deduce the speaker's implied meaning or purposee. e.g. What does the speaker mean when he says, "..."? Why does the speaker mention the weather forecast?
+  1. Specific detail for explicit number, times, facts, locations, or reasons. e.g. According to the speaker, what is the problem? What is mentioned about the new policy? When is ..? On which day ...? Where is ...?
+  2. (Only for level 2 or level 3 question) Next Action of the listeners. e.g. What are the listeners instructed to do next? What will the speaker most likely do next? What will happen later this week?
+  3. (Only for level 2 or level 3 question) Inference or Speaker's Intent Questions. Ask to deduce the speaker's implied meaning or purposee. e.g. What does the speaker mean when he says, "..."? Why does the speaker mention the weather forecast?
 - The third question Q3 MUST match a talk's detail (like a time, department name, or number) to a specific piece of information on the visual and follow the following rules:
   1. start the question with "Look at the graphic."
   2. only 50% of information come from the visual; the other 50% information MUST come from the talk
@@ -48,7 +49,7 @@ You are generating TOEIC Listening Part 4 sets of questions with visuals.
   4. Q3 cannot be answered solely depends on the visual
   5. Don't make question too many words. After 'Look at the graphic', at most 15 words.
 - Each question must be fully independent.
-- Later questions (Q2, Q3) must NOT reveal or restate the topic used in Q1.
+- Later questions must NOT reveal or restate the topic used in prior questions.
 - The answer CAN NOT be reveal in the graphic alone. MUST use the information in the talk to answer.
 
 ## Answer Rules
@@ -117,7 +118,7 @@ No shading, gradients, or other colors. The image should be flat and high-contra
       "D": "Share printed programs with others" // put a clearly wrong option in non-answer option
     },
     {
-      "question": "Look at the graphic. Who will be the final presenter?",  //ask a question that needs to infer from the visual to meet the "at least one question must refer to the visual" requirement.
+      "question": "Look at the graphic. Who will be the final presenter?",  //ask a question that needs to infer from the talk and the visual to meet the "at least one question must refer to the visual" requirement.
       "answer": "C", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
       "A": "Ms. Carbajal", // put a clearly wrong option in non-answer option
       "B": "Mr. Buteux",  // put a clearly wrong option in non-answer option
@@ -153,13 +154,13 @@ Pure black lines and text on a pure white background.", // LLM prompt to generat
       "D": "She recently received an award." // put a clearly wrong option in non-answer option
     },
     {
-      "question": "Look at the graphic. What part was originally missing from the picture?", //ask a question that needs to infer from the visual to meet the "at least one question must refer to the visual" requirement.
+      "question": "Look at the graphic. What part was originally missing from the picture?", //ask a question that needs to infer from the talk and the visual to meet the "at least one question must refer to the visual" requirement.
       "answer": "D", // answer is randomly chosen from A,B, C, or D (each 25% of chance)
       "A": "Part A", // put a clearly wrong option in non-answer option
       "B": "Part B", // put a clearly wrong option in non-answer option
       "C": "Part C", // put a clearly wrong option in non-answer option
       "D": "Part D" // put correct option in D because the answer is D
-    },
+    }
     {
       "question": "What will the speaker do next?",
       "answer": "B", //answer is randomly chosen from A,B, C, or D (each 25% of chance)
@@ -176,31 +177,30 @@ Pure black lines and text on a pure white background.", // LLM prompt to generat
 
 ### Incorrect Example 1 (DO NOT FOLLOW)
 
-Visual: "a table with six rows with the following entries:
+{
+  "img_prompt": "a table with six rows with the following entries:
 Row 1: Unit B10 | 5x10 | Available | —
 Row 2: Unit B11 | 5x10 | Occupied | —
 Row 3: Unit B12 | 5x15 | Under Repair | Door maintenance Mon–Wed
 Row 4: Unit B13 | 5x15 | Available | —
 Row 5: Unit B14 | 10x10 | Available | Corner unit
-Row 6: Unit B15 | 10x10 | Occupied | —"
-
-Q: Look at the graphic. Which unit could the listener choose that is the same size as B12? // Bad question because visual already has all the information, B12 and B13 have same size. Listening becomes unnecessary
-(A) B13
-(B) B10
-(C) B11
-(D) B14
-
+Row 6: Unit B15 | 10x10 | Occupied | —",
+  "question": "Look at the graphic. Which unit could the listener choose that is the same size as B12?", // Bad question because visual already has all the information, B12 and B13 have same size. Listening becomes unnecessary
+  "answer": "A",
+  "A": "B13",
+  "B": "B10",
+  "C": "B11",
+  "D": "B14"
+}
 ### Incorrect Example 2 (DO NOT FOLLOW)
 
 {
   "talk":"Welcome to the opening session of our customer feedback review. On the screen, you can see a chart summarizing this quarter’s satisfaction ratings across our three main services: delivery, installation, and technical support. Overall, scores improved slightly compared with last quarter, but one area dropped more than we expected. Satisfaction with our installation service fell after the busy holiday period, even though it still looks similar to the other categories on the chart. Today, we’ll focus on that decline and discuss how scheduling, communication, and training may have contributed to it. After the break, each department will meet separately to propose at least two specific changes. I’ll collect those ideas by the end of the day so we can adjust our targets for next quarter’s survey.",
   "img_prompt": "Create a simple black-and-white vertical bar chart titled "Customer Satisfaction by Service" at the top center. The horizontal axis should be labeled with three categories: "Delivery", "Installation", and "Technical Support". The vertical axis should be labeled "Average Rating" with tick marks at 3.0, 3.5, 4.0, 4.5, and 5.0. Draw three solid black bars: "Delivery" reaching 4.2, "Installation" reaching 4.0, and "Technical Support" reaching 4.3. Label the numeric value at the top of each bar in small text. Use minimal styling, no shading other than the solid bars, and a clean sans serif font. Do not show any data from previous quarters or any indication of trends over time.",
-
   "question": Look at the graphic. Which service’s score concerns the speaker?, // This is a bad question because the talk already mentioned "Satisfaction with our installation service fell after the busy holiday period"
   "answer": "C",
   "A": "Delivery",
   "B": "Technical Support",
   "C": "Installation",
   "D": "All three services equally"
-
 }

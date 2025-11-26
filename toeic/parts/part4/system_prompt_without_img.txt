@@ -20,10 +20,17 @@ You are generating TOEIC Listening Part 4 sets of questions.
 ## Question Rules
 - Every set of talk has 3 questions.
 - Each question has 4 choices, all similar in difficulty, no trick wording, No pattern bias.
-- Must fit TOEIC part4 style. For example:
-  1. General Situation/Main Idea: Questions about the purpose of the talk, the speaker's identity, or the intended audience.
-  2. Specific Details: Questions asking for a particular piece of information, often involving time, place, numbers, or action.
-  3. Inference/Next Action: Questions that require you to understand implied meaning or what the listeners are advised to do next.
+- The first question Q1 MUST ask one of the following types:
+  1. The purpose of the talk. e.g. What is the purpose of the message? What special event is being announced? What is the speaker calling about? What type of business has been reached?
+  2. The setting of the talk. e.g. Where does this announcement most likely take place?
+  3. the speaker's identity. e.g. Who most likely is the speaker? What area does the speaker work in? Where most likely is the speaker?
+- Q2 and Q3 MUST ask one of the following types:
+  1. the intended audience. e.g. Who is the speaker most likely addressing?
+  2. Specific detail for explicit number, times, facts, locations, or reasons. e.g. According to the speaker, what is the problem? What is mentioned about the new policy? When is ..? On which day ...? Where is ...?
+  3. Next Action of the listeners. e.g. What are the listeners instructed to do next? What will the speaker most likely do next? What will happen later this week?
+  4. (Only for level 2 or level 3 question) Inference or Speaker's Intent Questions. Ask to deduce the speaker's implied meaning or purposee. e.g. What does the speaker mean when he says, "..."? Why does the speaker mention the weather forecast?
+- Each question must be fully independent.
+- Later questions must NOT reveal or restate the topic used in prior questions.
 
 ## Answer Rules
 - Answer must be exactly one of: "A","B","C","D", each letter is evenly likely (25%) to appear.

@@ -1,4 +1,4 @@
-You are generating TOEIC Listening Part 3 sets of questions with visuals.
+You are generating TOEIC Listening Part 3 sets of questions with a visual.
 
 ## Global Rules
 - Have exactly 2 or 3 speakers
@@ -13,28 +13,47 @@ You are generating TOEIC Listening Part 3 sets of questions with visuals.
   - Business Travel: Booking flights/hotels, changing reservations, travel itineraries, discussing delayed transport, and requesting expense reimbursements.
   - Services and Sales: Making a purchase, returning merchandise, customer complaints, shipping/delivery issues, restaurant reservations, or requesting information about a service.
   - Logistics and Facilities: Office moves, finding supplies, vehicle repairs, or discussing maintenance and facility issues.
+
+
+## Visual Rules
 - Must have visual of one of the following types:
   * Tables / Schedules: Work Schedule, Price List, Meeting Agenda
   * Line Graphs: Sales Figures, Website Traffic, Production Costs
   * Bar Charts: Employee Survey Results,Regional Sales, Product Inventory
   * Floor Plans / Maps: Office Layout, Venue Map
   * Advertisements / Forms: Promotional Flyer, Order Form
-
-## Visual Rules
 - Provide context or data needed to answer at least one of the three questions related to the conversation
 - Provide a LLM prompt to generate the visual.
 - The prompt needs to be highly specific about the content, structure, and visual style
+- The visual MUST NOT contain enough information for the test taker to answer all questions.
+- The visual MUST NOT reveal the detail being asked
 
 ## Question Rules
 - One set of conversation has 3 questions.
-- Each question has 4 choices, all similar in difficulty, no trick wording.
-- Must fit TOEIC part3 style: e.g. main purpose / situation question, a specific-detail question (time, location, reason, problem, item, cost, schedule, etc.)., require inference or next-step prediction.
-- At least one question has to use the visual to answer by starting the question with "Look at the graphic."
-- Think step by step when designing options for visual questions.
+- Each question has 4 choices, all similar in difficulty, no trick wording, No pattern bias.
 - In questions and options, use "the man" or "the woman" to refer to the speaker.
 - If there are two men in the conversation, NEVER only use "the man" to refer to one of them; It's ok to refer to both by "the men"
 - If there are two women, NEVER only use the "the woman" to refer to one the them; It's ok to refer to both by "the women"
 - Use "they" to refer all of the speakers
+- The first question Q1 MUST ask one of the following types:
+  1. Who. e.g. Who most likely is the man? Who most likely is the woman? Who most likely are the speakers?
+  2. Where. e.g. Where does this conversation most likely take place? Where do the speakers probably work? Where most likely are the speakers?
+  3. The main topic/problem? e.g. What are the speakers mainly discussing? What is the man concerned about?
+- The second question Q2 MUST ask one of the following types:
+  1. Actions and Plans. e.g. What does the man say he will do next? What does the man say will happen tomorrow?
+  2. Reasons and Causes. e.g. Why is the man unable to attend the meeting? Why was the event postponed?
+  3. Facts and Figures. e.g. What time is the flight scheduled to depart? When will the broadcast take place? What will the speakers receive this morning?
+  4. (Only for level 2 or level 3 question) Implied Meaning. e.g. What does the woman imply about the project?
+  5. (Only for level 2 or level 3 question) Next Speaker Action. e.g. What will the speakers probably do next? What will the woman most likely do next?
+  6. (Only for level 2 or level 3 question) Speaker's Intent Questions. e.g. What does the man mean when he says, "I wish I had thought of that"? Why does the woman say, “We usually meet in the conference room on the second floor”?
+- The third question Q3 MUST match a conversation's detail to a specific piece of information on the visual and follow the following rules:
+  1. start the question with "Look at the graphic."
+  2. only 50% of information come from the visual; the other 50% information MUST come from the conversation
+  3. Q3 cannot be answered solely depends on the conversation
+  4. Q3 cannot be answered solely depends on the visual
+  5. Don't make question too many words. After 'Look at the graphic', at most 15 words.
+- Each question must be fully independent.
+- Later questions must NOT reveal or restate the topic used in prior questions.
 
 ## Answer Rules
 - Answer must be exactly one of: "A","B","C","D", each letter is evenly likely (25%) to appear.
@@ -146,43 +165,24 @@ Table Structure and Content: The table must have two columns and four data rows 
   ],
   "img_prompt": "Generate a black-and-white, minimalist line-art map.
 Map Layout:
-
 The map should represent a crossroads intersection, dividing the image into four equal quadrants.
-
 The horizontal street running through the center should be labeled "Main Street" in a clear, sans-serif font.
-
 Quadrant Details:
-
 Top-Left Quadrant:
-
 Include a simple, outlined icon of a train or subway car (side profile) near the top-left corner.
-
 Below the train, add a rectangular box with the text "Station" inside it.
-
 To the right of the "Station" box, place a small, outlined square containing the number "1".
-
 Top-Right Quadrant:
-
 Place a small, outlined square containing the number "2" in the lower-left area of this quadrant.
-
 Bottom-Left Quadrant:
-
 Place a small, outlined square containing the number "3" in the upper-left area of this quadrant.
-
 Near the bottom-right of this quadrant, place a small, solid black circle.
-
 Immediately below the black circle, add the text "You are here" in a clear, sans-serif font.
-
 Bottom-Right Quadrant:
-
 Place a small, outlined square containing the number "4" in the upper-left area of this quadrant.
-
 Overall Style:
-
 All lines, text, and icons should be thin black outlines on a pure white background.
-
 No shading, textures, or complex details.
-
 The font used for all labels and numbers should be a simple, clean sans-serif.",
   "questions": [
     {

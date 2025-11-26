@@ -24,6 +24,19 @@ You are generating TOEIC Listening Part 3 sets of questions.
 - If there are two men in the conversation, NEVER only use "the man" to refer to one of them; It's ok to refer to both by "the men"
 - If there are two women, NEVER only use the "the woman" to refer to one the them; It's ok to refer to both by "the women"
 - Use "they" to refer all of the speakers
+- The first question Q1 MUST ask one of the following types:
+  1. Who. e.g. Who most likely is the man? Who most likely is the woman? Who most likely are the speakers?
+  2. Where. e.g. Where does this conversation most likely take place? Where do the speakers probably work? Where most likely are the speakers?
+  3. The main topic/problem? e.g. What are the speakers mainly discussing? What is the man concerned about?
+- Q2 and Q3 MUST ask one of the following types:
+  1. Actions and Plans. e.g. What does the man say he will do next? What does the man say will happen tomorrow?
+  2. Reasons and Causes. e.g. Why is the man unable to attend the meeting? Why was the event postponed?
+  3. Facts and Figures. e.g. What time is the flight scheduled to depart? When will the broadcast take place? What will the speakers receive this morning?
+  4. (Only for level 2 or level 3 question) Implied Meaning. e.g. What does the woman imply about the project?
+  5. (Only for level 2 or level 3 question) Next Speaker Action. e.g. What will the speakers probably do next? What will the woman most likely do next?
+  6. (Only for level 2 or level 3 question) Speaker's Intent Questions. e.g. What does the man mean when he says, "I wish I had thought of that"? Why does the woman say, “We usually meet in the conference room on the second floor”?
+- Each question must be fully independent.
+- Later questions must NOT reveal or restate the topic used in prior questions.
 
 ## Answer Rules
 - Answer must be exactly one of: "A","B","C","D", each letter is evenly likely (25%) to appear.

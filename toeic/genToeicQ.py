@@ -47,9 +47,6 @@ client = OpenAI(
 )
 logging.info("done")
 
-ChatGPT_MODEL_VER = "gpt-5-mini-2025-08-07"
-
-
 def validate_question(question_data: Dict, part: int) -> int:
     """
     Validate if the answer in the question is actually correct.
@@ -122,13 +119,19 @@ def load_part_model(part: int, img: bool) -> Type[BaseModel]:
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
 
-        # Find and return the PartResult class
+        # Find and return the Result class
         part_result_class = getattr(module, 'Result', None)
+
+        # Find and return the AI model version
+        ai_model_ver = getattr(module, 'AI_MODEL_VER', '')
+
+        # Find and return reasoning effort level
+        reasoning_effort = getattr(module, 'REASONING_EFFORT', 'medium')
 
         if part_result_class is None:
             raise AttributeError(f"No Result class found in {model_path}")
 
-        return part_result_class
+        return part_result_class, ai_model_ver, reasoning_effort
 
     except (ImportError, FileNotFoundError, AttributeError) as e:
         print(f"Error importing model for part {part}: {e}")
@@ -139,7 +142,7 @@ def _generate_questions(part, level, img: bool, count, existing=None):
         # Load system and user prompts dynamically
         system_prompt = load_prompt(part, 'system', img)
         user_prompt = load_prompt(part, 'user', img)
-        json_schema = load_part_model(part, img)
+        json_schema, ai_model_ver, reasoning_effort = load_part_model(part, img)
 
         # Format user prompt with actual values
         user_prompt = user_prompt.format(
@@ -148,17 +151,19 @@ def _generate_questions(part, level, img: bool, count, existing=None):
             existing=existing if existing else 'none'
         )
 
-        print("System Prompt:")
-        print(system_prompt)
-        print("User Prompt:")
-        print(user_prompt)
+        # print prompts for debugging
+        logging.debug(f"System Prompt:\n{system_prompt}\n")
+        logging.info(f"User Prompt:\n{user_prompt}\n")
+        logging.info(f"AI model ver:{ai_model_ver}")
+        logging.info(f"AI reasoning effort:{reasoning_effort}")
 
         response = client.responses.parse(
-            model=ChatGPT_MODEL_VER,
+            model=ai_model_ver,
             input=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
             ],
+            reasoning={"effort": reasoning_effort},
             text_format=json_schema
         )
 

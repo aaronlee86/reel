@@ -41,3 +41,6 @@ class Result(BaseModel):
     model_config = {
         "extra": "forbid"  # additionalProperties: false
     }
+
+AI_MODEL_VER = "gpt-5-mini-2025-08-07"
+REASONING_EFFORT = "medium"
