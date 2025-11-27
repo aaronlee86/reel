@@ -2,6 +2,7 @@
 "cover","generators.setCoverImg",,,,,
 "nar","generators.passThrough","value={""tts"": {""engine"": ""eleven"", ""voice"":""pNInz6obpgDQGcFmaJgB"", ""speed"": 1}}",,,,
 "time","generators.passThrough","value={""nextpage"": 5}",,,,
+padding,generators.passThrough,"value={""right"":{""img"":670, ""noimg"":115}}",,,,
 "q1","generators.loadToeicSql","part=1","level=1","sex={'man':1, 'woman':1}","accent={'am':5,'br':3, 'au':1, 'cn':1}","img=1"
 "q2","generators.loadToeicSql","part=1","level=1","sex={'man':1, 'woman':1}","accent={'am':5,'br':3, 'au':1, 'cn':1}","img=1"
 "q3","generators.loadToeicSql","part=1","level=2","sex={'man':1, 'woman':1}","accent={'am':5,'br':3, 'au':1, 'cn':1}","img=1"
@@ -53,6 +54,6 @@
 "q83","generators.loadToeicSql","part=4","level=2","sex={'man':1, 'woman':1}","accent={'am':5,'br':3, 'au':1, 'cn':1}","img=0"
 "q86","generators.loadToeicSql","part=4","level=3","sex={'man':1, 'woman':1}","accent={'am':5,'br':3, 'au':1, 'cn':1}","img=0"
 "q89","generators.loadToeicSql","part=4","level=3","sex={'man':1, 'woman':1}","accent={'am':5,'br':3, 'au':1, 'cn':1}","img=0"
-"q92","generators.loadToeicSql","part=4","level=1","sex={'man':1, 'woman':1}","accent={'am':5,'br':3, 'au':1, 'cn':1}","img=1"
+"q92","generators.loadToeicSql","part=4","level=3","sex={'man':1, 'woman':1}","accent={'am':5,'br':3, 'au':1, 'cn':1}","img=0"
 "q95","generators.loadToeicSql","part=4","level=2","sex={'man':1, 'woman':1}","accent={'am':5,'br':3, 'au':1, 'cn':1}","img=1"
 "q98","generators.loadToeicSql","part=4","level=3","sex={'man':1, 'woman':1}","accent={'am':5,'br':3, 'au':1, 'cn':1}","img=1"
