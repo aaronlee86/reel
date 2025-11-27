@@ -1,0 +1,87 @@
+You are solving a TOEIC Listening Part 3 question (1 visual + 1 question).
+
+## Global Rules
+- Comprehend the image prompt
+- Understand the question
+- Think logically for every option
+- Give a score from 0 to 100 to each option by the following Rules
+  1. The score is given according to the correctness of the option.
+  2. give 0 if it is completely wrong
+  3. give 100 it it is completely correct
+  4. Do NOT make any assumption outside of the image prompt
+  5. Do NOT refer to other options
+
+## Few-Shot Example 1
+Input:
+{
+  "img_prompt": "Generate a black-and-white, minimalist line-art map.
+Map Layout:
+The map should represent a crossroads intersection, dividing the image into four equal quadrants.
+The horizontal street running through the center should be labeled "Main Street" in a clear, sans-serif font.
+Quadrant Details:
+Top-Left Quadrant:
+Include a simple, outlined icon of a train or subway car (side profile) near the top-left corner.
+Below the train, add a rectangular box with the text "Station" inside it.
+To the right of the "Station" box, place a small, outlined square containing the number "1".
+Top-Right Quadrant:
+Place a small, outlined square containing the number "2" in the lower-left area of this quadrant.
+Bottom-Left Quadrant:
+Place a small, outlined square containing the number "3" in the upper-left area of this quadrant.
+Near the bottom-right of this quadrant, place a small, solid black circle.
+Immediately below the black circle, add the text "You are here" in a clear, sans-serif font.
+Bottom-Right Quadrant:
+Place a small, outlined square containing the number "4" in the upper-left area of this quadrant.
+Overall Style:
+All lines, text, and icons should be thin black outlines on a pure white background.
+No shading, textures, or complex details.  The font used for all labels and numbers should be a simple, clean sans-serif.",
+  "question": "Look at the graphic. Which store does the woman direct the man to?",
+  "A": "Store 1",
+  "B": "Store 2",
+  "C": "Store 3",
+  "D": "Store 4"
+}
+
+Output:
+{
+  "answer": {
+    "A": 50, // give 50 because the image doesn't give any clue of what woman directs to. So 50% chance this statement is correct
+    "B": 50, // give 50 because the image doesn't give any clue of what woman directs to. So 50% chance this statement is correct
+    "C": 50, // give 50 because the image doesn't give any clue of what woman directs to. So 50% chance this statement is correct
+    "D": 50, // give 50 because the image doesn't give any clue of what woman directs to. So 50% chance this statement is correct
+    "explain_A": "No information from the image", // 1 sentence explanation of A's score
+    "explain_B": "No information from the image", // 1 sentence explanation of B's score
+    "explain_C": "No information from the image", // 1 sentence explanation of C's score
+    "explain_D": "No information from the image"  // 1 sentence explanation of D's score
+  }
+}
+
+## Few-Shot Example 2
+Input:
+{
+  "img_prompt": "Design a simple terminal map showing three gates in a single concourse: Gates A5, B12, and C3. Layout and Content:
+  - A horizontal concourse corridor with three gate markers spaced left to right: left marker labeled "A5", center labeled "B12", right labeled "C3".
+  - Use a bold red circle or rounded rectangle highlight around "B12" to indicate the reassigned gate.
+  - Place a small text box in the lower-left corner that reads: "Original: Gate A5" and another in the lower-right that reads: "New: Gate B12
+  — Boarding 4:15 p.m.".
+  Visual style: flat vector graphic, clear sans-serif labels, muted light-gray concourse background, gates and highlights in darker colors.
+  Keep the image uncluttered and legible.",
+  "question": "Look at the graphic. Which gate was the flight originally assigned to?"
+  "A": "Gate A5",
+  "B": "Gate B12",
+  "C": "Gate C3",
+  "D": "Gate D1"
+}
+
+Output:
+{
+  "answer": {
+    "A": 100,  // give 100 because in the image prompt there is a small text box "Original: Gate A5", indicating A5 is the original gate.
+    "B": 0, // give 0 because in the image prompt A5 is the orignal gate, not B12
+    "C": 0, // give 0 because in the image prompt A5 is the orignal gate, not C3
+    "D": 0, // give 0 because in the image prompt A5 is the orignal gate, not D1
+    "explain_A": "In the prompt there is a small text box "Original: Gate A5", indicating A5 is the original gate.", // 1 sentence explanation of A's score
+    "explain_B": "In the prompt A5 is the orignal gate, not B12", // 1 sentence explanation of B's score
+    "explain_C": "In the prompt A5 is the orignal gate, not C3", // 1 sentence explanation of C's score
+    "explain_D": "In the prompt A5 is the orignal gate, not D1" // 1 sentence explanation of D's score
+  }
+}

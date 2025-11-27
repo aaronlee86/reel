@@ -1,0 +1,70 @@
+You are solving a TOEIC Listening Part 4 question (1 talk + 1 question).
+
+## Global Rules
+- Comprehend the talk
+- Understand the question
+- Think logically for every option
+- Give a score from 0 to 100 to each option by the following Rules
+  1. The score is given according to the correctness of the option.
+  2. give 0 if it is completely wrong
+  3. give 100 it it is completely correct
+  4. Do NOT make any assumption outside of the talk
+  5. Do NOT refer to other options
+
+## Few-Shot Example 1
+Input:
+{
+  "talk": "Hi, Dori. I received your e-mail with the draft of the instructions for our outdoor table. The images that you’ve created look
+great—and this was such a rush job! I’m impressed you were able to finish it so soon. But—there was a change that I had to
+make. It was the number of parts. The base at the bottom of the single table leg is a separate piece, and it was missing from the
+picture. So I fixed it. Anyway, could you proof the change I’ve made as soon as you can? In the meantime, I’ll call the printer
+and let them know we’ll be sending the final draft. Thanks.",
+  "questions": "What part was originally missing from the picture?
+  "A": "Part A",
+  "B": "Part B",
+  "C": "Part C",
+  "D": "No part is missing"
+}
+
+Output:
+{
+  "answer": {
+    "A": 50,  // give 50 because the talk doesn't mention where Part A is, and we don't have the picture. So 50% chance this statement is correct
+    "B": 50, // give 50 because the talk doesn't mention where Part B is, and we don't have the picture. So 50% chance this statement is correct
+    "C": 50, // give 50 because the talk doesn't mention where Part C is, and we don't have the picture. So 50% chance this statement is correct
+    "D": 0, // give 0 because the talk says some part is missing this is definitely wrong
+    "explain_A": "No Part A's information from the talk", // 1 sentence explanation of A's score
+    "explain_B": "No Part B's information from the talk", // 1 sentence explanation of B's score
+    "explain_C": "No Part C's information from the talk", // 1 sentence explanation of C's score
+    "explain_D": "The talk says some part is missing this is definitely wrong " // 1 sentence explanation of D's score
+  }
+}
+
+## Few-Shot Example 2
+Input:
+{
+  "talk": "Hey! I’m Matt Wheaton for 89.5 Radio!  Welcome to another edition of the Chart Show, where I count
+down your choices for the top songs of the week. Every week, listeners like you go to our website to vote for your favorite
+music of the moment. This week, singer-songwriter Hiro Mori's Sea Waves maintains his number one spot on our chart for the third week in
+a row, with the title track of his new album. However, our number two artist – Shanta – almost took Hiro’s place this week. If you
+think a new artist deserves the number one spot next week, visit our radio station’s website to cast your vote!",
+  "questions": "Which song is currently voted number one?",
+  "A": "Searchlight",
+  "B": "Sea Waves",
+  "C": "Cherries",
+  "D": "Get To It!"
+}
+
+Output:
+{
+  "answer": {
+    "A": 0,  // give 0 because it's obviously wrong
+    "B": 100, // give 100 because the talk already mentions Hiro Mori's Sea Waves maintains his number one spot
+    "C": 0, // give 0 because it's obviously wrong
+    "D": 0, // give 0 because it's obviously wrong
+    "explain_A": "The talk already mentions Hiro Mori's Sea Waves maintains his number one spot, not Searchlight", // 1 sentence explanation of A's score
+    "explain_B": "The talk already mentions Hiro Mori's Sea Waves maintains his number one spot", // 1 sentence explanation of B's score
+    "explain_C": "The talk already mentions Hiro Mori's Sea Waves maintains his number one spot, not Cherries", // 1 sentence explanation of C's score
+    "explain_D": "The talk already mentions Hiro Mori's Sea Waves maintains his number one spot, not Get To It" // 1 sentence explanation of D's score
+  }
+}

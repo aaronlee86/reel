@@ -1,0 +1,104 @@
+You are solving a TOEIC Listening Part 3 question (1 conversation + 1 question).
+
+## Global Rules
+- Comprehend the conversation from the script
+- Understand the question
+- Think logically for every option
+- Give a score from 0 to 100 to each option by the following Rules
+  1. The score is given according to the correctness of the option.
+  2. give 0 if it is completely wrong
+  3. give 100 it it is completely correct
+  4. Do NOT make any assumption outside of the talk
+  5. Do NOT refer to other options
+
+## Few-Shot Example 1
+Input:
+{
+  "script": [
+    {
+      "speaker": "man1",
+      "line": "Hi. Do you sell cords that work with this computer? I remembered the power outlets here are different from in Australia, and I brought an adapter, but I left the cord behind!"
+    },
+    {
+      "speaker": "woman1",
+      "line": "Hmm… sorry. That’s not a common brand here in the US. We could order one for you, though. It’d be here within two days."
+    },
+    {
+      "speaker": "man1",
+      "line": "Thanks, but I'm here on business and I need to recharge the battery today. Any place around here that might have one?"
+    },
+    {
+      "speaker": "woman1",
+      "line": "Try Frick Electronics. It’s right across the street from the train station, and it should have a better selection for travelers. Just turn left when you get to Main Street and you’ll see it on the left."
+    }
+  ],
+  "question": "Look at the graphic. Which store does the woman direct the man to?",
+  "A": "Store 1",
+  "B": "Store 2",
+  "C": "Store 3",
+  "D": "Store 4"
+}
+
+Output:
+{
+  "answer": {
+    "A": 50, // give 50 because without image, Store 1's location is unknown. So 50% chance this statement is correct
+    "B": 50, // give 50 because without image, Store 2's location is unknown. So 50% chance this statement is correct
+    "C": 50, // give 50 because without image, Store 3's location is unknown. So 50% chance this statement is correct
+    "D": 50, // give 50 because without image, Store 4's location is unknown. So 50% chance this statement is correct
+    "explain_A": "Not enough information from the conversation", // 1 sentence explanation of A's score
+    "explain_B": "Not enough information from the conversation", // 1 sentence explanation of B's score
+    "explain_C": "Not enough information from the conversation", // 1 sentence explanation of C's score
+    "explain_D": "Not enough information from the conversation"  // 1 sentence explanation of D's score
+  }
+}
+
+## Few-Shot Example 2
+Input:
+{
+  "script": [
+    {
+      "speaker": "woman1",
+      "line": "Larry, we have a new graphic designer starting next month and we’ll need to set her up with a laptop and extra monitor. Can you place orders for those? "
+    },
+    {
+      "speaker": "man1",
+      "line": "Sure. You know our vendor has raised their prices, right? "
+    },
+    {
+      "speaker": "woman1",
+      "line": "Really?"
+    },
+    {
+      "speaker": "man1",
+      "line": "Yes. I just looked at the catalog a few minutes ago, and their current models are more expensive."
+    },
+    {
+      "speaker": "woman1",
+      "line": "Right. Well, our budget per work area is $1,000 maximum. So let’s order the system with the largest screen that falls within that price."
+    },
+    {
+      "speaker": "man1",
+      "line": "OK. That is the one with 13 inches."
+    }
+  ],
+  "questions": "Look at the graphic. What size screen will the man order?",
+  "A": "11 inches",
+  "B": "13 inches",
+  "C": "15 inches",
+  "D": "17 inches"
+}
+
+Output:
+{
+  "answer": {
+    "A": 0,  // give 0 because the man mentions 'That is the one with 13 inches'
+    "B": 100, // give 100 because the man already mentioned 'That is the one with 13 inches'
+    "C": 0, // give 0 because the man mentions 'That is the one with 13 inches'
+    "D": 0, // give 0 because the man mentions 'That is the one with 13 inches'
+    "explain_A": "The man already mentions 'That is the one with 13 inches'", // 1 sentence explanation of A's score
+    "explain_B": "The man already mentions 'That is the one with 13 inches'", // 1 sentence explanation of B's score
+    "explain_C": "The man already mentions 'That is the one with 13 inches'", // 1 sentence explanation of C's score
+    "explain_D": "The man already mentions 'That is the one with 13 inches'" // 1 sentence explanation of D's score
+  }
+}
