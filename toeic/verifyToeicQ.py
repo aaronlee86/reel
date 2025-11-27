@@ -15,7 +15,7 @@ from typing import Optional, Dict, List, Type, Callable, Tuple
 from openai import OpenAI
 import importlib.util
 from pydantic import BaseModel
-from common import VerifyStatus
+from common import VerifyStatus, VerificationChain
 
 # Configure logging
 logging.basicConfig(
@@ -78,45 +78,6 @@ def convert_to_schema(q_dict: Dict) -> Dict:
 
     return  output_json
 
-def convert_to_schema_cross(q_dict: Dict, img: bool) -> Dict:
-    # Build script section
-    part = q_dict['part']
-
-    if not part in (3,4):
-        return None
-
-
-    questions = q_dict['question']
-
-    # Build questions section
-    output_json = {
-        "question": questions[2],
-        "A": q_dict['A'][2],
-        "B": q_dict['B'][2],
-        "C": q_dict['C'][2],
-        "D": q_dict['D'][2]
-    }
-
-    if img:
-        output_json['img_prompt'] = q_dict['img_prompt']
-    elif part == 3:
-        script = []
-        speakers = q_dict['sex']
-        lines = q_dict['prompt']
-
-        for spk, line in zip(speakers, lines):
-            script.append({
-                "speaker": spk,
-                "line": line
-            })
-
-        output_json['script'] = script
-    elif part == 4:
-        output_json['talk'] = q_dict['prompt'][0]
-
-    return  output_json
-
-
 def load_prompt(part: int, prompt_type: str, img) -> str:
     """
     Load prompt from external text file.
@@ -134,51 +95,6 @@ def load_prompt(part: int, prompt_type: str, img) -> str:
     except Exception as e:
         logging.error(f"Error reading prompt file: {e}")
         raise
-
-def load_cross_prompt(part: int, prompt_type: str, img) -> str:
-    """
-    Load prompt from external text file.
-
-    Returns:
-        str: Prompt text
-    """
-    try:
-        prompt_path = os.path.join('parts', f'part{part}', f'cross_verify_{prompt_type}_prompt_{"with_img" if img else "without_img"}.txt')
-        with open(prompt_path, 'r') as f:
-            return f.read().strip()
-    except FileNotFoundError:
-        logging.error(f"Prompt file not found: {prompt_path}")
-        raise
-    except Exception as e:
-        logging.error(f"Error reading prompt file: {e}")
-        raise
-
-def load_cross_part_model(part: int, img: bool) -> Type[BaseModel]:
-    # Construct the path to the Result.py file
-    base_path = os.path.join('parts', f'part{part}')
-    model_path = os.path.join(base_path, f'Cross_Verify_Result.py')
-
-    try:
-        # Check if file exists
-        if not os.path.exists(model_path):
-            raise FileNotFoundError(f"Model file not found: {model_path}")
-
-        # Dynamically import the module
-        spec = importlib.util.spec_from_file_location(f"part{part}_model", model_path)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-
-        # Find and return the PartResult class
-        part_result_class = getattr(module, 'Result', None)
-
-        if part_result_class is None:
-            raise AttributeError(f"No Result class found in {model_path}")
-
-        return part_result_class
-
-    except (ImportError, FileNotFoundError, AttributeError) as e:
-        print(f"Error importing model for part {part}: {e}")
-        return None
 
 def load_part_model(part: int, img: bool) -> Type[BaseModel]:
     """
@@ -213,48 +129,6 @@ def load_part_model(part: int, img: bool) -> Type[BaseModel]:
         print(f"Error importing model for part {part}: {e}")
         return None
 
-
-class VerificationChain:
-    def __init__(self):
-        self.stages: List[Callable[[Dict, bool], Tuple[VerifyStatus, Optional[str]]]] = []
-
-    def add_stage(
-        self,
-        verification_func: Callable[[Dict, bool], Tuple[VerifyStatus, Optional[str]]]
-    ) -> 'VerificationChain':
-        """
-        Add a verification stage
-
-        Ensures every stage follows the signature:
-        func(question: Dict, img: bool) -> Tuple[VerifyStatus, Optional[str]]
-        """
-        self.stages.append(verification_func)
-        return self
-
-    def verify(self, question: Dict, img: bool = False) -> Tuple[VerifyStatus, Optional[str]]:
-        """
-        Execute verification stages in sequence
-
-        Consistent parameters: question and img
-        """
-        status: VerifyStatus
-        message: Optional[str]
-
-        for stage in self.stages:
-            try:
-                status, message = stage(question, img)
-
-                # Strict validation logic
-                if status != VerifyStatus.VALID:
-                    logger.warning(f"Verification failed at stage {stage.__name__}: {message}")
-                    return status, message
-            except Exception as e:
-                logger.error(f"Error in verification stage {stage.__name__}: {e}")
-                return VerifyStatus.ERROR, f"Exception in verification function {stage.__name__}: {e}"
-
-        # If all stages pass
-        return status, message
-
 class ToeicVerifier:
     """Main class for verifying TOEIC questions using OpenAI"""
 
@@ -287,9 +161,6 @@ class ToeicVerifier:
         Set up verification chain with consistent parameters
         """
         return (VerificationChain()
-            .add_stage(self.verify_cross_audio)
-            .add_stage(self.verify_cross_img)
-            .add_stage(self.verify_question_similarity)
             .add_stage(self.verify_full)
         )
 
@@ -384,118 +255,6 @@ class ToeicVerifier:
             '.webp': 'image/webp'
         }
         return mime_types.get(ext, 'image/jpeg')
-
-    def verify_question_similarity(self, question: Dict, img: bool = False):
-        if question['part'] in (3,4):
-            questions = question['question']
-
-            # Load a pre-trained Sentence Transformer model
-            logging.info("loading Sentence Transformer module...")
-            from sentence_transformers import SentenceTransformer, util
-            sent_model = SentenceTransformer('all-MiniLM-L6-v2')
-            logging.info("done")
-
-            # check if the 3 questions are similar
-            embeddings = sent_model.encode(questions, convert_to_tensor=True)
-            cosine_scores = util.cos_sim(embeddings, embeddings)
-
-            print(f"q1 = {questions[0]}")
-            print(f"q2 = {questions[1]}")
-            print(f"q3 = {questions[2]}")
-            print(f"cosine: {cosine_scores}")
-
-            threshold = 0.7
-            if abs(cosine_scores[0][1].item()) > threshold or abs(cosine_scores[0][2].item()) > threshold or abs(cosine_scores[1][2].item()) > threshold :
-                return VerifyStatus.FAIL_SIMILAR_QUESTION, f"too similar with thrshold > {threshold}. consine matrix: {cosine_scores}"
-
-        return VerifyStatus.VALID, None
-
-    def verify_cross_audio(self, question: Dict, img: bool = False):
-        status, msg  = self._cross_verify(question, img=False)
-        if status != VerifyStatus.VALID:
-            return VerifyStatus.FAIL_AUDIO_ANSWER_MATCH, f"Audio reveals answer: {msg}"
-        return VerifyStatus.VALID, msg
-
-
-    def verify_cross_img(self, question: Dict, img: bool = False):
-        status, msg = self._cross_verify(question, img=True)
-        if status != VerifyStatus.VALID:
-            return VerifyStatus.FAIL_IMAGE_ANSWER_MATCH, f"Image reveals answer: {msg}"
-        return VerifyStatus.VALID, msg
-
-    def _cross_verify(self, question: Dict, img: bool = False)-> Tuple[VerifyStatus, Optional[str]]:
-        if not question['part'] in (3,4):
-            return VerifyStatus.VALID, None
-
-        try:
-            # Build the prompt based on part
-            system_prompt = load_cross_prompt(question['part'], 'system', img)
-            user_prompt = load_cross_prompt(question['part'], 'user', img)
-            json_schema = load_cross_part_model(question['part'], img)
-        except Exception as e:
-            logger.error(f"Error loading prompts or models: {e}")
-            return VerifyStatus.ERROR, f"Error loading prompts or models: {e}"
-
-        # Format user prompt with actual values
-        user_prompt = user_prompt.format(
-            question=convert_to_schema_cross(question, img)
-        )
-
-        db_vector = []
-        # convert db answer to a vector
-        for i in question['answer']:
-            db_vector.append([100.0 if i == 'A' else 0.0, 100.0 if i == 'B' else 0.0, 100.0 if i == 'C' else 0.0, 100.0 if i == 'D' else 0.0])
-
-        db_vector = db_vector[2]  # only verify the 3rd question
-
-        # print prompts for debugging
-        logger.debug(f"System Prompt:\n{system_prompt}\n")
-        logger.info(f"User Prompt:\n{user_prompt}\n")
-
-        # Prepare messages
-        user_message = [{"type": "input_text", "text": user_prompt}]
-
-        try:
-            response = self.client.responses.parse(
-                model=ChatGPT_MODEL_VER,
-                input=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_message}
-                ],
-                text_format=json_schema
-            )
-            logging.info(f"total tokens {response.usage.total_tokens}")
-        except Exception as e:
-            logger.error(f"OpenAI API error: {e}")
-            return VerifyStatus.ERROR, f"OpenAI API error: {e}"
-
-        parsed_response = response.output_parsed
-
-        response_dict = parsed_response.model_dump()
-        json_str = parsed_response.model_dump_json(indent=2)
-        logging.info(f" AI dict result={json_str}")
-
-        ai_answer = response_dict['answer']
-
-        # convert answer dict to a 4 number vector e.g. {"A": xx,"B":yy,"C":zz,"D":ww} to [xx, yy, zz, ww]
-        ai_vector = [ai_answer['A'], ai_answer['B'], ai_answer['C'], ai_answer.get('D', 0)]
-        logger.info(f"ai_vector: {ai_vector}")
-        logger.info(f"db_vector: {db_vector}")
-
-        # check length match
-        if len(db_vector) != len(ai_vector):
-            print(f"  Length mismatch: db_vector has {len(db_vector)} options, v_ai has {len(ai_vector)} options")
-            return VerifyStatus.ERROR, f"Answer option length mismatch"
-        # compute sum of absolute difference
-        diff = sum(abs(a - b) for a, b in zip(db_vector, ai_vector))
-        logger.info(f"  Computed diff: {diff}")
-        # threshold for acceptance is 10
-        threshold = 70
-        if diff < threshold:
-            print(f"  Match detected (diff {diff} < {threshold})")
-            return VerifyStatus.INVALID, f"{ai_answer}"
-
-        return VerifyStatus.VALID, ""
 
     def verify_full(self, question: Dict, img: bool = False):
         """
