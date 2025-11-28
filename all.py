@@ -146,6 +146,7 @@ def main():
     scripts_to_run = [
         'script2scene.py',
         'scene2v.py',
+        'extract_json.py',
         'v2tts.py',
         'tts2clips.py',
         'event_runner.py'
