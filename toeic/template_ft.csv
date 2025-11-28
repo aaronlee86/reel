@@ -19,13 +19,10 @@
 
 
 
-
-
-
 ",,"For each question in this part, you will hear four statements about a picture in your test book. When you hear the statements, you must select the one statement that best describes what you see in the picture. Then find the number of the question on your answer sheet and mark your answer. The statements will not be printed in your test book and will be spoken only one time.",,,"0.5",,,"left",,"107","107",,,"Times-Regular.ttf","34",,"15","$(nar.tts.engine)","$(nar.tts.voice)","$(nar.tts.speed)",,,,,
 "Look at the example item below",,,,,"0.2",,,,,,,,,,"0",,,"$(nar.tts.engine)","$(nar.tts.voice)","$(nar.tts.speed)",,,,,
 "Now listen to the four statements",,,,,,,,,,,,,,,"0",,,"$(nar.tts.engine)","$(nar.tts.voice)","$(nar.tts.speed)",,,,,
-"<img>photo/toeic/p1/sample.png</img>","689,435",,,,,,,,,,,,,,,,,,,,,,,,
+"<img>photo/toeic/p1/sample.png</img>","689,440",,,,,,,,,,,,,,,,,,,,,,,,
 "(A) They’re moving some furniture. ",,,,,,,,,,,,,,,"0",,,"$(nar.tts.engine)","$(nar.tts.voice)","$(nar.tts.speed)",,,,,
 "(B) They’re entering a meeting room. ",,,,,,,,,,,,,,,"0",,,"$(nar.tts.engine)","$(nar.tts.voice)","$(nar.tts.speed)",,,,,
 "(C) They’re sitting at a table",,,,,,,,,,,,,,,"0",,,"$(nar.tts.engine)","$(nar.tts.voice)","$(nar.tts.speed)",,,,,
