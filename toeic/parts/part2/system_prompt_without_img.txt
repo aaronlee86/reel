@@ -2,15 +2,15 @@ You are generating TOEIC Listening Part 2 questions (a question or statement and
 
 ## Global Rules
 - Provide 1 "question" or "statement" and 3 answer choices.
-- Only one correct response. The other two MUST be impossible response to the question!!!
+- ONLY ONE correct response.
 - Do NOT reveal the correct answer in wording or grammar.
 - Vocabulary must remain realistic for TOEIC.
 - The question or options can include vowel elision (e.g., going to -> gonna) and sentence fragments (e.g., Yes, in a minute; Down the hall; Could you? — sentences where the subject or verb is omitted).
-- If time is specified, always use 12-hour clock. For example, NEVER use 14:00, 19:30, etc.
+- If time is specified, always use readable 12-hour clock instead of numbers. For example, use 'two PM' instead of 14:00, 'seven thirty PM' instead of 19:30, etc.
 - NEVER use commas in any numbers. e.g. $1300
 - Do NOT copy the few-shot conversation content. Create new content each time.
 - Fit typical TOEIC domains:
-  - Office Administration: Routine tasks, scheduling, and resources management within a company. 
+  - Office Administration: Routine tasks, scheduling, and resources management within a company.
   - Projects & Deadlines: Status updates, responsibilities, and management of business tasks.
   - Human Resources: Staffing, personnel matters, and internal communications.
   - Client & Sales: Interactions with customers, marketing, and business development.
@@ -19,12 +19,21 @@ You are generating TOEIC Listening Part 2 questions (a question or statement and
   - Dining & Food: Arranging meals, business lunches, and restaurant discussions.
   - Facilities & Maintenance: Issues related to the physical workspace and necessary services.
   - Personal & Social: Informal, conversational topics used for small talk or personal scheduling.
-  
+
 ## Question Rules
 - Each question has 3 choices.
 - The question can be a either a question sentence or jsut a statement.
 - If the question is a sentence, it does NOT need to add question in the end e.g. 'What should you do?', etc.
 - Each question/statement and the choice should be brief. No more than 11 words.
+- Each choice of the same question SHOULD have similar word counts.
+- Choices can have the following disctractors
+  1. Homonym. e.g. park, match, watch, etc.
+  2. Homophones. e.g. two/too/to, hear/here, mail/male, meet/meat, etc.
+  3. Use word that is related phonetically but not logically. e.g. apply/appliance
+  4. Wrong Wh-Type. e.g. The question ask when, but the response gives Who. etc.
+  5. Repeat the keyword but doesn't offer a solution or relevant action. e.g. Q: "I can't access the internet". Response: "The internet is a very useful resource."
+  7. The tenses do not match. A past tense question requires a past or present state answer. e.g. Q: "Did you finish the report?" Response: "Yes, I will finish it tomorrow."
+  8. Illogical Answer. e.g. A: "Who authorized this purchase?" Response: "I prefer to buy things online."
 
 ## Answer Rules
 - Answer must be exactly one of: "A","B","C", each letter is evenly likely (33.33%) to appear.
@@ -41,15 +50,13 @@ You are generating TOEIC Listening Part 2 questions (a question or statement and
 
 - level 2:
  - Allow light indirect responses.
- - One distractor can seem reasonable but must still be wrong.
+ - Use at least 2 distractors to make the wrong choices.
  - Minor paraphrasing is allowed.
  - The correct answer should require basic understanding of context.
 
 - level 3:
-  - Include Similar-sounding distractor (e.g. fee/free, train/drain)
-  - Include Indirect logical response
-  - Include Inference-based correct answer
   - The question and correct answer should NOT be perfectly symmetrical.
+  - Use at least 4 disctractors to make the wrong choices
   - Avoid using any high-level academic vocabulary.
   - The difficulty must come from logic and structure, not rare words.
 
@@ -57,24 +64,24 @@ You are generating TOEIC Listening Part 2 questions (a question or statement and
 {
   "items": [
     {
-      "question": "Don’t you need a ticket for the show?", 
+      "question": "Why did we decide to switch suppliers?",
       "answer": "A",  //answer is randomly chosen from A, B, C (each 33.33% of chance)
-      "A": "I bought ours online.", // put correct response in A because the answer is A
-      "B": "Yes, it might snow.", // put a tricky wrong response here. It uses Similar-sounding distractor (show versus snow)
-      "C": "We took the train." // put a tricky wrong response in non-answer option. It uses "train" to confuse because question mentions "ticket" 
+      "A": "Their prices were far too high.", // put correct response in A because the answer is A
+      "B": "We just ran out of witches' brew.", // put a Homophone disctractor response here. Sounds identical to "switch" but is contextually ridiculous.
+      "C": "I enjoy watching television." // put a Homophone distractor response in non-answer option. Sounds similar to "switch" but has a completely different meaning.
     },
     {
-      "question": "What food are you taking to the company picnic?", 
+      "question": "When will the renovation of the lobby be complete?",
       "answer": "C",  //answer is randomly chosen from A, B, C (each 33.33% of chance)
-      "A": "In the park, nearby.", // put a tricky wrong response with 'park' as distractor because it mentions 'picnic', which often happens in the park.
-      "B": "As soon as I finish lunch.", // put a tricky wrong response with 'lunch' as distractor because it mentions 'food'. 
-      "C": "They’re having it catered this year." // put correct response in C because the answer is C.
+      "A": "It was done by a local construction company.", // a Wrong Wh-Type distractor. The question asks 'When' (Time), but the answer gives a 'Who'
+      "B": "The lobby is much brighter now.", // put a Keyword Repeat disctractor. Repeats the keyword "lobby" but offers an irrelevant observation instead of a timeline.
+      "C": "The work should be finished by the end of next month." // put correct response in C because the answer is C.
     },
     {
-      "question": "Who will be presenting our idea to the board of directors?", 
+      "question": "Who will be presenting our idea to the board of directors?",
       "answer": "C",  //answer is randomly chosen from A, B, C (each 33.33% of chance)
-      "A": "The sale ends on Friday.", // put wrong response in non-answer option 
-      "B": "The present is for Miguel.", // put a wrong response with disctractor 'present' because the question mentioned 'presenting' 
+      "A": "The sale ends on Friday.", // put wrong response in non-answer option
+      "B": "The present is for Miguel.", // put a wrong response with disctractor 'present' because the question mentioned 'presenting'
       "C": "I believe it’ll be Rhonda." // put correct response in C because the answer is C.
     },
     {
@@ -85,11 +92,11 @@ You are generating TOEIC Listening Part 2 questions (a question or statement and
       "C": "Mr. Lee’s older sister." // put a wrong response with disctractor 'older' as it mentions 'getting old'
     },
     {
-      "question": "This room seems really warm.",  // a statement
+      "question": "Have you finished preparing the presentation slides?",  // a statement
       "answer": "C",  //answer is randomly chosen from A, B, C (each 33.33% of chance)
-      "A": "No, it was seamless.", // put a wrong response with similar-sounding distractor (seamless v.s. seems) 
-      "B": "It does look real.", // put a wrong response with disctractor 'present' because the question mentioned 'presenting' 
-      "C": "I’ll turn on a fan." // put correct response in C because the answer is C.
+      "A": "Yes, I will be presenting them tomorrow.", // put a wrong tense disctractor. The question is in the present perfect (Have you finished), but the answer shifts illogically to the Future tense.
+      "B": "The slides look very colorful.", // put a Illogical Answer disctractor. Offers a comment on the appearance of the slides, but does not logically answer the Yes/No question about the completion status.
+      "C": "No, I still need to check the data." // put correct response in C because the answer is C.
     }
   ]
 }
