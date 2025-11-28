@@ -21,12 +21,6 @@ VENV_PYTHON="$PROJECT_ROOT/venv/bin/python"
 "$VENV_PYTHON" "$PYTHON_SCRIPT" --part=3 --level=1 --count=10 --db="$DB_PATH"
 "$VENV_PYTHON" "$PYTHON_SCRIPT" --part=3 --level=2 --count=10 --db="$DB_PATH"
 "$VENV_PYTHON" "$PYTHON_SCRIPT" --part=3 --level=3 --count=10 --db="$DB_PATH"
-"$VENV_PYTHON" "$PYTHON_SCRIPT" --part=3 --level=1 --count=5 --db="$DB_PATH" --img
-"$VENV_PYTHON" "$PYTHON_SCRIPT" --part=3 --level=2 --count=5 --db="$DB_PATH" --img
-"$VENV_PYTHON" "$PYTHON_SCRIPT" --part=3 --level=3 --count=5 --db="$DB_PATH" --img
 "$VENV_PYTHON" "$PYTHON_SCRIPT" --part=4 --level=1 --count=10 --db="$DB_PATH"
 "$VENV_PYTHON" "$PYTHON_SCRIPT" --part=4 --level=2 --count=10 --db="$DB_PATH"
 "$VENV_PYTHON" "$PYTHON_SCRIPT" --part=4 --level=3 --count=10 --db="$DB_PATH"
-"$VENV_PYTHON" "$PYTHON_SCRIPT" --part=4 --level=1 --count=5 --db="$DB_PATH" --img
-"$VENV_PYTHON" "$PYTHON_SCRIPT" --part=4 --level=2 --count=5 --db="$DB_PATH" --img
-"$VENV_PYTHON" "$PYTHON_SCRIPT" --part=4 --level=3 --count=5 --db="$DB_PATH" --img
