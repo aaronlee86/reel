@@ -1,7 +1,7 @@
  # --- ENUMS -------------------------------------------------------
 from enum import Enum
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Literal
 
 class SpeakerEnum(str, Enum):
     man1 = "man1"
@@ -35,6 +35,7 @@ class ToeicPart3(BaseModel):
     script: List[ScriptLine]
     questions: List[Question] = Field(..., min_length=3, max_length=3)
     summary: str
+    type: Literal["Office", "CustomerService", "Other"]
 
     model_config = {
         "extra": "forbid"   # additionalProperties: false

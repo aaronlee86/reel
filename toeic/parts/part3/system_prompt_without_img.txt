@@ -104,6 +104,7 @@ You are generating TOEIC Listening Part 3 sets of questions.
       "D": "Issue a refund", // put a clearly wrong option in non-answer option
     }
   ],
+  "type":"Office",
   "summary":"Customer reports expired-warranty coffee machine issue; support apologizes and offers a 40% discount coupon." //a brief summary of the conversation within 15 words
 },
 {
@@ -167,6 +168,7 @@ You are generating TOEIC Listening Part 3 sets of questions.
       "D": "It has offices in other countries.",  // put a clearly wrong option in non-answer option
     }
   ],
+  "type":"Office",
   "summary":"Coworkers discuss impressive office expansion, speculate about department relocation, and note company’s strong growth." //a brief summary of the conversation within 15 words
 }
 ]

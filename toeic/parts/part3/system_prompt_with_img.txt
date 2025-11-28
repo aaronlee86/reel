@@ -142,6 +142,7 @@ Table Structure and Content: The table must have two columns and four data rows 
       "D": "17 inches ", // put a clearly wrong option in non-answer option; 17-inch's price is over $1000
     }
   ],
+  "type":"Office",
   "summary":"New designer needs equipment; prices increased, so they’ll choose the largest screen under budget." //a brief summary of the conversation within 15 words
 },
 {
@@ -210,6 +211,7 @@ The font used for all labels and numbers should be a simple, clean sans-serif.",
       "D": "Store 4" // put a clearly wrong option in non-answer option
     }
   ],
+  type":"CustomerService",
   "summary": "Man needs a compatible power cord; staff directs him to a nearby electronics store." //a brief summary of the conversation within 15 words
 }
 

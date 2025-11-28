@@ -438,6 +438,7 @@ class ToeicQuestionGenerator:
                 q['C'] = item['C']
                 q['D'] = item['D']
                 q['answer'] = item['answer']
+                q['type'] = item['type']
                 q['valid'], q['valid_status'] = self.verification_chain.verify(q, self.img)
                 result.append(q)
 
@@ -465,6 +466,7 @@ class ToeicQuestionGenerator:
                 q['C'] = json.dumps([qu['C'] for qu in item['questions']])
                 q['D'] = json.dumps([qu['D'] for qu in item['questions']])
                 q['answer'] = json.dumps([qu['answer'] for qu in item['questions']])
+                q['type'] = item['type']
                 q['summary'] = item['summary']
                 q['question'] = json.dumps([qu['question'] for qu in item['questions']])
                 q['valid'], q['valid_status'] = self.verification_chain.verify(q, self.img)

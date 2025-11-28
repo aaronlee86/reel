@@ -80,6 +80,7 @@ You are generating TOEIC Listening Part 1 questions (a photo and 4 statements)
       "B": "She’s brushing her teeth.", // put a clearly wrong option in non-answer option
       "C": "She’s sweeping the deck.", // put correct option in C because the answer is C;
       "D": "She’s scrubbing some pots." // put a clearly wrong option in non-answer option
+      "type": "People" // put People because its' focusing on actions, activities, or what people are wearing.
     },
     {
       "img_prompt": "A photorealistic photograph of an intimate, dimly lit dining room setting.
@@ -93,6 +94,7 @@ You are generating TOEIC Listening Part 1 questions (a photo and 4 statements)
       "B": "Some people are eating a meal.", // put a disctractor: it's a restaurant but no people are in the picture
       "C": "The table is being cleared.", // put a disctractor: there is a table, but it's not cleared
       "D": "A lamp is being turned off." // put a disctractor: there is a lamp, but it's on
+      "type": "Object" // put Object because it's focusing on the location, condition, or arrangement of objects.
     }
   ]
 }

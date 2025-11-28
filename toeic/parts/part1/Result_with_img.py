@@ -9,6 +9,7 @@ class Question(BaseModel):
     B: str
     C: str
     D: str
+    type: Literal["People", "Objects"]
 
     model_config = {
         "extra": "forbid"  # no unexpected fields allowed
