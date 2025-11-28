@@ -126,7 +126,7 @@ def load_part_model(part: int, img: bool) -> Type[BaseModel]:
         return part_result_class
 
     except (ImportError, FileNotFoundError, AttributeError) as e:
-        print(f"Error importing model for part {part}: {e}")
+        logging.error(f"Error importing model for part {part}: {e}")
         return None
 
 class ToeicVerifier:
@@ -336,14 +336,14 @@ class ToeicVerifier:
         # compare db_vector and v1
         # verify number of answers match
         if len(db_vector) != len(ai_vector):
-            print(f"Number of answers mismatch: db_vector has {len(db_vector)} answers, v1 has {len(ai_vector)} answers")
+            logging.info(f"Number of answers mismatch: db_vector has {len(db_vector)} answers, v1 has {len(ai_vector)} answers")
             return VerifyStatus.ERROR, f"Number of answers mismatch"
 
         for v_db, v_ai in zip(db_vector, ai_vector):
-            print(f"Comparing db: {v_db} with ai: {v_ai}")
+            logging.info(f"Comparing db: {v_db} with ai: {v_ai}")
             # check length match
             if len(v_db) != len(v_ai):
-                print(f"  Length mismatch: db_vector has {len(v_db)} options, v_ai has {len(v_ai)} options")
+                logging.info(f"  Length mismatch: db_vector has {len(v_db)} options, v_ai has {len(v_ai)} options")
                 return VerifyStatus.ERROR, f"Answer option length mismatch"
             # compute sum of absolute difference
             diff = sum(abs(a - b) for a, b in zip(v_db, v_ai))
@@ -351,8 +351,8 @@ class ToeicVerifier:
             # threshold for acceptance is 10
             threshold = 30
             if diff > threshold:
-                print(f"  Mismatch detected (diff {diff} > {threshold})")
-                return VerifyStatus.INVALID, f"Answer mismatch: AI: {ai_answer}"
+                logging.info(f"  Mismatch detected (diff {diff} > {threshold})")
+                return VerifyStatus.FAIL_ANSWER_MISMATCH, f"Answer mismatch: AI: {ai_answer}"
 
         return VerifyStatus.VALID, f"{ai_answer}"
 
