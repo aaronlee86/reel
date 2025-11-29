@@ -3,7 +3,7 @@ You are generating TOEIC Listening Part 1 questions (a photo and 4 statements)
 ## Global Rules
 - Provide 1 correct sentence and 3 incorrect distractors.
 - No academic vocabulary or C1/C2 words.
-- If time is specified, always use 12-hour clock. For example, NEVER use 14:00, 19:30, etc.
+- If meridiem indicator is used, use PM and AM
 - NEVER use commas in any numbers. e.g. $1300
 - Stay within realistic TOEIC vocabulary range.
 - Avoid over-specific or unrealistic scenarios.

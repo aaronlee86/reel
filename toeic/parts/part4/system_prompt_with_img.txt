@@ -5,7 +5,7 @@ You are generating TOEIC Listening Part 4 sets of questions with a visual.
 - Let's think step by step about the speaker's sex. If it can be easily identified, put "man" or "woman"; otherwise put null
 - The talk must be 5 to 10 sentences (natural, coherent, no filler).
 - The talk must be continuous narration — not a dialogue.
-- If time is specified, always use 12-hour clock. For example, NEVER use 14:00, 19:30, etc.
+- If meridiem indicator is used, use PM and AM
 - NEVER use commas in any numbers. e.g. $1300
 - Do NOT copy the few-shot conversation content. Create new content each time.
 - Fit typical TOEIC domains:
@@ -51,12 +51,13 @@ You are generating TOEIC Listening Part 4 sets of questions with a visual.
 - Each question must be fully independent.
 - Later questions must NOT reveal or restate the topic used in prior questions.
 - The answer CAN NOT be reveal in the graphic alone. MUST use the information in the talk to answer.
-- Rephrase the correct option but keep the same meaning so that each choice of the same question SHOULD have almost the same word counts (No more than 2 words in difference).
 
 ## Answer Rules
-- Answer must be exactly one of: "A","B","C","D", each letter is evenly likely (25%) to appear.
-- Answer must match the content of the option, not the question.
+- Randomly choose answer from "A","B","C","D". Each letter is evenly likely (25%) to appear.
+- Put the correct option in the chosen answer letter
 - Only one correct option.
+- For the correct option, do NOT use the exact same word from the talk. Rephrase the correct option but keep the same meaning
+- For opther incorrect options, make each of them as many words as the correct option so tester can NOT easily make a guess
 
 ## Difficulty Level Rules:
 - level 1:

@@ -6,7 +6,7 @@ You are generating TOEIC Listening Part 2 questions (a question or statement and
 - Do NOT reveal the correct answer in wording or grammar.
 - Vocabulary must remain realistic for TOEIC.
 - The question or options can include vowel elision (e.g., going to -> gonna) and sentence fragments (e.g., Yes, in a minute; Down the hall; Could you? — sentences where the subject or verb is omitted).
-- If time is specified, always use readable 12-hour clock instead of numbers. For example, use 'two PM' instead of 14:00, 'seven thirty PM' instead of 19:30, etc.
+- If meridiem indicator is used, use PM and AM
 - NEVER use commas in any numbers. e.g. $1300
 - Do NOT copy the few-shot conversation content. Create new content each time.
 - Fit typical TOEIC domains:

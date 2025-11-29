@@ -17,6 +17,7 @@ from typing import List, Dict, Type, Tuple, Optional
 from pydantic import BaseModel
 import importlib.util
 from common import VerifyStatus, VerificationChain
+from time_text_replacer import convert_times_in_text
 
 # Configure logging
 def setup_logging() -> None:
@@ -198,6 +199,23 @@ def verify_question_similarity(question: Dict, img: bool = False):
 
     return VerifyStatus.UNVERIFIED, None
 
+def replace_time_with_readable(question_data: Dict, img: bool = False):
+    logging.info("Replacing time with readable format...")
+
+    part = question_data['part']
+    to_be_replaced_fields = []
+    if part == 1:
+        to_be_replaced_fields = ['A', 'B', 'C', 'D']
+    elif part == 2:
+        to_be_replaced_fields = ['question', 'A', 'B', 'C']
+    elif part in (3,4):
+        to_be_replaced_fields = ['prompt']
+
+    for field in to_be_replaced_fields:
+        question_data[field] = convert_times_in_text(question_data[field])
+
+    return VerifyStatus.UNVERIFIED, "Prevalidated"
+
 def stamping(question: Dict, img: bool = False):
     logging.info("Stamping question...")
     # just a placeholder for future use
@@ -316,6 +334,7 @@ class ToeicQuestionGenerator:
         Set up verification chain with consistent parameters
         """
         return (VerificationChain()
+            .add_stage(replace_time_with_readable)
             .add_stage(verify_options)
             .add_stage(verify_speakers)
             .add_stage(verify_question_similarity)
