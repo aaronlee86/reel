@@ -11,6 +11,8 @@ DB_PATH="$PROJECT_ROOT/data/toeic.db"
 LOG_PATH="$PROJECT_ROOT/toeic/genToeicQ.log"
 VENV_PYTHON="$PROJECT_ROOT/venv/bin/python"
 
+cd "$SCRIPT_DIR"
+
 # Run the Python script
 "$VENV_PYTHON" "$PYTHON_SCRIPT" --part=3 --level=1 --count=10 --db="$DB_PATH" --img
 "$VENV_PYTHON" "$PYTHON_SCRIPT" --part=3 --level=2 --count=10 --db="$DB_PATH" --img
