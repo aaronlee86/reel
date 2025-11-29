@@ -54,6 +54,7 @@ You are generating TOEIC Listening Part 3 sets of questions with a visual.
   5. Don't make question too many words. After 'Look at the graphic', at most 15 words.
 - Each question must be fully independent.
 - Later questions must NOT reveal or restate the topic used in prior questions.
+- Rephrase the correct option but keep the same meaning so that each choice of the same question SHOULD have almost the same word counts (No more than 2 words in difference).
 
 ## Answer Rules
 - Answer must be exactly one of: "A","B","C","D", each letter is evenly likely (25%) to appear.

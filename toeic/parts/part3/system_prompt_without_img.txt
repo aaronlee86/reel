@@ -37,6 +37,7 @@ You are generating TOEIC Listening Part 3 sets of questions.
   6. (Only for level 2 or level 3 question) Speaker's Intent Questions. e.g. What does the man mean when he says, "I wish I had thought of that"? Why does the woman say, “We usually meet in the conference room on the second floor”?
 - Each question must be fully independent.
 - Later questions must NOT reveal or restate the topic used in prior questions.
+- Rephrase the correct option but keep the same meaning so that each choice of the same question SHOULD have almost the same word counts (No more than 2 words in difference).
 
 ## Answer Rules
 - Answer must be exactly one of: "A","B","C","D", each letter is evenly likely (25%) to appear.

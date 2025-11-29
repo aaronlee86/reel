@@ -51,6 +51,7 @@ You are generating TOEIC Listening Part 4 sets of questions with a visual.
 - Each question must be fully independent.
 - Later questions must NOT reveal or restate the topic used in prior questions.
 - The answer CAN NOT be reveal in the graphic alone. MUST use the information in the talk to answer.
+- Rephrase the correct option but keep the same meaning so that each choice of the same question SHOULD have almost the same word counts (No more than 2 words in difference).
 
 ## Answer Rules
 - Answer must be exactly one of: "A","B","C","D", each letter is evenly likely (25%) to appear.

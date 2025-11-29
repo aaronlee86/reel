@@ -31,6 +31,7 @@ You are generating TOEIC Listening Part 4 sets of questions.
   4. (Only for level 2 or level 3 question) Inference or Speaker's Intent Questions. Ask to deduce the speaker's implied meaning or purposee. e.g. What does the speaker mean when he says, "..."? Why does the speaker mention the weather forecast?
 - Each question must be fully independent.
 - Later questions must NOT reveal or restate the topic used in prior questions.
+- Rephrase the correct option but keep the same meaning so that each choice of the same question SHOULD have almost the same word counts (No more than 2 words in difference).
 
 ## Answer Rules
 - Answer must be exactly one of: "A","B","C","D", each letter is evenly likely (25%) to appear.
