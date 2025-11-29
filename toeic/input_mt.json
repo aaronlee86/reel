@@ -1,6 +1,6 @@
 {
   "template_csv": "template_mt.csv",
-  "instruction_csv": "instructions_ba.csv",
+  "instruction_csv": "instructions_mt.csv",
   "output_filename": "script.csv",
   "database_path": "../data/toeic.db",
   "files_to_copy": [
