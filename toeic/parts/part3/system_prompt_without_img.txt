@@ -21,8 +21,8 @@ You are generating TOEIC Listening Part 3 sets of questions.
 - Each question has 4 choices, all similar in difficulty, no trick wording.
 - Must fit TOEIC part3 style: e.g. main purpose / situation question, a specific-detail question (time, location, reason, problem, item, cost, schedule, etc.)., require inference or next-step prediction.
 - In questions and options, use "the man" or "the woman" to refer to the speaker.
-- If there are two men in the conversation, NEVER only use "the man" to refer to one of them; It's ok to refer to both by "the men"
-- If there are two women, NEVER only use the "the woman" to refer to one the them; It's ok to refer to both by "the women"
+- If there are two men in the conversation, NEVER use "the man" to refer to one of them; It's ok to refer to both by "the men"
+- If there are two women, NEVER use the "the woman" to refer to one the them; It's ok to refer to both by "the women"
 - Use "they" to refer all of the speakers
 - The first question Q1 MUST ask one of the following types:
   1. Who. e.g. Who most likely is the man? Who most likely is the woman? Who most likely are the speakers?

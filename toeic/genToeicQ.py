@@ -165,9 +165,17 @@ def verify_speakers(question_data: Dict, img: bool) -> int:
     # check at most 3 people
     logging.info("Verifying number of speakers...")
     try:
-        no_spakers = len(set(json.loads(question_data['sex'])))
+        characters = set(json.loads(question_data['sex']))
+        no_spakers = len(characters)
         if not 2 <= no_spakers <= 3:
             return VerifyStatus.FAIL_MORE_THAN_3_PEOPLE, f"{no_spakers} speakers"
+
+        # check special rule for 3 people: never use the man or the woman
+        if 'man2' in characters and 'the man' in question_data['question']:
+            return VerifyStatus.FAIL_SPEAKER_NAMING, f"'the man' shows up in 2 men conversation"
+        if 'woman2' in characters and 'the woman' in question_data['question']:
+            return VerifyStatus.FAIL_SPEAKER_NAMING, f"'the woman' shows up in 2 women conversation"
+
     except json.JSONDecodeError:
         return VerifyStatus.ERROR, f"Sex is not valid JSON {question_data['sex']}"
 

@@ -10,7 +10,8 @@ class VerifyStatus(IntEnum):
     FAIL_AUDIO_ANSWER_MATCH = 5
     FAIL_IMAGE_ANSWER_MATCH = 6
     FAIL_MORE_THAN_3_PEOPLE = 7
-    FAIL_ANSWER_MISMATCH = 7
+    FAIL_ANSWER_MISMATCH = 8
+    FAIL_SPEAKER_NAMING = 9
 
 
 class VerificationChain:
