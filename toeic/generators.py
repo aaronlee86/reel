@@ -304,7 +304,6 @@ def getTtsSettings(accents, sexes):
             ('azure', 'en-US-NancyNeural'),
             ('azure', 'en-US-CoraMultilingualNeural'),
             ('azure', 'en-US-AmberNeural'),
-            ('azure', 'en-US-AnaNeural'),
             ('azure', 'en-US-AshleyNeural'),
             ('azure', 'en-US-CoraNeural'),
             ('azure', 'en-US-ElizabethNeural'),
